@@ -17,16 +17,15 @@
 
 Una vez publicada con HTTPS, entrá desde el celular o Chrome/Edge de escritorio y vas a ver la opción "Instalar app" o "Agregar a pantalla de inicio".
 
-## ⚠️ Importante: el botón "Mejorar con IA" no va a funcionar tal cual
+## ⚠️ Sobre el botón "Mejorar con IA"
 
-Dentro del chat de Claude, esas llamadas a `api.anthropic.com` funcionan porque el entorno del artefacto inyecta automáticamente las credenciales. **Una vez que publiques este HTML de forma independiente, esas llamadas van a fallar** porque no hay ninguna clave de API configurada.
+Dentro del chat de Claude, esas llamadas funcionan porque el entorno del artefacto inyecta automáticamente las credenciales de Anthropic. Fuera del chat, esta versión de la app usa la **API de Google (Gemini)** en su lugar — la app te pide tu propia clave la primera vez que usás el botón (ícono de engranaje en el encabezado):
 
-Opciones para que vuelva a funcionar:
-
-1. **Backend propio (recomendado)**: crea una función serverless (Netlify Functions, Vercel Edge Functions, Cloudflare Workers) que reciba el texto, llame a la API de Anthropic con tu clave guardada como variable de entorno del lado del servidor, y devuelva el resultado. Nunca pongas tu clave de API directamente en el HTML/JS del navegador: cualquiera podría verla e inflarte la factura.
-2. **Quitar la función de IA**: si solo necesitás el editor y las plantillas (sin mejora de texto automática), puedo darte una versión sin los botones "Mejorar con IA" y sin llamadas externas — funcionaría 100% offline.
-
-Decime cuál preferís y te preparo esa parte.
+- La clave se guarda solo en el `localStorage` de tu navegador — nunca se envía a ningún servidor propio, solo a `generativelanguage.googleapis.com`.
+- Conseguí una clave gratis en https://aistudio.google.com/apikey — Gemini tiene una capa gratuita generosa, a diferencia de la API de Anthropic.
+- El modelo usado es `gemini-2.5-flash` (configurable editando la constante `GEMINI_MODEL` en `index.html` si preferís otro).
+- Como la clave queda en el navegador, cualquiera con acceso físico a tu dispositivo (o a las devtools) podría verla. Es aceptable para uso personal en tu propio equipo, pero no la uses en una computadora compartida ni publiques el link con tu clave ya cargada.
+- Si preferís una solución sin exponer la clave en el navegador, se puede migrar a una función serverless (Netlify Functions, Vercel Edge Functions, Cloudflare Workers) que la guarde del lado del servidor — avisame si querés esa versión.
 
 ## Qué incluye
 
