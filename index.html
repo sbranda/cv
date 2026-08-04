@@ -158,6 +158,26 @@ const TEMPLATES = [
     name: "Impacto",
     desc: "Tipografía grande, un logro por línea",
   },
+  {
+    id: "aurora",
+    name: "Aurora",
+    desc: "Fondo degradado suave, tarjetas flotantes",
+  },
+  {
+    id: "blueprint",
+    name: "Blueprint",
+    desc: "Cuadrícula técnica, ideal para perfiles técnicos",
+  },
+  {
+    id: "bloques",
+    name: "Bloques",
+    desc: "Formas geométricas de color detrás del encabezado",
+  },
+  {
+    id: "nocturno",
+    name: "Nocturno",
+    desc: "Fondo oscuro elegante, acentos finos",
+  },
 ];
 
 const emptyExperience = () => ({
@@ -475,16 +495,67 @@ function TemplateThumb({ id, accent }) {
     );
   }
   // impacto
+  if (id === "impacto") {
+    return (
+      <div className={base + " bg-white p-2 flex flex-col gap-1 justify-center"}>
+        <div className="h-3.5 w-full rounded-sm bg-stone-900" />
+        <div className="h-1 w-1/2 rounded-full mt-1" style={{ background: accent }} />
+        <div className="h-[2px] w-full my-1" style={{ background: accent, opacity: 0.3 }} />
+        <div className="h-1 w-5/6 bg-stone-200 rounded-full" />
+      </div>
+    );
+  }
+  if (id === "aurora") {
+    return (
+      <div
+        className={base + " p-2 flex flex-col gap-1"}
+        style={{
+          backgroundImage: `radial-gradient(circle at 20% 20%, ${accent}77, transparent 55%), radial-gradient(circle at 85% 80%, ${accent}44, transparent 60%), linear-gradient(160deg, #FBF9F5, #F0EEE8)`,
+        }}
+      >
+        <div className="h-1.5 w-1/2 rounded-sm bg-stone-800" />
+        <div className="h-4 w-full bg-white/70 rounded-sm mt-1" />
+        <div className="h-3 w-full bg-white/70 rounded-sm" />
+      </div>
+    );
+  }
+  if (id === "blueprint") {
+    return (
+      <div
+        className={base + " p-2 flex flex-col gap-1"}
+        style={{
+          backgroundColor: "#fbf9f5",
+          backgroundImage: `linear-gradient(${accent}33 1px, transparent 1px), linear-gradient(90deg, ${accent}33 1px, transparent 1px)`,
+          backgroundSize: "6px 6px",
+        }}
+      >
+        <div className="h-1.5 w-2/3 rounded-sm bg-stone-800" />
+        <div className="h-1 w-full bg-stone-300 rounded-full mt-1" />
+        <div className="h-1 w-4/6 bg-stone-300 rounded-full" />
+      </div>
+    );
+  }
+  if (id === "bloques") {
+    return (
+      <div className={base + " bg-white relative overflow-hidden p-2 flex flex-col gap-1"}>
+        <div className="absolute -top-3 -right-4 w-10 h-10 rounded-full" style={{ background: accent, opacity: 0.25 }} />
+        <div className="absolute bottom-1 -left-2 w-6 h-6 rotate-45" style={{ background: accent, opacity: 0.18 }} />
+        <div className="relative h-1.5 w-1/2 rounded-sm bg-stone-800" />
+        <div className="relative h-1 w-full bg-stone-200 rounded-full mt-1" />
+        <div className="relative h-1 w-5/6 bg-stone-200 rounded-full" />
+      </div>
+    );
+  }
+  // nocturno
   return (
-    <div className={base + " bg-white p-2 flex flex-col gap-1 justify-center"}>
-      <div className="h-3.5 w-full rounded-sm bg-stone-900" />
-      <div className="h-1 w-1/2 rounded-full mt-1" style={{ background: accent }} />
-      <div className="h-[2px] w-full my-1" style={{ background: accent, opacity: 0.3 }} />
-      <div className="h-1 w-5/6 bg-stone-200 rounded-full" />
+    <div className={base + " bg-[#121212] p-2 flex flex-col gap-1"}>
+      <div className="h-1.5 w-1/2 rounded-sm bg-white" />
+      <div className="h-[2px] w-full my-1" style={{ background: accent, opacity: 0.6 }} />
+      <div className="h-1 w-full bg-stone-700 rounded-full" />
+      <div className="h-1 w-4/6 bg-stone-700 rounded-full" />
     </div>
   );
 }
-
 function TemplateGallery({ open, onClose, current, accent, onSelect }) {
   if (!open) return null;
   return (
@@ -1349,6 +1420,127 @@ function PreviewImpacto({ data, accent }) {
   );
 }
 
+function PreviewAurora({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  const bg = { backgroundImage: `radial-gradient(circle at 15% 8%, ${accent}55, transparent 45%), radial-gradient(circle at 90% 88%, ${accent}33, transparent 50%), linear-gradient(160deg, #FBF9F5 0%, #F2F0EA 100%)` };
+  const card = "mb-4 last:mb-0 bg-white/70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm";
+  return (
+    <div className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px] text-[#232323]" style={bg}>
+      <div className="mb-5">
+        <h1 className="font-display text-[30px] leading-tight" style={{ color: "#1a1a1a" }}>{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="font-mono text-sm mt-1" style={{ color: accent }}>{data.puesto}</p>}
+        <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+      </div>
+      {data.resumen && <div className={card}><SectionLabel accent={accent}>Perfil</SectionLabel><p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p></div>}
+      {hasExp && <div className={card}><SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel><ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" /></div>}
+      {hasEdu && <div className={card}><SectionLabel accent={accent} className="mb-3">Educación</SectionLabel><EducacionBlock data={data} /></div>}
+      {data.habilidades && <div className={card}><SectionLabel accent={accent}>Habilidades</SectionLabel><SkillChips data={data} accent={accent} /></div>}
+    </div>
+  );
+}
+
+function PreviewBlueprint({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  const gridBg = { backgroundColor: "#fbf9f5", backgroundImage: `linear-gradient(${accent}22 1px, transparent 1px), linear-gradient(90deg, ${accent}22 1px, transparent 1px)`, backgroundSize: "18px 18px" };
+  const corner = "absolute w-4 h-4";
+  return (
+    <div className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px] text-[#232323] relative overflow-hidden" style={{ ...gridBg, fontFamily: "'IBM Plex Mono', monospace" }}>
+      <div className={corner + " top-3 left-3 border-l-2 border-t-2"} style={{ borderColor: accent }} />
+      <div className={corner + " top-3 right-3 border-r-2 border-t-2"} style={{ borderColor: accent }} />
+      <div className={corner + " bottom-3 left-3 border-l-2 border-b-2"} style={{ borderColor: accent }} />
+      <div className={corner + " bottom-3 right-3 border-r-2 border-b-2"} style={{ borderColor: accent }} />
+      <div className="mb-6 pb-4 border-b" style={{ borderColor: `${accent}55` }}>
+        <p className="text-[10px] mb-1 tracking-widest" style={{ color: accent }}>REF. CURRÍCULUM</p>
+        <h1 className="text-[24px] font-bold">{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="text-[12px] mt-1" style={{ color: accent }}>{data.puesto}</p>}
+        <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10.5px] text-stone-600" iconSize={10} />
+      </div>
+      {data.resumen && <div className="mb-5"><p className="text-[10.5px] uppercase tracking-widest mb-1.5" style={{ color: accent }}>// perfil</p><p className="text-[12px] leading-relaxed text-stone-700">{data.resumen}</p></div>}
+      {hasExp && <div className="mb-5"><p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
+        {data.experiencia.map((exp) => (exp.puesto || exp.empresa) && (
+          <div key={exp.id} className="mb-3 last:mb-0">
+            <div className="flex justify-between items-baseline gap-2">
+              <p className="text-[12.5px] font-bold">{exp.puesto}{exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}</p>
+              <span className="text-[10px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+            </div>
+            {exp.descripcion && <div className="text-[11px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+          </div>
+        ))}</div>}
+      {hasEdu && <div className="mb-5"><p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
+        {data.educacion.map((edu) => (edu.titulo || edu.institucion) && (
+          <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+            <p className="text-[12px] text-stone-700">{edu.titulo}{edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}</p>
+            <span className="text-[10px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+          </div>
+        ))}</div>}
+      {data.habilidades && <div><p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// habilidades</p>
+        <div className="flex flex-wrap gap-1.5">
+          {data.habilidades.split(",").map((h, i) => h.trim() && <span key={i} className="text-[10.5px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>{h.trim()}</span>)}
+        </div></div>}
+    </div>
+  );
+}
+
+function PreviewBloques({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] relative overflow-hidden">
+      <div className="absolute -top-10 -right-16 w-52 h-52 rounded-full" style={{ background: accent, opacity: 0.15 }} />
+      <div className="absolute top-28 -left-12 w-36 h-36 rotate-45" style={{ background: accent, opacity: 0.1 }} />
+      <div className="relative px-10 py-11">
+        <div className="mb-6">
+          <h1 className="font-display text-[32px] leading-tight" style={{ color: "#1a1a1a" }}>{data.nombre || "Tu nombre"}</h1>
+          {data.puesto && <p className="font-mono text-sm mt-1" style={{ color: accent }}>{data.puesto}</p>}
+          <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+        </div>
+        {data.resumen && <div className="mb-6"><SectionLabel accent={accent}>Perfil</SectionLabel><p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p></div>}
+        {hasExp && <div className="mb-6"><SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel><ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" /></div>}
+        {hasEdu && <div className="mb-6"><SectionLabel accent={accent} className="mb-3">Educación</SectionLabel><EducacionBlock data={data} /></div>}
+        {data.habilidades && <div><SectionLabel accent={accent}>Habilidades</SectionLabel><SkillChips data={data} accent={accent} /></div>}
+      </div>
+    </div>
+  );
+}
+
+function PreviewNocturno({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-[#121212] text-stone-300 w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+      <div className="mb-6 pb-5 border-b" style={{ borderColor: `${accent}44` }}>
+        <h1 className="font-display text-[30px] leading-tight text-white">{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="font-mono text-sm mt-1 tracking-widest uppercase" style={{ color: accent }}>{data.puesto}</p>}
+        <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11.5px] text-stone-500" iconSize={10} />
+      </div>
+      {data.resumen && <div className="mb-6"><SectionLabel accent={accent}>Perfil</SectionLabel><p className="text-[13px] leading-relaxed text-stone-400">{data.resumen}</p></div>}
+      {hasExp && <div className="mb-6"><SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+        {data.experiencia.map((exp) => (exp.puesto || exp.empresa) && (
+          <div key={exp.id} className="mb-4 last:mb-0">
+            <div className="flex justify-between items-baseline gap-2">
+              <p className="font-display text-[15px] font-medium text-white">{exp.puesto}{exp.empresa && <span className="font-sans text-stone-500 text-[13px] font-normal"> · {exp.empresa}</span>}</p>
+              <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+            </div>
+            {exp.descripcion && <div className="text-[12.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+          </div>
+        ))}</div>}
+      {hasEdu && <div className="mb-6"><SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+        {data.educacion.map((edu) => (edu.titulo || edu.institucion) && (
+          <div key={edu.id} className="mb-2 last:mb-0 flex items-baseline justify-between gap-2">
+            <p className="text-[13px] text-stone-300"><span className="font-medium text-white">{edu.titulo}</span>{edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}</p>
+            <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+          </div>
+        ))}</div>}
+      {data.habilidades && <div><SectionLabel accent={accent}>Habilidades</SectionLabel>
+        <div className="flex flex-wrap gap-1.5">
+          {data.habilidades.split(",").map((h, i) => h.trim() && <span key={i} className="text-[11px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>{h.trim()}</span>)}
+        </div></div>}
+    </div>
+  );
+}
+
 const TEMPLATE_COMPONENTS = {
   clasico: PreviewClasico,
   moderno: PreviewModerno,
@@ -1361,6 +1553,10 @@ const TEMPLATE_COMPONENTS = {
   academico: PreviewAcademico,
   comercial: PreviewComercial,
   impacto: PreviewImpacto,
+  aurora: PreviewAurora,
+  blueprint: PreviewBlueprint,
+  bloques: PreviewBloques,
+  nocturno: PreviewNocturno,
 };
 
 function CVBuilder() {
