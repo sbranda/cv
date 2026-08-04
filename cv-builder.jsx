@@ -58,6 +58,26 @@ const TEMPLATES = [
     name: "Creativo",
     desc: "Encabezado en bloque de color, más visual",
   },
+  {
+    id: "desarrollador",
+    name: "Desarrollador",
+    desc: "Con proyectos y stack técnico",
+  },
+  {
+    id: "academico",
+    name: "Académico",
+    desc: "Publicaciones, becas y formación",
+  },
+  {
+    id: "comercial",
+    name: "Ventas / Marketing",
+    desc: "Métricas y logros destacados",
+  },
+  {
+    id: "impacto",
+    name: "Impacto",
+    desc: "Tipografía grande, un logro por línea",
+  },
 ];
 
 const emptyExperience = () => ({
@@ -75,6 +95,34 @@ const emptyEducation = () => ({
   periodo: "",
 });
 
+const emptyProject = () => ({
+  id: crypto.randomUUID(),
+  nombre: "",
+  stack: "",
+  descripcion: "",
+  link: "",
+});
+
+const emptyPublication = () => ({
+  id: crypto.randomUUID(),
+  titulo: "",
+  revista: "",
+  anio: "",
+});
+
+const emptyBeca = () => ({
+  id: crypto.randomUUID(),
+  nombre: "",
+  entidad: "",
+  anio: "",
+});
+
+const emptyLogro = () => ({
+  id: crypto.randomUUID(),
+  metrica: "",
+  descripcion: "",
+});
+
 const initialState = {
   nombre: "",
   puesto: "",
@@ -86,6 +134,10 @@ const initialState = {
   experiencia: [emptyExperience()],
   educacion: [emptyEducation()],
   habilidades: "",
+  proyectos: [emptyProject()],
+  publicaciones: [emptyPublication()],
+  becas: [emptyBeca()],
+  logros: [emptyLogro()],
   accent: ACCENTS[0].value,
   template: "clasico",
 };
@@ -222,15 +274,68 @@ function TemplateThumb({ id, accent }) {
       </div>
     );
   }
-  // creativo
-  return (
-    <div className={base + " bg-white flex flex-col overflow-hidden"}>
-      <div className="h-[35%] w-full shrink-0" style={{ background: accent }} />
-      <div className="flex-1 p-1.5 flex flex-col gap-1">
+  if (id === "creativo") {
+    return (
+      <div className={base + " bg-white flex flex-col overflow-hidden"}>
+        <div className="h-[35%] w-full shrink-0" style={{ background: accent }} />
+        <div className="flex-1 p-1.5 flex flex-col gap-1">
+          <div className="h-1 w-full bg-stone-200 rounded-full" />
+          <div className="h-1 w-5/6 bg-stone-200 rounded-full" />
+          <div className="h-1 w-2/3 bg-stone-200 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+  if (id === "desarrollador") {
+    return (
+      <div className={base + " bg-white p-2 flex flex-col gap-1"} style={{ fontFamily: "monospace" }}>
+        <div className="h-2 w-1/2 rounded-sm bg-stone-800" />
+        <div className="flex gap-1 mt-0.5">
+          <div className="h-1.5 w-6 rounded-sm" style={{ background: accent, opacity: 0.5 }} />
+          <div className="h-1.5 w-6 rounded-sm" style={{ background: accent, opacity: 0.3 }} />
+          <div className="h-1.5 w-6 rounded-sm" style={{ background: accent, opacity: 0.7 }} />
+        </div>
+        <div className="h-[2px] w-full my-1 bg-stone-200" />
+        <div className="h-1 w-full bg-stone-200 rounded-full" />
+        <div className="h-1 w-4/6 bg-stone-200 rounded-full" />
+      </div>
+    );
+  }
+  if (id === "academico") {
+    return (
+      <div className={base + " bg-white p-2 flex flex-col gap-1"}>
+        <div className="h-2 w-2/3 rounded-sm bg-stone-800" />
+        <div className="h-[1px] w-full bg-stone-300 my-1" />
         <div className="h-1 w-full bg-stone-200 rounded-full" />
         <div className="h-1 w-5/6 bg-stone-200 rounded-full" />
-        <div className="h-1 w-2/3 bg-stone-200 rounded-full" />
+        <div className="h-1 w-4/6 bg-stone-200 rounded-full" />
+        <div className="h-1 w-full bg-stone-200 rounded-full mt-1" />
       </div>
+    );
+  }
+  if (id === "comercial") {
+    return (
+      <div className={base + " bg-white p-2 flex flex-col gap-1"}>
+        <div className="h-2 w-2/3 rounded-sm bg-stone-800" />
+        <div className="flex gap-1 mt-1">
+          <div className="flex-1 rounded-sm h-6 flex items-center justify-center" style={{ background: `${accent}18` }}>
+            <div className="h-1.5 w-4 rounded-full" style={{ background: accent }} />
+          </div>
+          <div className="flex-1 rounded-sm h-6 flex items-center justify-center" style={{ background: `${accent}18` }}>
+            <div className="h-1.5 w-4 rounded-full" style={{ background: accent }} />
+          </div>
+        </div>
+        <div className="h-1 w-full bg-stone-200 rounded-full mt-1" />
+      </div>
+    );
+  }
+  // impacto
+  return (
+    <div className={base + " bg-white p-2 flex flex-col gap-1 justify-center"}>
+      <div className="h-3.5 w-full rounded-sm bg-stone-900" />
+      <div className="h-1 w-1/2 rounded-full mt-1" style={{ background: accent }} />
+      <div className="h-[2px] w-full my-1" style={{ background: accent, opacity: 0.3 }} />
+      <div className="h-1 w-5/6 bg-stone-200 rounded-full" />
     </div>
   );
 }
@@ -815,6 +920,290 @@ function PreviewCreativo({ data, accent }) {
   );
 }
 
+function PreviewDesarrollador({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  const hasProj = data.proyectos.some((p) => p.nombre);
+  return (
+    <div className="print-page bg-[#0f0f0f] text-stone-200 w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px]" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+      <div className="mb-6">
+        <p className="text-[11px] text-stone-500">$ whoami</p>
+        <h1 className="text-[26px] font-bold text-white mt-1">{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="text-[12px] mt-1" style={{ color: accent }}>{data.puesto}</p>}
+        <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10.5px] text-stone-500" iconSize={10} />
+      </div>
+      {data.resumen && (
+        <div className="mb-6">
+          <p className="text-[11px] mb-1.5" style={{ color: accent }}>// perfil</p>
+          <p className="text-[12px] leading-relaxed text-stone-400">{data.resumen}</p>
+        </div>
+      )}
+      {data.habilidades && (
+        <div className="mb-6">
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// stack</p>
+          <div className="flex flex-wrap gap-1.5">
+            {data.habilidades.split(",").map(
+              (h, i) =>
+                h.trim() && (
+                  <span key={i} className="text-[10.5px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>
+                    {h.trim()}
+                  </span>
+                )
+            )}
+          </div>
+        </div>
+      )}
+      {hasProj && (
+        <div className="mb-6">
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// proyectos</p>
+          {data.proyectos.map(
+            (p) =>
+              p.nombre && (
+                <div key={p.id} className="mb-3 last:mb-0 pl-3 border-l" style={{ borderColor: `${accent}40` }}>
+                  <p className="text-[13px] font-bold text-white">
+                    {p.nombre}
+                    {p.link && <span className="font-normal text-stone-500 text-[10.5px]"> · {p.link}</span>}
+                  </p>
+                  {p.stack && <p className="text-[10.5px] text-stone-500 mt-0.5">{p.stack}</p>}
+                  {p.descripcion && <p className="text-[11.5px] text-stone-400 mt-1 leading-relaxed">{p.descripcion}</p>}
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {hasExp && (
+        <div className="mb-6">
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-3 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="text-[13px] font-bold text-white">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                    </p>
+                    <span className="text-[10px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && <div className="text-[11.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {hasEdu && (
+        <div>
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                  <p className="text-[12px] text-stone-300">
+                    {edu.titulo}
+                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                  </p>
+                  <span className="text-[10px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewAcademico({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  const hasPub = data.publicaciones.some((p) => p.titulo);
+  const hasBecas = data.becas.some((b) => b.nombre);
+  const label = "text-[11px] font-bold uppercase tracking-widest pb-1 mb-2 border-b border-stone-300";
+  return (
+    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-11 py-12 min-h-[780px]" style={{ fontFamily: "Georgia, serif" }}>
+      <div className="mb-6 pb-4 border-b-2" style={{ borderColor: accent }}>
+        <h1 className="text-[24px] font-bold">{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="text-[12.5px] mt-1 italic text-stone-600">{data.puesto}</p>}
+        <p className="text-[11px] mt-2 text-stone-500">{[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   ·   ")}</p>
+      </div>
+      {data.resumen && (
+        <div className="mb-5">
+          <h3 className={label}>Perfil académico</h3>
+          <p className="text-[12.5px] leading-relaxed text-stone-800">{data.resumen}</p>
+        </div>
+      )}
+      {hasEdu && (
+        <div className="mb-5">
+          <h3 className={label}>Formación</h3>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1.5 last:mb-0">
+                  <p className="text-[12.5px]">
+                    <span className="font-bold">{edu.titulo}</span>
+                    {edu.institucion && ` — ${edu.institucion}`}
+                  </p>
+                  <span className="text-[11px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {hasPub && (
+        <div className="mb-5">
+          <h3 className={label}>Publicaciones</h3>
+          {data.publicaciones.map(
+            (p) =>
+              p.titulo && (
+                <p key={p.id} className="text-[12px] text-stone-700 mb-1.5 last:mb-0 leading-relaxed">
+                  {p.titulo}
+                  {p.revista && <span className="italic"> — {p.revista}</span>}
+                  {p.anio && <span className="text-stone-500"> ({p.anio})</span>}
+                </p>
+              )
+          )}
+        </div>
+      )}
+      {hasBecas && (
+        <div className="mb-5">
+          <h3 className={label}>Becas y reconocimientos</h3>
+          {data.becas.map(
+            (b) =>
+              b.nombre && (
+                <div key={b.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                  <p className="text-[12px] text-stone-700">
+                    {b.nombre}
+                    {b.entidad && <span className="text-stone-500"> — {b.entidad}</span>}
+                  </p>
+                  <span className="text-[11px] text-stone-500 whitespace-nowrap">{b.anio}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {hasExp && (
+        <div className="mb-5">
+          <h3 className={label}>Experiencia</h3>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-2 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="text-[12.5px] font-bold">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-normal"> — {exp.empresa}</span>}
+                    </p>
+                    <span className="text-[11px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && <div className="text-[12px] text-stone-700 mt-0.5 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {data.habilidades && (
+        <div>
+          <h3 className={label}>Habilidades</h3>
+          <p className="text-[12.5px] text-stone-700">{data.habilidades}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewComercial({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasLogros = data.logros.some((l) => l.metrica || l.descripcion);
+  return (
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[780px]">
+      <div className="mb-6 pb-5" style={{ borderBottom: `2px solid ${accent}` }}>
+        <h1 className="font-display text-[30px] leading-tight" style={{ color: "#1a1a1a" }}>{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="font-mono text-sm mt-1 tracking-wide" style={{ color: accent }}>{data.puesto}</p>}
+        <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+      </div>
+      {hasLogros && (
+        <div className="mb-6 grid grid-cols-3 gap-2">
+          {data.logros.map(
+            (l) =>
+              (l.metrica || l.descripcion) && (
+                <div key={l.id} className="rounded-md px-2 py-3 text-center" style={{ background: `${accent}14` }}>
+                  <p className="text-[19px] font-bold leading-none" style={{ color: accent }}>{l.metrica}</p>
+                  <p className="text-[10px] text-stone-600 mt-1.5 leading-snug">{l.descripcion}</p>
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {data.resumen && (
+        <div className="mb-6">
+          <SectionLabel accent={accent}>Perfil</SectionLabel>
+          <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
+        </div>
+      )}
+      {hasExp && (
+        <div className="mb-6">
+          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
+        </div>
+      )}
+      {data.habilidades && (
+        <div>
+          <SectionLabel accent={accent}>Habilidades</SectionLabel>
+          <SkillChips data={data} accent={accent} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewImpacto({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#161616] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+      <h1 className="font-display text-[46px] leading-[0.95] tracking-tight mb-2">{data.nombre || "Tu nombre"}</h1>
+      {data.puesto && <p className="text-[14px] font-mono uppercase tracking-widest mb-4" style={{ color: accent }}>{data.puesto}</p>}
+      <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-[11.5px] text-stone-500" iconSize={10} />
+      {data.resumen && <p className="text-[15px] leading-relaxed text-stone-700 mb-8 max-w-[480px]">{data.resumen}</p>}
+      {hasExp && (
+        <div className="mb-8">
+          {data.experiencia.map(
+            (exp, i) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="flex gap-4 mb-5 last:mb-0">
+                  <span className="font-display text-[22px] leading-none shrink-0 w-16" style={{ color: accent }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex-1 pb-5 border-b border-stone-100 last:border-0">
+                    <div className="flex justify-between items-baseline gap-2">
+                      <p className="text-[15px] font-bold">
+                        {exp.puesto}
+                        {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                      </p>
+                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
+                    </div>
+                    {exp.descripcion && <div className="text-[12.5px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                  </div>
+                </div>
+              )
+          )}
+        </div>
+      )}
+      {hasEdu && (
+        <div className="mb-8">
+          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+      {data.habilidades && (
+        <div>
+          <SectionLabel accent={accent}>Habilidades</SectionLabel>
+          <SkillChips data={data} accent={accent} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 const TEMPLATE_COMPONENTS = {
   clasico: PreviewClasico,
   moderno: PreviewModerno,
@@ -823,6 +1212,10 @@ const TEMPLATE_COMPONENTS = {
   corporativo: PreviewCorporativo,
   compacto: PreviewCompacto,
   creativo: PreviewCreativo,
+  desarrollador: PreviewDesarrollador,
+  academico: PreviewAcademico,
+  comercial: PreviewComercial,
+  impacto: PreviewImpacto,
 };
 
 export default function CVBuilder() {
@@ -854,6 +1247,19 @@ export default function CVBuilder() {
     setData((d) => ({ ...d, educacion: [...d.educacion, emptyEducation()] }));
   const removeEducation = (id) =>
     setData((d) => ({ ...d, educacion: d.educacion.filter((e) => e.id !== id) }));
+
+  // Generic helpers for the optional list sections (proyectos, publicaciones, becas, logros)
+  const makeListHandlers = (field, emptyItem) => ({
+    update: (id, patch) =>
+      setData((d) => ({ ...d, [field]: d[field].map((it) => (it.id === id ? { ...it, ...patch } : it)) })),
+    add: () => setData((d) => ({ ...d, [field]: [...d[field], emptyItem()] })),
+    remove: (id) => setData((d) => ({ ...d, [field]: d[field].filter((it) => it.id !== id) })),
+  });
+
+  const proyectosH = makeListHandlers("proyectos", emptyProject);
+  const publicacionesH = makeListHandlers("publicaciones", emptyPublication);
+  const becasH = makeListHandlers("becas", emptyBeca);
+  const logrosH = makeListHandlers("logros", emptyLogro);
 
   const improveSummary = async () => {
     if (!data.resumen.trim()) return;
@@ -1191,6 +1597,142 @@ export default function CVBuilder() {
               onChange={(e) => update({ habilidades: e.target.value })}
               placeholder="Python, gestión de equipos, SQL, comunicación..."
             />
+          </section>
+
+          <div className="mt-2 mb-1">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-stone-600">
+              Secciones opcionales — según la plantilla
+            </p>
+          </div>
+
+          <section className="mt-6 mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
+              </h2>
+              <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto">
+                <Plus size={16} />
+              </button>
+            </div>
+            {data.proyectos.map((p) => (
+              <div key={p.id} className="mb-4 pb-4 border-b border-stone-800 last:border-0 flex items-start gap-2">
+                <div className="flex-1">
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <Field label="Nombre del proyecto">
+                      <input className={inputClass} value={p.nombre} onChange={(e) => proyectosH.update(p.id, { nombre: e.target.value })} placeholder="App de finanzas personales" />
+                    </Field>
+                    <Field label="Link (opcional)">
+                      <input className={inputClass} value={p.link} onChange={(e) => proyectosH.update(p.id, { link: e.target.value })} placeholder="github.com/ana/finanzas" />
+                    </Field>
+                  </div>
+                  <Field label="Stack / tecnologías">
+                    <input className={inputClass} value={p.stack} onChange={(e) => proyectosH.update(p.id, { stack: e.target.value })} placeholder="React, Node.js, PostgreSQL" />
+                  </Field>
+                  <Field label="Descripción">
+                    <textarea className={inputClass + " min-h-[60px] resize-none"} value={p.descripcion} onChange={(e) => proyectosH.update(p.id, { descripcion: e.target.value })} placeholder="Qué hace el proyecto y qué lograste con él..." />
+                  </Field>
+                </div>
+                {data.proyectos.length > 1 && (
+                  <button onClick={() => proyectosH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-2.5">
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </section>
+
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
+              </h2>
+              <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación">
+                <Plus size={16} />
+              </button>
+            </div>
+            {data.publicaciones.map((p) => (
+              <div key={p.id} className="mb-3 flex items-start gap-2">
+                <div className="flex-1">
+                  <Field label="Título">
+                    <input className={inputClass} value={p.titulo} onChange={(e) => publicacionesH.update(p.id, { titulo: e.target.value })} placeholder="Título del artículo o paper" />
+                  </Field>
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <Field label="Revista / conferencia">
+                      <input className={inputClass} value={p.revista} onChange={(e) => publicacionesH.update(p.id, { revista: e.target.value })} placeholder="Revista Latinoamericana de..." />
+                    </Field>
+                    <Field label="Año">
+                      <input className={inputClass} value={p.anio} onChange={(e) => publicacionesH.update(p.id, { anio: e.target.value })} placeholder="2023" />
+                    </Field>
+                  </div>
+                </div>
+                {data.publicaciones.length > 1 && (
+                  <button onClick={() => publicacionesH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </section>
+
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
+              </h2>
+              <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca">
+                <Plus size={16} />
+              </button>
+            </div>
+            {data.becas.map((b) => (
+              <div key={b.id} className="mb-3 flex items-start gap-2">
+                <div className="flex-1">
+                  <Field label="Nombre">
+                    <input className={inputClass} value={b.nombre} onChange={(e) => becasH.update(b.id, { nombre: e.target.value })} placeholder="Beca de excelencia académica" />
+                  </Field>
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <Field label="Entidad">
+                      <input className={inputClass} value={b.entidad} onChange={(e) => becasH.update(b.id, { entidad: e.target.value })} placeholder="CONACYT" />
+                    </Field>
+                    <Field label="Año">
+                      <input className={inputClass} value={b.anio} onChange={(e) => becasH.update(b.id, { anio: e.target.value })} placeholder="2021" />
+                    </Field>
+                  </div>
+                </div>
+                {data.becas.length > 1 && (
+                  <button onClick={() => becasH.remove(b.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </section>
+
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
+              </h2>
+              <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro">
+                <Plus size={16} />
+              </button>
+            </div>
+            {data.logros.map((l) => (
+              <div key={l.id} className="mb-3 flex items-start gap-2">
+                <div className="flex-1 grid grid-cols-[100px_1fr] gap-x-3">
+                  <Field label="Métrica">
+                    <input className={inputClass} value={l.metrica} onChange={(e) => logrosH.update(l.id, { metrica: e.target.value })} placeholder="+45%" />
+                  </Field>
+                  <Field label="Descripción">
+                    <input className={inputClass} value={l.descripcion} onChange={(e) => logrosH.update(l.id, { descripcion: e.target.value })} placeholder="Crecimiento en ventas Q3" />
+                  </Field>
+                </div>
+                {data.logros.length > 1 && (
+                  <button onClick={() => logrosH.remove(l.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
           </section>
         </div>
 
