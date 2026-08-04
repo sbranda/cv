@@ -23,7 +23,7 @@ Dentro del chat de Claude, esas llamadas funcionan porque el entorno del artefac
 
 - La clave se guarda solo en el `localStorage` de tu navegador — nunca se envía a ningún servidor propio, solo a `generativelanguage.googleapis.com`.
 - Conseguí una clave gratis en https://aistudio.google.com/apikey — Gemini tiene una capa gratuita generosa, a diferencia de la API de Anthropic.
-- El modelo usado es `gemini-2.5-flash` (configurable editando la constante `GEMINI_MODEL` en `index.html` si preferís otro).
+- El modelo usado es `gemini-3.6-flash` (configurable editando la constante `GEMINI_MODEL` en `index.html` si Google lo vuelve a cambiar).
 - Como la clave queda en el navegador, cualquiera con acceso físico a tu dispositivo (o a las devtools) podría verla. Es aceptable para uso personal en tu propio equipo, pero no la uses en una computadora compartida ni publiques el link con tu clave ya cargada.
 - Si preferís una solución sin exponer la clave en el navegador, se puede migrar a una función serverless (Netlify Functions, Vercel Edge Functions, Cloudflare Workers) que la guarde del lado del servidor — avisame si querés esa versión.
 
