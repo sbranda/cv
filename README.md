@@ -86,3 +86,7 @@ Usa la misma clave de Gemini configurada en el engranaje de configuración.
 ## Ajustar el largo del resumen
 
 Debajo del campo de Resumen profesional hay chips ("1 frase", "2 frases", "3 frases", "5 frases") que reescriben el resumen con IA al largo elegido, sin perder la información más importante. Útil para adaptar el mismo perfil a un espacio más chico o para llenar más una plantilla con poco contenido.
+
+## Traducir a inglés
+
+Dentro de "Mis perfiles" hay un ícono de traducción (🌐) en cada fila. Al tocarlo, la IA traduce el contenido de ese perfil (puesto, resumen, experiencia, educación, habilidades, proyectos, becas, logros) al inglés profesional y crea un **perfil nuevo** llamado "[nombre] (English)" — el original en español no se toca. Nombres de empresas, instituciones y tecnologías se mantienen tal cual, solo se traduce el contenido descriptivo.

@@ -22,6 +22,7 @@ import {
   AlignLeft,
   AlertTriangle,
   Target,
+  Languages,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -627,7 +628,7 @@ function TemplateGallery({ open, onClose, current, accent, onSelect }) {
   );
 }
 
-function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick }) {
+function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
@@ -664,6 +665,14 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
                 </p>
               </button>
               {p.id === activeId && <Check size={14} style={{ color: accent }} className="shrink-0" />}
+              <button
+                onClick={() => onTranslate(p.id)}
+                title="Traducir a inglés (crea un perfil nuevo)"
+                disabled={translatingId === p.id}
+                className="text-stone-500 hover:text-white transition shrink-0 disabled:opacity-40"
+              >
+                {translatingId === p.id ? <Loader2 size={14} className="animate-spin" /> : <Languages size={14} />}
+              </button>
               <button
                 onClick={() => onDuplicate(p.id)}
                 title="Duplicar perfil"
@@ -2872,6 +2881,84 @@ export default function CVBuilder() {
     setActiveProfileId(newId);
   };
 
+  const [translatingId, setTranslatingId] = useState(null);
+
+  const translateProfileToEnglish = async (id) => {
+    const source = profiles.find((p) => p.id === id);
+    if (!source) return;
+    setTranslatingId(id);
+    try {
+      const d = source.data;
+      const payload = {
+        puesto: d.puesto,
+        ubicacion: d.ubicacion,
+        resumen: d.resumen,
+        experiencia: d.experiencia.map((e) => ({ puesto: e.puesto, descripcion: e.descripcion })),
+        educacion: d.educacion.map((e) => ({ titulo: e.titulo })),
+        habilidades: d.habilidades,
+        proyectos: d.proyectos.map((p) => ({ nombre: p.nombre, descripcion: p.descripcion })),
+        becas: d.becas.map((b) => ({ nombre: b.nombre })),
+        logros: d.logros.map((l) => ({ descripcion: l.descripcion })),
+      };
+      const prompt = `Traducí al inglés profesional (convenciones de currículum en inglés de EE.UU.) el siguiente contenido de un currículum, representado en JSON. Reglas:
+- Traducí: puesto, resumen, descripciones de experiencia, títulos académicos, habilidades, nombres y descripciones de proyectos, nombres de becas/reconocimientos, descripciones de logros.
+- La "ubicacion" traducila solo si la ciudad/país tiene un nombre común en inglés (ej. "Ciudad de México" -> "Mexico City"); si no, dejala igual.
+- Mantené el mismo orden y la misma cantidad de elementos en cada array que el original.
+- Devolvé SOLO un objeto JSON válido con exactamente la misma estructura de claves que el original, sin texto extra ni bloques de código.
+
+JSON original:
+"""${JSON.stringify(payload)}"""`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const t = JSON.parse(cleaned);
+
+      const newData = {
+        ...JSON.parse(JSON.stringify(d)),
+        puesto: t.puesto ?? d.puesto,
+        ubicacion: t.ubicacion ?? d.ubicacion,
+        resumen: t.resumen ?? d.resumen,
+        habilidades: t.habilidades ?? d.habilidades,
+        experiencia: d.experiencia.map((exp, i) => ({
+          ...exp,
+          puesto: t.experiencia?.[i]?.puesto ?? exp.puesto,
+          descripcion: t.experiencia?.[i]?.descripcion ?? exp.descripcion,
+        })),
+        educacion: d.educacion.map((edu, i) => ({
+          ...edu,
+          titulo: t.educacion?.[i]?.titulo ?? edu.titulo,
+        })),
+        proyectos: d.proyectos.map((p, i) => ({
+          ...p,
+          nombre: t.proyectos?.[i]?.nombre ?? p.nombre,
+          descripcion: t.proyectos?.[i]?.descripcion ?? p.descripcion,
+        })),
+        becas: d.becas.map((b, i) => ({
+          ...b,
+          nombre: t.becas?.[i]?.nombre ?? b.nombre,
+        })),
+        logros: d.logros.map((l, i) => ({
+          ...l,
+          descripcion: t.logros?.[i]?.descripcion ?? l.descripcion,
+        })),
+      };
+
+      const newId = crypto.randomUUID();
+      setProfiles((prev) => {
+        const idx = prev.findIndex((p) => p.id === id);
+        const copy = { id: newId, nombre: `${source.nombre} (English)`, data: newData };
+        const next = [...prev];
+        next.splice(idx + 1, 0, copy);
+        return next;
+      });
+      setActiveProfileId(newId);
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo traducir el perfil. Probá de nuevo en unos segundos.");
+    } finally {
+      setTranslatingId(null);
+    }
+  };
+
   const removeProfile = (id) => {
     if (profiles.length <= 1) return;
     const idx = profiles.findIndex((p) => p.id === id);
@@ -3575,6 +3662,8 @@ Texto del currículum:
         onDuplicate={duplicateProfile}
         onRemove={removeProfile}
         onRename={renameProfile}
+        onTranslate={translateProfileToEnglish}
+        translatingId={translatingId}
         onImportClick={() => {
           setProfilesOpen(false);
           setImportError("");
