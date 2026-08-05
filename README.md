@@ -57,3 +57,7 @@ El botón "Carta" en el encabezado genera una carta de presentación con IA a pa
 Dentro de "Mis perfiles" (ícono de personas) hay un botón "Importar desde PDF/Word". Subís tu CV actual en `.pdf` o `.docx` y la IA arma un perfil nuevo completando nombre, contacto, resumen, experiencia, educación y habilidades automáticamente — revisá siempre el resultado, porque la extracción de datos puede tener errores.
 
 **¿Y LinkedIn?** No hay una conexión directa (LinkedIn no ofrece esa integración para uso personal). Lo que funciona: entrá a tu perfil de LinkedIn → botón "Más" → "Guardar en PDF", y subí ese archivo con la misma opción de importar.
+
+## Secciones opcionales
+
+Proyectos, Publicaciones, Becas y Logros destacados están ocultas por defecto para no saturar el editor. Activalas con los chips que aparecen debajo de Habilidades ("+ Proyectos", "+ Publicaciones", etc.) — al activarlas se despliega el formulario completo, y podés ocultarlas de nuevo con la ✕ en su encabezado sin perder lo que ya cargaste.

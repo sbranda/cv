@@ -227,6 +227,7 @@ const initialState = {
   publicaciones: [emptyPublication()],
   becas: [emptyBeca()],
   logros: [emptyLogro()],
+  seccionesOpcionales: { proyectos: false, publicaciones: false, becas: false, logros: false },
   accent: ACCENTS[0].value,
   template: "clasico",
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
@@ -236,6 +237,13 @@ const TONOS = [
   { id: "formal", name: "Formal" },
   { id: "cercano", name: "Cercano" },
   { id: "entusiasta", name: "Entusiasta" },
+];
+
+const OPTIONAL_SECTIONS = [
+  { id: "proyectos", name: "Proyectos", template: "Desarrollador" },
+  { id: "publicaciones", name: "Publicaciones", template: "Académico" },
+  { id: "becas", name: "Becas y reconocimientos", template: "Académico" },
+  { id: "logros", name: "Logros destacados", template: "Ventas/Marketing" },
 ];
 
 async function callClaude(prompt) {
@@ -3401,141 +3409,207 @@ Texto del currículum:
             />
           </section>
 
-          <div className="mt-2 mb-1">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-stone-600">
+          <div className="mt-2 mb-3">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-stone-600 mb-2">
               Secciones opcionales — según la plantilla
             </p>
+            <div className="flex flex-wrap gap-2">
+              {OPTIONAL_SECTIONS.map((s) => {
+                const activa = !!data.seccionesOpcionales?.[s.id];
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() =>
+                      update({ seccionesOpcionales: { ...data.seccionesOpcionales, [s.id]: !activa } })
+                    }
+                    className="text-[11px] px-3 py-1.5 rounded-full border transition inline-flex items-center gap-1.5"
+                    style={{
+                      borderColor: activa ? accent : "#44403c",
+                      background: activa ? `${accent}22` : "transparent",
+                      color: activa ? accent : "#a8a29e",
+                    }}
+                  >
+                    {activa ? <Check size={11} /> : <Plus size={11} />}
+                    {s.name} <span className="text-stone-600">· {s.template}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <section className="mt-6 mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
-                <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
-              </h2>
-              <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto">
-                <Plus size={16} />
-              </button>
-            </div>
-            {data.proyectos.map((p) => (
-              <div key={p.id} className="mb-4 pb-4 border-b border-stone-800 last:border-0 flex items-start gap-2">
-                <div className="flex-1">
-                  <div className="grid grid-cols-2 gap-x-3">
-                    <Field label="Nombre del proyecto">
-                      <input className={inputClass} value={p.nombre} onChange={(e) => proyectosH.update(p.id, { nombre: e.target.value })} placeholder="App de finanzas personales" />
+          {data.seccionesOpcionales?.proyectos && (
+            <section className="mt-6 mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
+                </h2>
+                <div className="flex items-center gap-3">
+                  <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto">
+                    <Plus size={16} />
+                  </button>
+                  <button
+                    onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, proyectos: false } })}
+                    className="text-stone-500 hover:text-red-400 transition"
+                    title="Ocultar sección"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+              {data.proyectos.map((p) => (
+                <div key={p.id} className="mb-4 pb-4 border-b border-stone-800 last:border-0 flex items-start gap-2">
+                  <div className="flex-1">
+                    <div className="grid grid-cols-2 gap-x-3">
+                      <Field label="Nombre del proyecto">
+                        <input className={inputClass} value={p.nombre} onChange={(e) => proyectosH.update(p.id, { nombre: e.target.value })} placeholder="App de finanzas personales" />
+                      </Field>
+                      <Field label="Link (opcional)">
+                        <input className={inputClass} value={p.link} onChange={(e) => proyectosH.update(p.id, { link: e.target.value })} placeholder="github.com/ana/finanzas" />
+                      </Field>
+                    </div>
+                    <Field label="Stack / tecnologías">
+                      <input className={inputClass} value={p.stack} onChange={(e) => proyectosH.update(p.id, { stack: e.target.value })} placeholder="React, Node.js, PostgreSQL" />
                     </Field>
-                    <Field label="Link (opcional)">
-                      <input className={inputClass} value={p.link} onChange={(e) => proyectosH.update(p.id, { link: e.target.value })} placeholder="github.com/ana/finanzas" />
+                    <Field label="Descripción">
+                      <textarea className={inputClass + " min-h-[60px] resize-none"} value={p.descripcion} onChange={(e) => proyectosH.update(p.id, { descripcion: e.target.value })} placeholder="Qué hace el proyecto y qué lograste con él..." />
                     </Field>
                   </div>
-                  <Field label="Stack / tecnologías">
-                    <input className={inputClass} value={p.stack} onChange={(e) => proyectosH.update(p.id, { stack: e.target.value })} placeholder="React, Node.js, PostgreSQL" />
-                  </Field>
-                  <Field label="Descripción">
-                    <textarea className={inputClass + " min-h-[60px] resize-none"} value={p.descripcion} onChange={(e) => proyectosH.update(p.id, { descripcion: e.target.value })} placeholder="Qué hace el proyecto y qué lograste con él..." />
-                  </Field>
+                  {data.proyectos.length > 1 && (
+                    <button onClick={() => proyectosH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-2.5">
+                      <Trash2 size={14} />
+                    </button>
+                  )}
                 </div>
-                {data.proyectos.length > 1 && (
-                  <button onClick={() => proyectosH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-2.5">
-                    <Trash2 size={14} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </section>
+              ))}
+            </section>
+          )}
 
-          <section className="mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
-                <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
-              </h2>
-              <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación">
-                <Plus size={16} />
-              </button>
-            </div>
-            {data.publicaciones.map((p) => (
-              <div key={p.id} className="mb-3 flex items-start gap-2">
-                <div className="flex-1">
-                  <Field label="Título">
-                    <input className={inputClass} value={p.titulo} onChange={(e) => publicacionesH.update(p.id, { titulo: e.target.value })} placeholder="Título del artículo o paper" />
-                  </Field>
-                  <div className="grid grid-cols-2 gap-x-3">
-                    <Field label="Revista / conferencia">
-                      <input className={inputClass} value={p.revista} onChange={(e) => publicacionesH.update(p.id, { revista: e.target.value })} placeholder="Revista Latinoamericana de..." />
+          {data.seccionesOpcionales?.publicaciones && (
+            <section className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
+                </h2>
+                <div className="flex items-center gap-3">
+                  <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación">
+                    <Plus size={16} />
+                  </button>
+                  <button
+                    onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, publicaciones: false } })}
+                    className="text-stone-500 hover:text-red-400 transition"
+                    title="Ocultar sección"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+              {data.publicaciones.map((p) => (
+                <div key={p.id} className="mb-3 flex items-start gap-2">
+                  <div className="flex-1">
+                    <Field label="Título">
+                      <input className={inputClass} value={p.titulo} onChange={(e) => publicacionesH.update(p.id, { titulo: e.target.value })} placeholder="Título del artículo o paper" />
                     </Field>
-                    <Field label="Año">
-                      <input className={inputClass} value={p.anio} onChange={(e) => publicacionesH.update(p.id, { anio: e.target.value })} placeholder="2023" />
+                    <div className="grid grid-cols-2 gap-x-3">
+                      <Field label="Revista / conferencia">
+                        <input className={inputClass} value={p.revista} onChange={(e) => publicacionesH.update(p.id, { revista: e.target.value })} placeholder="Revista Latinoamericana de..." />
+                      </Field>
+                      <Field label="Año">
+                        <input className={inputClass} value={p.anio} onChange={(e) => publicacionesH.update(p.id, { anio: e.target.value })} placeholder="2023" />
+                      </Field>
+                    </div>
+                  </div>
+                  {data.publicaciones.length > 1 && (
+                    <button onClick={() => publicacionesH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {data.seccionesOpcionales?.becas && (
+            <section className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
+                </h2>
+                <div className="flex items-center gap-3">
+                  <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca">
+                    <Plus size={16} />
+                  </button>
+                  <button
+                    onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, becas: false } })}
+                    className="text-stone-500 hover:text-red-400 transition"
+                    title="Ocultar sección"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+              {data.becas.map((b) => (
+                <div key={b.id} className="mb-3 flex items-start gap-2">
+                  <div className="flex-1">
+                    <Field label="Nombre">
+                      <input className={inputClass} value={b.nombre} onChange={(e) => becasH.update(b.id, { nombre: e.target.value })} placeholder="Beca de excelencia académica" />
+                    </Field>
+                    <div className="grid grid-cols-2 gap-x-3">
+                      <Field label="Entidad">
+                        <input className={inputClass} value={b.entidad} onChange={(e) => becasH.update(b.id, { entidad: e.target.value })} placeholder="CONACYT" />
+                      </Field>
+                      <Field label="Año">
+                        <input className={inputClass} value={b.anio} onChange={(e) => becasH.update(b.id, { anio: e.target.value })} placeholder="2021" />
+                      </Field>
+                    </div>
+                  </div>
+                  {data.becas.length > 1 && (
+                    <button onClick={() => becasH.remove(b.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {data.seccionesOpcionales?.logros && (
+            <section>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
+                </h2>
+                <div className="flex items-center gap-3">
+                  <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro">
+                    <Plus size={16} />
+                  </button>
+                  <button
+                    onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, logros: false } })}
+                    className="text-stone-500 hover:text-red-400 transition"
+                    title="Ocultar sección"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+              {data.logros.map((l) => (
+                <div key={l.id} className="mb-3 flex items-start gap-2">
+                  <div className="flex-1 grid grid-cols-[100px_1fr] gap-x-3">
+                    <Field label="Métrica">
+                      <input className={inputClass} value={l.metrica} onChange={(e) => logrosH.update(l.id, { metrica: e.target.value })} placeholder="+45%" />
+                    </Field>
+                    <Field label="Descripción">
+                      <input className={inputClass} value={l.descripcion} onChange={(e) => logrosH.update(l.id, { descripcion: e.target.value })} placeholder="Crecimiento en ventas Q3" />
                     </Field>
                   </div>
+                  {data.logros.length > 1 && (
+                    <button onClick={() => logrosH.remove(l.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                      <Trash2 size={14} />
+                    </button>
+                  )}
                 </div>
-                {data.publicaciones.length > 1 && (
-                  <button onClick={() => publicacionesH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
-                    <Trash2 size={14} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </section>
-
-          <section className="mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
-                <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
-              </h2>
-              <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca">
-                <Plus size={16} />
-              </button>
-            </div>
-            {data.becas.map((b) => (
-              <div key={b.id} className="mb-3 flex items-start gap-2">
-                <div className="flex-1">
-                  <Field label="Nombre">
-                    <input className={inputClass} value={b.nombre} onChange={(e) => becasH.update(b.id, { nombre: e.target.value })} placeholder="Beca de excelencia académica" />
-                  </Field>
-                  <div className="grid grid-cols-2 gap-x-3">
-                    <Field label="Entidad">
-                      <input className={inputClass} value={b.entidad} onChange={(e) => becasH.update(b.id, { entidad: e.target.value })} placeholder="CONACYT" />
-                    </Field>
-                    <Field label="Año">
-                      <input className={inputClass} value={b.anio} onChange={(e) => becasH.update(b.id, { anio: e.target.value })} placeholder="2021" />
-                    </Field>
-                  </div>
-                </div>
-                {data.becas.length > 1 && (
-                  <button onClick={() => becasH.remove(b.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
-                    <Trash2 size={14} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </section>
-
-          <section>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
-                <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
-              </h2>
-              <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro">
-                <Plus size={16} />
-              </button>
-            </div>
-            {data.logros.map((l) => (
-              <div key={l.id} className="mb-3 flex items-start gap-2">
-                <div className="flex-1 grid grid-cols-[100px_1fr] gap-x-3">
-                  <Field label="Métrica">
-                    <input className={inputClass} value={l.metrica} onChange={(e) => logrosH.update(l.id, { metrica: e.target.value })} placeholder="+45%" />
-                  </Field>
-                  <Field label="Descripción">
-                    <input className={inputClass} value={l.descripcion} onChange={(e) => logrosH.update(l.id, { descripcion: e.target.value })} placeholder="Crecimiento en ventas Q3" />
-                  </Field>
-                </div>
-                {data.logros.length > 1 && (
-                  <button onClick={() => logrosH.remove(l.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
-                    <Trash2 size={14} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </section>
+              ))}
+            </section>
+          )}
         </div>
 
         {/* Preview */}
