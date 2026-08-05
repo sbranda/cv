@@ -36,4 +36,14 @@ Dentro del chat de Claude, esas llamadas funcionan porque el entorno del artefac
 
 ## Nota sobre guardado
 
-Esta versión sí guarda tu borrador en `localStorage` del navegador (a diferencia de la vista previa dentro del chat de Claude, que no puede usar almacenamiento del navegador). Así que si cerrás y volvés a abrir la app instalada, tu CV sigue ahí.
+Esta versión sí guarda tus perfiles en `localStorage` del navegador (a diferencia de la vista previa dentro del chat de Claude, que no puede usar almacenamiento del navegador). Así que si cerrás y volvés a abrir la app instalada, tus CVs siguen ahí.
+
+## Perfiles múltiples
+
+Podés guardar varias versiones de tu CV (por ejemplo, una para cada tipo de puesto). Tocá el botón con ícono de personas en el encabezado para:
+- Cambiar entre perfiles
+- Crear uno nuevo en blanco
+- Duplicar un perfil existente (útil para partir de una base y ajustarla para un puesto específico)
+- Renombrar o eliminar perfiles
+
+Si ya tenías un borrador guardado de una versión anterior de la app, se migra automáticamente a "Perfil 1" la primera vez que abrís esta versión.

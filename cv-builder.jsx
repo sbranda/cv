@@ -13,6 +13,8 @@ import {
   LayoutTemplate,
   X,
   Check,
+  Copy,
+  Users,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -20,6 +22,19 @@ const ACCENTS = [
   { name: "Tinta", value: "#2B3A67" },
   { name: "Ciruela", value: "#5B3758" },
   { name: "Óxido", value: "#8A3B2E" },
+];
+
+const TYPO_PRESETS = {
+  clasica: { name: "Clásica", display: "'Fraunces', serif", body: "'Work Sans', sans-serif" },
+  moderna: { name: "Moderna", display: "'Inter', sans-serif", body: "'Inter', sans-serif" },
+  elegante: { name: "Elegante", display: "'Playfair Display', serif", body: "'Lato', sans-serif" },
+};
+
+const DENSITY_SCALE = { compacta: 0.9, normal: 1, amplia: 1.1 };
+const DENSITY_OPTIONS = [
+  { id: "compacta", name: "Compacta" },
+  { id: "normal", name: "Normal" },
+  { id: "amplia", name: "Amplia" },
 ];
 
 const CATEGORIES = [
@@ -199,6 +214,9 @@ const initialState = {
   resumen: "",
   foto: null,
   fotoEscala: 1,
+  tipografia: "clasica",
+  densidad: "normal",
+  ordenSecciones: "experiencia-primero",
   experiencia: [emptyExperience()],
   educacion: [emptyEducation()],
   habilidades: "",
@@ -579,6 +597,73 @@ function TemplateGallery({ open, onClose, current, accent, onSelect }) {
   );
 }
 
+function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl">Mis perfiles</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Guardá versiones distintas de tu CV para diferentes puestos o industrias. Cada perfil tiene su
+          propio contenido, plantilla y color.
+        </p>
+        <div className="flex flex-col gap-2 mb-4">
+          {profiles.map((p) => (
+            <div
+              key={p.id}
+              className="flex items-center gap-2 border rounded-md px-3 py-2.5 transition"
+              style={{
+                borderColor: p.id === activeId ? accent : "#3f3a35",
+                background: p.id === activeId ? `${accent}14` : "transparent",
+              }}
+            >
+              <button onClick={() => { onSelect(p.id); onClose(); }} className="flex-1 text-left min-w-0">
+                <input
+                  value={p.nombre}
+                  onChange={(e) => onRename(p.id, e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-transparent text-sm font-medium w-full focus:outline-none text-stone-100"
+                />
+                <p className="text-[11px] text-stone-500 truncate">
+                  {p.data.nombre || "Sin nombre"} · {p.data.puesto || "Sin título"}
+                </p>
+              </button>
+              {p.id === activeId && <Check size={14} style={{ color: accent }} className="shrink-0" />}
+              <button
+                onClick={() => onDuplicate(p.id)}
+                title="Duplicar perfil"
+                className="text-stone-500 hover:text-white transition shrink-0"
+              >
+                <Copy size={14} />
+              </button>
+              {profiles.length > 1 && (
+                <button
+                  onClick={() => onRemove(p.id)}
+                  title="Eliminar perfil"
+                  className="text-stone-500 hover:text-red-400 transition shrink-0"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={onAdd}
+          className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
+        >
+          <Plus size={15} /> Nuevo perfil en blanco
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ---- Full preview renderers per template ----
 function Avatar({ data, accent, size = 64, shape = "circle", ring = false, className = "" }) {
   if (!data.foto) return null;
@@ -724,17 +809,36 @@ function PreviewClasico({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-6">
+          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-6">
           <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
           <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-6">
+          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-6">
           <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -835,17 +939,36 @@ function PreviewMinimalista({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-600 italic">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-7">
+          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Educación</p>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-7">
           <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Experiencia</p>
           <ExperienciaBlock data={data} accent={accent} titleClass="text-[14px] font-medium text-stone-900" />
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-7">
+          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Experiencia</p>
+          <ExperienciaBlock data={data} accent={accent} titleClass="text-[14px] font-medium text-stone-900" />
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-7">
           <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Educación</p>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div className="text-center">
@@ -956,7 +1079,26 @@ function PreviewCorporativo({ data, accent }) {
           <p className="text-[12.5px] leading-relaxed text-stone-800">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-5">
+          <h3 className={label} style={ruleStyle}>Educación</h3>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                  <p className="text-[12.5px]">
+                    <span className="font-bold">{edu.titulo}</span>
+                    {edu.institucion && ` — ${edu.institucion}`}
+                  </p>
+                  <span className="text-[11px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-5">
           <h3 className={label} style={ruleStyle}>Experiencia profesional</h3>
           {data.experiencia.map(
@@ -980,7 +1122,34 @@ function PreviewCorporativo({ data, accent }) {
           )}
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-5">
+          <h3 className={label} style={ruleStyle}>Experiencia profesional</h3>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-3 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="text-[13px] font-bold">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-normal"> — {exp.empresa}</span>}
+                    </p>
+                    <span className="text-[11px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && (
+                    <div className="text-[12px] text-stone-700 mt-1 leading-relaxed whitespace-pre-line">
+                      {exp.descripcion}
+                    </div>
+                  )}
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-5">
           <h3 className={label} style={ruleStyle}>Educación</h3>
           {data.educacion.map(
@@ -996,6 +1165,8 @@ function PreviewCorporativo({ data, accent }) {
               )
           )}
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1027,7 +1198,15 @@ function PreviewCompacto({ data, accent }) {
           {data.resumen}
         </p>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-5">
+          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-5">
           <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
           <div className="relative pl-4 border-l-2" style={{ borderColor: `${accent}40` }}>
@@ -1057,11 +1236,46 @@ function PreviewCompacto({ data, accent }) {
           </div>
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-5">
+          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+          <div className="relative pl-4 border-l-2" style={{ borderColor: `${accent}40` }}>
+            {data.experiencia.map(
+              (exp) =>
+                (exp.puesto || exp.empresa) && (
+                  <div key={exp.id} className="mb-3 last:mb-0 relative">
+                    <span
+                      className="absolute -left-[21px] top-1 w-2 h-2 rounded-full"
+                      style={{ background: accent }}
+                    />
+                    <div className="flex justify-between items-baseline gap-2">
+                      <p className="text-[13px] font-semibold text-stone-900">
+                        {exp.puesto}
+                        <span className="font-normal text-stone-500 text-[11.5px]"> · {exp.empresa}</span>
+                      </p>
+                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
+                    </div>
+                    {exp.descripcion && (
+                      <div className="text-[11.5px] text-stone-600 mt-0.5 leading-snug whitespace-pre-line">
+                        {exp.descripcion}
+                      </div>
+                    )}
+                  </div>
+                )
+            )}
+          </div>
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-5">
           <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1099,17 +1313,36 @@ function PreviewCreativo({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {hasExp && (
+        {data.ordenSecciones === "educacion-primero" ? (
+          <>
+            {hasEdu && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+            {hasExp && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
             <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
           </div>
         )}
-        {hasEdu && (
+          </>
+        ) : (
+          <>
+            {hasExp && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
+          </div>
+        )}
+            {hasEdu && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
             <EducacionBlock data={data} />
           </div>
+        )}
+          </>
         )}
         {data.habilidades && (
           <div>
@@ -1193,7 +1426,26 @@ function PreviewDesarrollador({ data, accent }) {
           )}
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div>
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                  <p className="text-[12px] text-stone-300">
+                    {edu.titulo}
+                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                  </p>
+                  <span className="text-[10px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-6">
           <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
           {data.experiencia.map(
@@ -1213,7 +1465,30 @@ function PreviewDesarrollador({ data, accent }) {
           )}
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-6">
+          <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-3 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="text-[13px] font-bold text-white">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                    </p>
+                    <span className="text-[10px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && <div className="text-[11.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasEdu && (
         <div>
           <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
           {data.educacion.map(
@@ -1229,6 +1504,8 @@ function PreviewDesarrollador({ data, accent }) {
               )
           )}
         </div>
+      )}
+        </>
       )}
     </div>
   );
@@ -1395,7 +1672,15 @@ function PreviewImpacto({ data, accent }) {
       {data.puesto && <p className="text-[14px] font-mono uppercase tracking-widest mb-4" style={{ color: accent }}>{data.puesto}</p>}
       <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-[11.5px] text-stone-500" iconSize={10} />
       {data.resumen && <p className="text-[15px] leading-relaxed text-stone-700 mb-8 max-w-[480px]">{data.resumen}</p>}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-8">
+          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-8">
           {data.experiencia.map(
             (exp, i) =>
@@ -1419,11 +1704,40 @@ function PreviewImpacto({ data, accent }) {
           )}
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-8">
+          {data.experiencia.map(
+            (exp, i) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="flex gap-4 mb-5 last:mb-0">
+                  <span className="font-display text-[22px] leading-none shrink-0 w-16" style={{ color: accent }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex-1 pb-5 border-b border-stone-100 last:border-0">
+                    <div className="flex justify-between items-baseline gap-2">
+                      <p className="text-[15px] font-bold">
+                        {exp.puesto}
+                        {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                      </p>
+                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
+                    </div>
+                    {exp.descripcion && <div className="text-[12.5px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                  </div>
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-8">
           <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1462,17 +1776,36 @@ function PreviewAurora({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className={card}>
+          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className={card}>
           <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
           <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className={card}>
+          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+        </div>
+      )}
+          {hasEdu && (
         <div className={card}>
           <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div className={card}>
@@ -1523,7 +1856,26 @@ function PreviewBlueprint({ data, accent }) {
           <p className="text-[12px] leading-relaxed text-stone-700">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-5">
+          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                  <p className="text-[12px] text-stone-700">
+                    {edu.titulo}
+                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                  </p>
+                  <span className="text-[10px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-5">
           <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
           {data.experiencia.map(
@@ -1547,7 +1899,34 @@ function PreviewBlueprint({ data, accent }) {
           )}
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-5">
+          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-3 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="text-[12.5px] font-bold">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                    </p>
+                    <span className="text-[10px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && (
+                    <div className="text-[11px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">
+                      {exp.descripcion}
+                    </div>
+                  )}
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-5">
           <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
           {data.educacion.map(
@@ -1563,6 +1942,8 @@ function PreviewBlueprint({ data, accent }) {
               )
           )}
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1609,17 +1990,36 @@ function PreviewBloques({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {hasExp && (
+        {data.ordenSecciones === "educacion-primero" ? (
+          <>
+            {hasEdu && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+            {hasExp && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
             <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
           </div>
         )}
-        {hasEdu && (
+          </>
+        ) : (
+          <>
+            {hasExp && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+          </div>
+        )}
+            {hasEdu && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
             <EducacionBlock data={data} />
           </div>
+        )}
+          </>
         )}
         {data.habilidades && (
           <div>
@@ -1659,7 +2059,26 @@ function PreviewNocturno({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-400">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-6">
+          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+          {data.educacion.map(
+            (edu) =>
+              (edu.titulo || edu.institucion) && (
+                <div key={edu.id} className="mb-2 last:mb-0 flex items-baseline justify-between gap-2">
+                  <p className="text-[13px] text-stone-300">
+                    <span className="font-medium text-white">{edu.titulo}</span>
+                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                  </p>
+                  <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-6">
           <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
           {data.experiencia.map(
@@ -1683,7 +2102,34 @@ function PreviewNocturno({ data, accent }) {
           )}
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-6">
+          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+          {data.experiencia.map(
+            (exp) =>
+              (exp.puesto || exp.empresa) && (
+                <div key={exp.id} className="mb-4 last:mb-0">
+                  <div className="flex justify-between items-baseline gap-2">
+                    <p className="font-display text-[15px] font-medium text-white">
+                      {exp.puesto}
+                      {exp.empresa && <span className="font-sans text-stone-500 text-[13px] font-normal"> · {exp.empresa}</span>}
+                    </p>
+                    <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+                  </div>
+                  {exp.descripcion && (
+                    <div className="text-[12.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">
+                      {exp.descripcion}
+                    </div>
+                  )}
+                </div>
+              )
+          )}
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-6">
           <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
           {data.educacion.map(
@@ -1699,6 +2145,8 @@ function PreviewNocturno({ data, accent }) {
               )
           )}
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1747,7 +2195,18 @@ function PreviewRevista({ data, accent }) {
           {restText}
         </p>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4" style={{ background: accent }} />
+            <h3 className="text-[11px] font-bold uppercase tracking-widest">Educación</h3>
+          </div>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+          {hasExp && (
         <div className="mb-6 clear-both">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-1 h-4" style={{ background: accent }} />
@@ -1756,7 +2215,19 @@ function PreviewRevista({ data, accent }) {
           <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className="mb-6 clear-both">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4" style={{ background: accent }} />
+            <h3 className="text-[11px] font-bold uppercase tracking-widest">Experiencia</h3>
+          </div>
+          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+        </div>
+      )}
+          {hasEdu && (
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-1 h-4" style={{ background: accent }} />
@@ -1764,6 +2235,8 @@ function PreviewRevista({ data, accent }) {
           </div>
           <EducacionBlock data={data} />
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div>
@@ -1804,17 +2277,36 @@ function PreviewContorno({ data, accent }) {
                 <p className="text-[12.5px] leading-relaxed text-stone-600 italic max-w-[420px] mx-auto">{data.resumen}</p>
               </div>
             )}
-            {hasExp && (
+            {data.ordenSecciones === "educacion-primero" ? (
+              <>
+                {hasEdu && (
+              <div className="mb-5">
+                <SectionLabel accent={accent} className="mb-2 text-center">Educación</SectionLabel>
+                <EducacionBlock data={data} />
+              </div>
+            )}
+                {hasExp && (
               <div className="mb-5">
                 <SectionLabel accent={accent} className="mb-3 text-center">Experiencia</SectionLabel>
                 <ExperienciaBlock data={data} titleClass="text-[13.5px] font-medium text-stone-900" />
               </div>
             )}
-            {hasEdu && (
+              </>
+            ) : (
+              <>
+                {hasExp && (
+              <div className="mb-5">
+                <SectionLabel accent={accent} className="mb-3 text-center">Experiencia</SectionLabel>
+                <ExperienciaBlock data={data} titleClass="text-[13.5px] font-medium text-stone-900" />
+              </div>
+            )}
+                {hasEdu && (
               <div className="mb-5">
                 <SectionLabel accent={accent} className="mb-2 text-center">Educación</SectionLabel>
                 <EducacionBlock data={data} />
               </div>
+            )}
+              </>
             )}
             {data.habilidades && (
               <div className="text-center">
@@ -1856,17 +2348,36 @@ function PreviewDinamico({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {hasExp && (
+        {data.ordenSecciones === "educacion-primero" ? (
+          <>
+            {hasEdu && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+            {hasExp && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
             <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
           </div>
         )}
-        {hasEdu && (
+          </>
+        ) : (
+          <>
+            {hasExp && (
+          <div className="mb-6">
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+          </div>
+        )}
+            {hasEdu && (
           <div className="mb-6">
             <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
             <EducacionBlock data={data} />
           </div>
+        )}
+          </>
         )}
         {data.habilidades && (
           <div>
@@ -1905,7 +2416,17 @@ function PreviewTarjetas({ data, accent }) {
           <p className="text-[12.5px] leading-relaxed text-stone-700 mt-1">{data.resumen}</p>
         </div>
       )}
-      {hasExp && (
+      {data.ordenSecciones === "educacion-primero" ? (
+        <>
+          {hasEdu && (
+        <div className={cardBase} style={{ transform: "rotate(-0.5deg)" }}>
+          <span className={tab} style={{ background: accent }}>EDUCACIÓN</span>
+          <div className="mt-1">
+            <EducacionBlock data={data} />
+          </div>
+        </div>
+      )}
+          {hasExp && (
         <div className={cardBase} style={{ transform: "rotate(0.6deg)" }}>
           <span className={tab} style={{ background: accent }}>EXPERIENCIA</span>
           <div className="mt-1">
@@ -1913,13 +2434,26 @@ function PreviewTarjetas({ data, accent }) {
           </div>
         </div>
       )}
-      {hasEdu && (
+        </>
+      ) : (
+        <>
+          {hasExp && (
+        <div className={cardBase} style={{ transform: "rotate(0.6deg)" }}>
+          <span className={tab} style={{ background: accent }}>EXPERIENCIA</span>
+          <div className="mt-1">
+            <ExperienciaBlock data={data} titleClass="text-[14px] font-medium text-stone-900" />
+          </div>
+        </div>
+      )}
+          {hasEdu && (
         <div className={cardBase} style={{ transform: "rotate(-0.5deg)" }}>
           <span className={tab} style={{ background: accent }}>EDUCACIÓN</span>
           <div className="mt-1">
             <EducacionBlock data={data} />
           </div>
         </div>
+      )}
+        </>
       )}
       {data.habilidades && (
         <div className={cardBase} style={{ transform: "rotate(0.8deg)" }}>
@@ -1956,7 +2490,58 @@ const TEMPLATE_COMPONENTS = {
 };
 
 export default function CVBuilder() {
-  const [data, setData] = useState(initialState);
+  const [profiles, setProfiles] = useState(() => [
+    { id: "profile-1", nombre: "Perfil 1", data: initialState },
+  ]);
+  const [activeProfileId, setActiveProfileId] = useState("profile-1");
+  const [profilesOpen, setProfilesOpen] = useState(false);
+
+  const activeProfile = profiles.find((p) => p.id === activeProfileId) || profiles[0];
+  const data = activeProfile.data;
+  const setData = (updater) => {
+    setProfiles((prev) =>
+      prev.map((p) =>
+        p.id === activeProfile.id
+          ? { ...p, data: typeof updater === "function" ? updater(p.data) : updater }
+          : p
+      )
+    );
+  };
+
+  const addProfile = () => {
+    const id = crypto.randomUUID();
+    setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState } }]);
+    setActiveProfileId(id);
+  };
+
+  const duplicateProfile = (id) => {
+    const source = profiles.find((p) => p.id === id);
+    if (!source) return;
+    const newId = crypto.randomUUID();
+    setProfiles((prev) => {
+      const idx = prev.findIndex((p) => p.id === id);
+      const copy = { id: newId, nombre: `${source.nombre} (copia)`, data: JSON.parse(JSON.stringify(source.data)) };
+      const next = [...prev];
+      next.splice(idx + 1, 0, copy);
+      return next;
+    });
+    setActiveProfileId(newId);
+  };
+
+  const removeProfile = (id) => {
+    if (profiles.length <= 1) return;
+    const idx = profiles.findIndex((p) => p.id === id);
+    const next = profiles.filter((p) => p.id !== id);
+    setProfiles(next);
+    if (activeProfileId === id) {
+      setActiveProfileId(next[Math.max(0, idx - 1)]?.id || next[0].id);
+    }
+  };
+
+  const renameProfile = (id, nombre) => {
+    setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, nombre } : p)));
+  };
+
   const [loadingField, setLoadingField] = useState(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const previewRef = useRef(null);
@@ -2066,9 +2651,9 @@ export default function CVBuilder() {
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        .font-display { font-family: 'Fraunces', serif; }
-        .font-sans { font-family: 'Work Sans', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap');
+        .font-display { font-family: ${TYPO_PRESETS[data.tipografia].display}; }
+        .font-sans { font-family: ${TYPO_PRESETS[data.tipografia].body}; }
         .font-mono { font-family: 'IBM Plex Mono', monospace; }
         input:focus, textarea:focus { border-color: ${accent} !important; box-shadow: 0 0 0 2px ${accent}33; }
         @media print {
@@ -2087,8 +2672,21 @@ export default function CVBuilder() {
         onSelect={(id) => update({ template: id })}
       />
 
+      <ProfilesModal
+        open={profilesOpen}
+        onClose={() => setProfilesOpen(false)}
+        profiles={profiles}
+        activeId={activeProfileId}
+        accent={accent}
+        onSelect={setActiveProfileId}
+        onAdd={addProfile}
+        onDuplicate={duplicateProfile}
+        onRemove={removeProfile}
+        onRename={renameProfile}
+      />
+
       {/* Header */}
-      <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between sticky top-0 bg-stone-950/95 backdrop-blur z-20">
+      <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between sticky top-0 bg-stone-950/95 backdrop-blur z-20 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div
             className="w-8 h-8 rounded-sm flex items-center justify-center font-display text-lg"
@@ -2101,7 +2699,13 @@ export default function CVBuilder() {
             <p className="text-[11px] font-mono text-stone-500 mt-0.5">editor + vista previa en vivo</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={() => setProfilesOpen(true)}
+            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <Users size={15} /> {activeProfile.nombre}
+          </button>
           <button
             onClick={() => setGalleryOpen(true)}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
@@ -2135,6 +2739,78 @@ export default function CVBuilder() {
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
         <div className="no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
+          <section className="mb-8">
+            <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+              <span className="w-4 h-px bg-stone-700" /> Apariencia
+            </h2>
+            <Field label="Tipografía">
+              <div className="flex gap-2">
+                {Object.entries(TYPO_PRESETS).map(([key, t]) => (
+                  <button
+                    key={key}
+                    onClick={() => update({ tipografia: key })}
+                    className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
+                    style={{
+                      borderColor: data.tipografia === key ? accent : "#44403c",
+                      background: data.tipografia === key ? `${accent}22` : "transparent",
+                      color: data.tipografia === key ? accent : "#a8a29e",
+                    }}
+                  >
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Densidad de texto">
+              <div className="flex gap-2">
+                {DENSITY_OPTIONS.map((d) => (
+                  <button
+                    key={d.id}
+                    onClick={() => update({ densidad: d.id })}
+                    className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
+                    style={{
+                      borderColor: data.densidad === d.id ? accent : "#44403c",
+                      background: data.densidad === d.id ? `${accent}22` : "transparent",
+                      color: data.densidad === d.id ? accent : "#a8a29e",
+                    }}
+                  >
+                    {d.name}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Orden: Experiencia / Educación">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => update({ ordenSecciones: "experiencia-primero" })}
+                  className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
+                  style={{
+                    borderColor: data.ordenSecciones === "experiencia-primero" ? accent : "#44403c",
+                    background: data.ordenSecciones === "experiencia-primero" ? `${accent}22` : "transparent",
+                    color: data.ordenSecciones === "experiencia-primero" ? accent : "#a8a29e",
+                  }}
+                >
+                  Experiencia primero
+                </button>
+                <button
+                  onClick={() => update({ ordenSecciones: "educacion-primero" })}
+                  className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
+                  style={{
+                    borderColor: data.ordenSecciones === "educacion-primero" ? accent : "#44403c",
+                    background: data.ordenSecciones === "educacion-primero" ? `${accent}22` : "transparent",
+                    color: data.ordenSecciones === "educacion-primero" ? accent : "#a8a29e",
+                  }}
+                >
+                  Educación primero
+                </button>
+              </div>
+              <p className="text-[10px] text-stone-600 mt-1.5 leading-relaxed">
+                No aplica a Moderno, Ejecutivo, Académico y Ventas/Marketing — su diseño en columnas o su
+                secuencia académica/de métricas depende de un orden fijo.
+              </p>
+            </Field>
+          </section>
+
           <section className="mb-8">
             <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Datos personales
@@ -2535,7 +3211,11 @@ export default function CVBuilder() {
 
         {/* Preview */}
         <div className="bg-stone-900 px-6 py-8 flex justify-center print:bg-white print:p-0">
-          <div ref={previewRef} className="w-full flex justify-center">
+          <div
+            ref={previewRef}
+            className="w-full flex justify-center"
+            style={{ zoom: DENSITY_SCALE[data.densidad] }}
+          >
             <PreviewComponent data={data} accent={accent} />
           </div>
         </div>
