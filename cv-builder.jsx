@@ -22,101 +22,127 @@ const ACCENTS = [
   { name: "Óxido", value: "#8A3B2E" },
 ];
 
+const CATEGORIES = [
+  { id: "formal", name: "Formal" },
+  { id: "creativo", name: "Creativo" },
+  { id: "tecnico", name: "Técnico" },
+  { id: "fondos", name: "Fondos especiales" },
+];
+
 const TEMPLATES = [
   {
     id: "clasico",
     name: "Clásico",
     desc: "Encabezado editorial, una columna",
+    category: "formal",
   },
   {
     id: "moderno",
     name: "Moderno",
     desc: "Barra lateral oscura con datos y skills",
+    category: "fondos",
   },
   {
     id: "minimalista",
     name: "Minimalista",
     desc: "Tipografía limpia, mucho espacio en blanco",
+    category: "formal",
   },
   {
     id: "ejecutivo",
     name: "Ejecutivo",
     desc: "Encabezado centrado, dos columnas",
+    category: "formal",
   },
   {
     id: "corporativo",
     name: "Corporativo",
     desc: "Formal y sobrio, ideal para sistemas ATS",
+    category: "formal",
   },
   {
     id: "compacto",
     name: "Compacto",
     desc: "Estilo línea de tiempo, cabe más contenido",
+    category: "tecnico",
   },
   {
     id: "creativo",
     name: "Creativo",
     desc: "Encabezado en bloque de color, más visual",
+    category: "creativo",
   },
   {
     id: "desarrollador",
     name: "Desarrollador",
     desc: "Con proyectos y stack técnico",
+    category: "tecnico",
   },
   {
     id: "academico",
     name: "Académico",
     desc: "Publicaciones, becas y formación",
+    category: "formal",
   },
   {
     id: "comercial",
     name: "Ventas / Marketing",
     desc: "Métricas y logros destacados",
+    category: "creativo",
   },
   {
     id: "impacto",
     name: "Impacto",
     desc: "Tipografía grande, un logro por línea",
+    category: "creativo",
   },
   {
     id: "aurora",
     name: "Aurora",
     desc: "Fondo degradado suave, tarjetas flotantes",
+    category: "fondos",
   },
   {
     id: "blueprint",
     name: "Blueprint",
     desc: "Cuadrícula técnica, ideal para perfiles técnicos",
+    category: "tecnico",
   },
   {
     id: "bloques",
     name: "Bloques",
     desc: "Formas geométricas de color detrás del encabezado",
+    category: "fondos",
   },
   {
     id: "nocturno",
     name: "Nocturno",
     desc: "Fondo oscuro elegante, acentos finos",
+    category: "fondos",
   },
   {
     id: "revista",
     name: "Revista",
     desc: "Estilo editorial, con letra capital",
+    category: "creativo",
   },
   {
     id: "contorno",
     name: "Contorno",
     desc: "Marco tipo diploma, elegante y centrado",
+    category: "formal",
   },
   {
     id: "dinamico",
     name: "Dinámico",
     desc: "Banda de color con corte diagonal",
+    category: "creativo",
   },
   {
     id: "tarjetas",
     name: "Tarjetas",
     desc: "Secciones como notas apiladas, estilo scrapbook",
+    category: "creativo",
   },
 ];
 
@@ -503,40 +529,51 @@ function TemplateGallery({ open, onClose, current, accent, onSelect }) {
             <X size={20} />
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          {TEMPLATES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => {
-                onSelect(t.id);
-                onClose();
-              }}
-              className="text-left border rounded-md overflow-hidden transition hover:-translate-y-0.5"
-              style={{
-                borderColor: current === t.id ? accent : "#3f3a35",
-                background: "#1c1a18",
-              }}
-            >
-              <div className="h-32 p-3 bg-stone-950">
-                <TemplateThumb id={t.id} accent={accent} />
-              </div>
-              <div className="px-3 py-2.5 flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-[11px] text-stone-500">{t.desc}</p>
-                </div>
-                {current === t.id && (
-                  <span
-                    className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: accent }}
+        {CATEGORIES.map((cat) => {
+          const items = TEMPLATES.filter((t) => t.category === cat.id);
+          if (items.length === 0) return null;
+          return (
+            <div key={cat.id} className="mb-6 last:mb-0">
+              <h3 className="text-[11px] font-mono uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+                <span className="w-4 h-px bg-stone-700" /> {cat.name}
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {items.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => {
+                      onSelect(t.id);
+                      onClose();
+                    }}
+                    className="text-left border rounded-md overflow-hidden transition hover:-translate-y-0.5"
+                    style={{
+                      borderColor: current === t.id ? accent : "#3f3a35",
+                      background: "#1c1a18",
+                    }}
                   >
-                    <Check size={12} className="text-stone-950" />
-                  </span>
-                )}
+                    <div className="h-32 p-3 bg-stone-950">
+                      <TemplateThumb id={t.id} accent={accent} />
+                    </div>
+                    <div className="px-3 py-2.5 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{t.name}</p>
+                        <p className="text-[11px] text-stone-500">{t.desc}</p>
+                      </div>
+                      {current === t.id && (
+                        <span
+                          className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                          style={{ background: accent }}
+                        >
+                          <Check size={12} className="text-stone-950" />
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                ))}
               </div>
-            </button>
-          ))}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
