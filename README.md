@@ -47,3 +47,7 @@ Podés guardar varias versiones de tu CV (por ejemplo, una para cada tipo de pue
 - Renombrar o eliminar perfiles
 
 Si ya tenías un borrador guardado de una versión anterior de la app, se migra automáticamente a "Perfil 1" la primera vez que abrís esta versión.
+
+## Carta de presentación
+
+El botón "Carta" en el encabezado genera una carta de presentación con IA a partir de los datos del perfil activo (resumen, experiencia, habilidades). Completá la empresa, el puesto al que aplicás y el tono deseado, y la carta se genera y queda editable ahí mismo. Usa la misma clave de Gemini configurada en el engranaje de configuración.

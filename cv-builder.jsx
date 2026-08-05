@@ -15,6 +15,7 @@ import {
   Check,
   Copy,
   Users,
+  FileText,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -226,7 +227,14 @@ const initialState = {
   logros: [emptyLogro()],
   accent: ACCENTS[0].value,
   template: "clasico",
+  carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
 };
+
+const TONOS = [
+  { id: "formal", name: "Formal" },
+  { id: "cercano", name: "Cercano" },
+  { id: "entusiasta", name: "Entusiasta" },
+];
 
 async function callClaude(prompt) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -659,6 +667,99 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
         >
           <Plus size={15} /> Nuevo perfil en blanco
         </button>
+      </div>
+    </div>
+  );
+}
+
+function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenerate, generating }) {
+  if (!open) return null;
+  const carta = data.carta;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl">Carta de presentación</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Se genera con IA a partir de los datos de tu CV activo (perfil, experiencia, habilidades).
+        </p>
+        <div className="grid grid-cols-2 gap-x-3">
+          <Field label="Empresa">
+            <input
+              className={inputClass}
+              value={carta.empresa}
+              onChange={(e) => onUpdateField({ empresa: e.target.value })}
+              placeholder="Acme Inc."
+            />
+          </Field>
+          <Field label="Puesto al que aplicás">
+            <input
+              className={inputClass}
+              value={carta.puestoAplicado}
+              onChange={(e) => onUpdateField({ puestoAplicado: e.target.value })}
+              placeholder={data.puesto || "Diseñadora UX"}
+            />
+          </Field>
+        </div>
+        <Field label="Tono">
+          <div className="flex gap-2">
+            {TONOS.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => onUpdateField({ tono: t.id })}
+                className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
+                style={{
+                  borderColor: carta.tono === t.id ? accent : "#44403c",
+                  background: carta.tono === t.id ? `${accent}22` : "transparent",
+                  color: carta.tono === t.id ? accent : "#a8a29e",
+                }}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </Field>
+        <Field label="Detalles adicionales (opcional)">
+          <textarea
+            className={inputClass + " min-h-[60px] resize-none"}
+            value={carta.detalles}
+            onChange={(e) => onUpdateField({ detalles: e.target.value })}
+            placeholder="Ej: disponibilidad inmediata, por qué te interesa la empresa, algo puntual que quieras mencionar..."
+          />
+        </Field>
+        <button
+          onClick={onGenerate}
+          disabled={generating}
+          className="w-full mt-2 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90 disabled:opacity-50"
+          style={{ background: accent }}
+        >
+          {generating ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+          {generating ? "Generando…" : carta.texto ? "Regenerar" : "Generar carta"}
+        </button>
+        {carta.texto && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-stone-400">
+                Resultado (editable)
+              </span>
+              <button
+                onClick={() => navigator.clipboard?.writeText(carta.texto)}
+                className="text-[11px] font-mono uppercase tracking-wide text-stone-400 hover:text-white transition inline-flex items-center gap-1"
+              >
+                <Copy size={11} /> Copiar
+              </button>
+            </div>
+            <textarea
+              className={inputClass + " min-h-[300px] text-[13px] leading-relaxed"}
+              value={carta.texto}
+              onChange={(e) => onUpdateField({ texto: e.target.value })}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -2544,9 +2645,46 @@ export default function CVBuilder() {
 
   const [loadingField, setLoadingField] = useState(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [cartaOpen, setCartaOpen] = useState(false);
+  const [cartaGenerating, setCartaGenerating] = useState(false);
   const previewRef = useRef(null);
 
   const update = (patch) => setData((d) => ({ ...d, ...patch }));
+
+  const updateCarta = (patch) => update({ carta: { ...data.carta, ...patch } });
+
+  const generateCoverLetter = async () => {
+    setCartaGenerating(true);
+    try {
+      const expText = data.experiencia
+        .filter((e) => e.puesto || e.empresa)
+        .map((e) => `- ${e.puesto || ""} en ${e.empresa || ""}: ${e.descripcion || ""}`)
+        .join("\n");
+      const prompt = `Escribí una carta de presentación en español para acompañar un currículum.
+
+Tono: ${TONOS.find((t) => t.id === data.carta.tono)?.name || "Formal"}
+Postulante: ${data.nombre || "el postulante"}, actualmente ${data.puesto || "profesional"}
+Empresa a la que se postula: ${data.carta.empresa || "la empresa"}
+Puesto al que aplica: ${data.carta.puestoAplicado || data.puesto || "el puesto"}
+
+Resumen profesional del postulante: ${data.resumen || "(no especificado)"}
+
+Experiencia relevante:
+${expText || "(no especificada)"}
+
+Habilidades: ${data.habilidades || "(no especificadas)"}
+
+${data.carta.detalles ? `Detalles adicionales a incluir: ${data.carta.detalles}` : ""}
+
+Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que no suene a plantilla genérica), destacando 2 o 3 fortalezas concretas conectadas con el puesto. No incluyas saludo inicial tipo "Estimados/as" ni cierre/firma final — eso se agrega aparte. Responde solo con el texto de la carta, sin comillas ni texto extra.`;
+      const result = await callClaude(prompt);
+      updateCarta({ texto: result });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCartaGenerating(false);
+    }
+  };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files?.[0];
@@ -2685,6 +2823,16 @@ export default function CVBuilder() {
         onRename={renameProfile}
       />
 
+      <CoverLetterModal
+        open={cartaOpen}
+        onClose={() => setCartaOpen(false)}
+        data={data}
+        accent={accent}
+        onUpdateField={updateCarta}
+        onGenerate={generateCoverLetter}
+        generating={cartaGenerating}
+      />
+
       {/* Header */}
       <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between sticky top-0 bg-stone-950/95 backdrop-blur z-20 flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -2705,6 +2853,12 @@ export default function CVBuilder() {
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
           >
             <Users size={15} /> {activeProfile.nombre}
+          </button>
+          <button
+            onClick={() => setCartaOpen(true)}
+            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <FileText size={15} /> Carta
           </button>
           <button
             onClick={() => setGalleryOpen(true)}
