@@ -65,3 +65,7 @@ Proyectos, Publicaciones, Becas y Logros destacados están ocultas por defecto p
 ## Exportar a Word
 
 El botón "Word" en el encabezado descarga tu CV como archivo `.docx`, útil para portales de empleo o sistemas de selección que exigen ese formato específicamente (no solo PDF). El documento se genera con un diseño limpio y sobrio (no replica visualmente la plantilla elegida, ya que Word no soporta los mismos efectos de diseño que el PDF), pensado para que abra bien en Word y sea fácil de leer por sistemas ATS.
+
+## Texto plano para ATS
+
+El botón "Texto" abre un panel con tu CV en texto sin formato (sin negritas, sin viñetas especiales, con encabezados en mayúscula tipo PERFIL / EXPERIENCIA / EDUCACIÓN), listo para copiar y pegar directo en los cuadros de texto de formularios de postulación que no aceptan archivos. También se puede descargar como `.txt`.

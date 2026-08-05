@@ -19,6 +19,7 @@ import {
   FileText,
   Upload,
   FileDown,
+  AlignLeft,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -814,6 +815,58 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
           </span>
         </label>
         {error && <p className="text-[11px] text-red-400 mt-3 leading-relaxed">{error}</p>}
+      </div>
+    </div>
+  );
+}
+
+function PlainTextModal({ open, onClose, text, accent }) {
+  if (!open) return null;
+  const handleDownload = () => {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "CV.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-xl">Texto plano para ATS</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-3 leading-relaxed">
+          Sin negritas, viñetas ni formato — pensado para pegar directo en los formularios de texto de
+          sistemas de postulación (ATS) que no aceptan archivos con diseño.
+        </p>
+        <textarea
+          readOnly
+          value={text}
+          onClick={(e) => e.target.select()}
+          className="w-full flex-1 min-h-[360px] bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2.5 text-[12.5px] text-stone-100 font-mono leading-relaxed resize-none focus:outline-none"
+        />
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={() => navigator.clipboard?.writeText(text)}
+            className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90"
+            style={{ background: accent }}
+          >
+            <Copy size={15} /> Copiar todo
+          </button>
+          <button
+            onClick={handleDownload}
+            className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <FileDown size={15} /> Descargar .txt
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -2953,6 +3006,104 @@ Texto del currículum:
     window.print();
   };
 
+  const [plainTextOpen, setPlainTextOpen] = useState(false);
+
+  const buildPlainText = () => {
+    const lines = [];
+    lines.push(data.nombre || "Tu nombre");
+    if (data.puesto) lines.push(data.puesto);
+    const contact = [data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean);
+    if (contact.length) lines.push(contact.join(" | "));
+    lines.push("");
+
+    if (data.resumen) {
+      lines.push("PERFIL");
+      lines.push(data.resumen);
+      lines.push("");
+    }
+
+    const addExperiencia = () => {
+      const items = data.experiencia.filter((e) => e.puesto || e.empresa);
+      if (!items.length) return;
+      lines.push("EXPERIENCIA");
+      items.forEach((exp) => {
+        const header = [exp.puesto, exp.empresa].filter(Boolean).join(" - ") + (exp.periodo ? ` (${exp.periodo})` : "");
+        lines.push(header);
+        if (exp.descripcion) {
+          exp.descripcion
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean)
+            .forEach((line) => lines.push("- " + line.replace(/^[-•]\s*/, "")));
+        }
+        lines.push("");
+      });
+    };
+
+    const addEducacion = () => {
+      const items = data.educacion.filter((e) => e.titulo || e.institucion);
+      if (!items.length) return;
+      lines.push("EDUCACIÓN");
+      items.forEach((edu) => {
+        const header = [edu.titulo, edu.institucion].filter(Boolean).join(" - ") + (edu.periodo ? ` (${edu.periodo})` : "");
+        lines.push(header);
+      });
+      lines.push("");
+    };
+
+    if (data.ordenSecciones === "educacion-primero") {
+      addEducacion();
+      addExperiencia();
+    } else {
+      addExperiencia();
+      addEducacion();
+    }
+
+    if (data.habilidades) {
+      lines.push("HABILIDADES");
+      lines.push(data.habilidades);
+      lines.push("");
+    }
+
+    if (data.seccionesOpcionales?.proyectos) {
+      const items = data.proyectos.filter((p) => p.nombre);
+      if (items.length) {
+        lines.push("PROYECTOS");
+        items.forEach((p) => {
+          lines.push([p.nombre, p.stack].filter(Boolean).join(" - "));
+          if (p.descripcion) lines.push(p.descripcion);
+        });
+        lines.push("");
+      }
+    }
+    if (data.seccionesOpcionales?.publicaciones) {
+      const items = data.publicaciones.filter((p) => p.titulo);
+      if (items.length) {
+        lines.push("PUBLICACIONES");
+        items.forEach((p) => lines.push([p.titulo, p.revista, p.anio && `(${p.anio})`].filter(Boolean).join(" - ")));
+        lines.push("");
+      }
+    }
+    if (data.seccionesOpcionales?.becas) {
+      const items = data.becas.filter((b) => b.nombre);
+      if (items.length) {
+        lines.push("BECAS Y RECONOCIMIENTOS");
+        items.forEach((b) => lines.push([b.nombre, b.entidad, b.anio && `(${b.anio})`].filter(Boolean).join(" - ")));
+        lines.push("");
+      }
+    }
+    if (data.seccionesOpcionales?.logros) {
+      const items = data.logros.filter((l) => l.metrica || l.descripcion);
+      if (items.length) {
+        lines.push("LOGROS DESTACADOS");
+        items.forEach((l) => lines.push([l.metrica, l.descripcion].filter(Boolean).join(" - ")));
+        lines.push("");
+      }
+    }
+
+    return lines.join("\n").trim();
+  };
+
   const [exportingDocx, setExportingDocx] = useState(false);
 
   const ensureDocxLib = () => {
@@ -3194,6 +3345,13 @@ Texto del currículum:
         error={importError}
       />
 
+      <PlainTextModal
+        open={plainTextOpen}
+        onClose={() => setPlainTextOpen(false)}
+        text={buildPlainText()}
+        accent={accent}
+      />
+
       <CoverLetterModal
         open={cartaOpen}
         onClose={() => setCartaOpen(false)}
@@ -3251,6 +3409,12 @@ Texto del currículum:
               />
             ))}
           </div>
+          <button
+            onClick={() => setPlainTextOpen(true)}
+            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <AlignLeft size={15} /> Texto
+          </button>
           <button
             onClick={handleExportDocx}
             disabled={exportingDocx}
