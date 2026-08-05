@@ -18,6 +18,7 @@ import {
   Users,
   FileText,
   Upload,
+  FileDown,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -2952,6 +2953,193 @@ Texto del currículum:
     window.print();
   };
 
+  const [exportingDocx, setExportingDocx] = useState(false);
+
+  const ensureDocxLib = () => {
+    if (window.docx) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js";
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("No se pudo cargar el generador de Word."));
+      document.head.appendChild(script);
+    });
+  };
+
+  const handleExportDocx = async () => {
+    setExportingDocx(true);
+    try {
+      await ensureDocxLib();
+      const { Document, Packer, Paragraph, TextRun } = window.docx;
+      const accentHex = (data.accent || "#2F6F5E").replace("#", "");
+      const children = [];
+
+      children.push(
+        new Paragraph({ children: [new TextRun({ text: data.nombre || "Tu nombre", bold: true, size: 40 })] })
+      );
+      if (data.puesto) {
+        children.push(
+          new Paragraph({
+            children: [new TextRun({ text: data.puesto, size: 24, color: accentHex })],
+            spacing: { after: 60 },
+          })
+        );
+      }
+      const contactParts = [data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean);
+      if (contactParts.length) {
+        children.push(
+          new Paragraph({
+            children: [new TextRun({ text: contactParts.join("   ·   "), size: 19, color: "595959" })],
+            spacing: { after: 200 },
+          })
+        );
+      }
+
+      const heading = (text) =>
+        new Paragraph({
+          children: [new TextRun({ text: text.toUpperCase(), bold: true, size: 20, color: accentHex })],
+          spacing: { before: 220, after: 100 },
+        });
+
+      if (data.resumen) {
+        children.push(heading("Perfil"));
+        children.push(new Paragraph({ children: [new TextRun({ text: data.resumen, size: 22 })] }));
+      }
+
+      const addExperiencia = () => {
+        const items = data.experiencia.filter((e) => e.puesto || e.empresa);
+        if (!items.length) return;
+        children.push(heading("Experiencia"));
+        items.forEach((exp) => {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({ text: exp.puesto || "", bold: true, size: 22 }),
+                new TextRun({ text: exp.empresa ? `   ·   ${exp.empresa}` : "", size: 22 }),
+                new TextRun({ text: exp.periodo ? `   (${exp.periodo})` : "", size: 19, italics: true, color: "777777" }),
+              ],
+              spacing: { before: 120 },
+            })
+          );
+          if (exp.descripcion) {
+            exp.descripcion
+              .split("\n")
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .forEach((line) => {
+                children.push(
+                  new Paragraph({
+                    text: line.replace(/^[-•]\s*/, ""),
+                    bullet: { level: 0 },
+                    spacing: { after: 40 },
+                  })
+                );
+              });
+          }
+        });
+      };
+
+      const addEducacion = () => {
+        const items = data.educacion.filter((e) => e.titulo || e.institucion);
+        if (!items.length) return;
+        children.push(heading("Educación"));
+        items.forEach((edu) => {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({ text: edu.titulo || "", bold: true, size: 22 }),
+                new TextRun({ text: edu.institucion ? `   ·   ${edu.institucion}` : "", size: 22 }),
+                new TextRun({ text: edu.periodo ? `   (${edu.periodo})` : "", size: 19, italics: true, color: "777777" }),
+              ],
+              spacing: { before: 100 },
+            })
+          );
+        });
+      };
+
+      if (data.ordenSecciones === "educacion-primero") {
+        addEducacion();
+        addExperiencia();
+      } else {
+        addExperiencia();
+        addEducacion();
+      }
+
+      if (data.habilidades) {
+        children.push(heading("Habilidades"));
+        children.push(new Paragraph({ children: [new TextRun({ text: data.habilidades, size: 22 })] }));
+      }
+
+      if (data.seccionesOpcionales?.proyectos) {
+        const items = data.proyectos.filter((p) => p.nombre);
+        if (items.length) {
+          children.push(heading("Proyectos"));
+          items.forEach((p) => {
+            children.push(
+              new Paragraph({
+                children: [
+                  new TextRun({ text: p.nombre, bold: true, size: 22 }),
+                  new TextRun({ text: p.stack ? `   ·   ${p.stack}` : "", size: 19, color: "777777" }),
+                ],
+                spacing: { before: 100 },
+              })
+            );
+            if (p.descripcion) children.push(new Paragraph({ children: [new TextRun({ text: p.descripcion, size: 22 })] }));
+          });
+        }
+      }
+
+      if (data.seccionesOpcionales?.publicaciones) {
+        const items = data.publicaciones.filter((p) => p.titulo);
+        if (items.length) {
+          children.push(heading("Publicaciones"));
+          items.forEach((p) => {
+            const parts = [p.titulo, p.revista, p.anio && `(${p.anio})`].filter(Boolean).join("   ·   ");
+            children.push(new Paragraph({ children: [new TextRun({ text: parts, size: 22 })], spacing: { before: 60 } }));
+          });
+        }
+      }
+
+      if (data.seccionesOpcionales?.becas) {
+        const items = data.becas.filter((b) => b.nombre);
+        if (items.length) {
+          children.push(heading("Becas y reconocimientos"));
+          items.forEach((b) => {
+            const parts = [b.nombre, b.entidad, b.anio && `(${b.anio})`].filter(Boolean).join("   ·   ");
+            children.push(new Paragraph({ children: [new TextRun({ text: parts, size: 22 })], spacing: { before: 60 } }));
+          });
+        }
+      }
+
+      if (data.seccionesOpcionales?.logros) {
+        const items = data.logros.filter((l) => l.metrica || l.descripcion);
+        if (items.length) {
+          children.push(heading("Logros destacados"));
+          items.forEach((l) => {
+            const parts = [l.metrica, l.descripcion].filter(Boolean).join("  —  ");
+            children.push(new Paragraph({ children: [new TextRun({ text: parts, size: 22 })], spacing: { before: 60 } }));
+          });
+        }
+      }
+
+      const doc = new Document({ sections: [{ properties: {}, children }] });
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(data.nombre || "CV").trim().replace(/\s+/g, "_") || "CV"}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo generar el Word. Probá de nuevo en unos segundos.");
+    } finally {
+      setExportingDocx(false);
+    }
+  };
+
   const accent = data.accent;
   const PreviewComponent = TEMPLATE_COMPONENTS[data.template] || PreviewClasico;
   const currentTemplateName = TEMPLATES.find((t) => t.id === data.template)?.name;
@@ -3063,6 +3251,14 @@ Texto del currículum:
               />
             ))}
           </div>
+          <button
+            onClick={handleExportDocx}
+            disabled={exportingDocx}
+            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition disabled:opacity-50"
+          >
+            {exportingDocx ? <Loader2 size={15} className="animate-spin" /> : <FileDown size={15} />}
+            {exportingDocx ? "Generando…" : "Word"}
+          </button>
           <button
             onClick={handlePrint}
             className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"

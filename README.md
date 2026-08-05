@@ -61,3 +61,7 @@ Dentro de "Mis perfiles" (ícono de personas) hay un botón "Importar desde PDF/
 ## Secciones opcionales
 
 Proyectos, Publicaciones, Becas y Logros destacados están ocultas por defecto para no saturar el editor. Activalas con los chips que aparecen debajo de Habilidades ("+ Proyectos", "+ Publicaciones", etc.) — al activarlas se despliega el formulario completo, y podés ocultarlas de nuevo con la ✕ en su encabezado sin perder lo que ya cargaste.
+
+## Exportar a Word
+
+El botón "Word" en el encabezado descarga tu CV como archivo `.docx`, útil para portales de empleo o sistemas de selección que exigen ese formato específicamente (no solo PDF). El documento se genera con un diseño limpio y sobrio (no replica visualmente la plantilla elegida, ya que Word no soporta los mismos efectos de diseño que el PDF), pensado para que abra bien en Word y sea fácil de leer por sistemas ATS.
