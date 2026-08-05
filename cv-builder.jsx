@@ -3766,6 +3766,23 @@ Texto del currículum:
                 }}
               />
             ))}
+            <label
+              title="Color personalizado"
+              className="w-5 h-5 rounded-full border-2 relative cursor-pointer overflow-hidden shrink-0"
+              style={{
+                borderColor: !ACCENTS.some((a) => a.value === data.accent) ? "white" : "transparent",
+                background: !ACCENTS.some((a) => a.value === data.accent)
+                  ? data.accent
+                  : "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)",
+              }}
+            >
+              <input
+                type="color"
+                value={data.accent}
+                onChange={(e) => update({ accent: e.target.value })}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+              />
+            </label>
           </div>
           <button
             onClick={() => setPlainTextOpen(true)}

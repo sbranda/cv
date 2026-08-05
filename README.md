@@ -90,3 +90,7 @@ Debajo del campo de Resumen profesional hay chips ("1 frase", "2 frases", "3 fra
 ## Traducir a inglés
 
 Dentro de "Mis perfiles" hay un ícono de traducción (🌐) en cada fila. Al tocarlo, la IA traduce el contenido de ese perfil (puesto, resumen, experiencia, educación, habilidades, proyectos, becas, logros) al inglés profesional y crea un **perfil nuevo** llamado "[nombre] (English)" — el original en español no se toca. Nombres de empresas, instituciones y tecnologías se mantienen tal cual, solo se traduce el contenido descriptivo.
+
+## Color personalizado
+
+Junto a los 4 colores de acento fijos hay un quinto círculo con degradado arcoíris — tocalo para abrir el selector de color nativo del dispositivo y elegir cualquier color, no solo los 4 predefinidos. Se aplica igual que los demás: a los encabezados, líneas divisorias y acentos de las 19 plantillas.
