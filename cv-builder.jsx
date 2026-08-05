@@ -677,7 +677,7 @@ function PreviewClasico({ data, accent }) {
           )}
           <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
         </div>
-        <Avatar data={data} accent={accent} size={64} />
+        <Avatar data={data} accent={accent} size={80} />
       </div>
       {data.resumen && (
         <div className="mb-6">
@@ -713,7 +713,7 @@ function PreviewModerno({ data, accent }) {
   return (
     <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex overflow-hidden">
       <div className="w-[34%] bg-[#1c1a18] text-stone-200 px-6 py-10 flex flex-col gap-6">
-        <Avatar data={data} accent={accent} size={72} ring />
+        <Avatar data={data} accent={accent} size={88} ring />
         <div>
           <h1 className="font-display text-[22px] leading-tight text-white">{data.nombre || "Tu nombre"}</h1>
           {data.puesto && (
@@ -780,7 +780,7 @@ function PreviewMinimalista({ data, accent }) {
   return (
     <div className="print-page bg-white text-[#222] w-full max-w-[600px] shadow-2xl px-12 py-14 min-h-[780px]">
       <div className="text-center mb-8">
-        <Avatar data={data} accent={accent} size={72} className="mx-auto mb-3" />
+        <Avatar data={data} accent={accent} size={88} className="mx-auto mb-3" />
         <h1 className="font-display text-[30px] tracking-tight" style={{ color: "#161616" }}>
           {data.nombre || "Tu nombre"}
         </h1>
@@ -824,7 +824,7 @@ function PreviewEjecutivo({ data, accent }) {
   return (
     <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
       <div className="text-center mb-5">
-        <Avatar data={data} accent={accent} size={68} ring className="mx-auto mb-3" />
+        <Avatar data={data} accent={accent} size={84} ring className="mx-auto mb-3" />
         <h1 className="font-display text-[30px]" style={{ color: "#1a1a1a" }}>
           {data.nombre || "Tu nombre"}
         </h1>
@@ -904,7 +904,7 @@ function PreviewCorporativo({ data, accent }) {
       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
       <div className="text-center mb-6 pb-4 border-b border-stone-300">
-        <Avatar data={data} accent={accent} size={64} shape="square" className="mx-auto mb-3" />
+        <Avatar data={data} accent={accent} size={80} shape="square" className="mx-auto mb-3" />
         <h1 className="text-[25px] font-bold tracking-tight">{data.nombre || "Tu nombre"}</h1>
         {data.puesto && <p className="text-[12.5px] mt-1 text-stone-600">{data.puesto}</p>}
         <p className="text-[11px] mt-2 text-stone-500">
@@ -981,7 +981,7 @@ function PreviewCompacto({ data, accent }) {
           )}
           <ContactLine data={data} className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-[11px] text-stone-600" iconSize={10} />
         </div>
-        <Avatar data={data} accent={accent} size={56} />
+        <Avatar data={data} accent={accent} size={70} />
       </div>
       {data.resumen && (
         <p className="text-[12px] leading-relaxed text-stone-700 mb-5 pb-4 border-b border-stone-200">
@@ -1051,7 +1051,7 @@ function PreviewCreativo({ data, accent }) {
             iconSize={10}
           />
         </div>
-        <Avatar data={data} accent="white" size={64} ring />
+        <Avatar data={data} accent="white" size={80} ring />
       </div>
       <div className="px-10 py-8">
         {data.resumen && (
@@ -1111,7 +1111,7 @@ function PreviewDesarrollador({ data, accent }) {
         </div>
         {data.foto && (
           <div className="p-1 border shrink-0" style={{ borderColor: `${accent}55` }}>
-            <Avatar data={data} accent={accent} size={56} shape="square" />
+            <Avatar data={data} accent={accent} size={70} shape="square" />
           </div>
         )}
       </div>
@@ -1209,7 +1209,7 @@ function PreviewAcademico({ data, accent }) {
           {data.puesto && <p className="text-[12.5px] mt-1 italic text-stone-600">{data.puesto}</p>}
           <p className="text-[11px] mt-2 text-stone-500">{[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   ·   ")}</p>
         </div>
-        <Avatar data={data} accent={accent} size={60} shape="square" />
+        <Avatar data={data} accent={accent} size={76} shape="square" />
       </div>
       {data.resumen && (
         <div className="mb-5">
@@ -1307,7 +1307,7 @@ function PreviewComercial({ data, accent }) {
           {data.puesto && <p className="font-mono text-sm mt-1 tracking-wide" style={{ color: accent }}>{data.puesto}</p>}
           <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
         </div>
-        <Avatar data={data} accent={accent} size={64} />
+        <Avatar data={data} accent={accent} size={80} />
       </div>
       {hasLogros && (
         <div className="mb-6 grid grid-cols-3 gap-2">
@@ -1351,7 +1351,7 @@ function PreviewImpacto({ data, accent }) {
     <div className="print-page bg-white text-[#161616] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="font-display text-[46px] leading-[0.95] tracking-tight">{data.nombre || "Tu nombre"}</h1>
-        <Avatar data={data} accent={accent} size={52} className="mt-1" />
+        <Avatar data={data} accent={accent} size={66} className="mt-1" />
       </div>
       {data.puesto && <p className="text-[14px] font-mono uppercase tracking-widest mb-4" style={{ color: accent }}>{data.puesto}</p>}
       <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-[11.5px] text-stone-500" iconSize={10} />
@@ -1415,7 +1415,7 @@ function PreviewAurora({ data, accent }) {
           )}
           <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
         </div>
-        <Avatar data={data} accent={accent} size={64} className="shadow-sm" />
+        <Avatar data={data} accent={accent} size={80} className="shadow-sm" />
       </div>
       {data.resumen && (
         <div className={card}>
@@ -1476,7 +1476,7 @@ function PreviewBlueprint({ data, accent }) {
             iconSize={10}
           />
         </div>
-        <Avatar data={data} accent={accent} size={56} shape="square" />
+        <Avatar data={data} accent={accent} size={70} shape="square" />
       </div>
       {data.resumen && (
         <div className="mb-5">
@@ -1562,7 +1562,7 @@ function PreviewBloques({ data, accent }) {
             )}
             <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
           </div>
-          <Avatar data={data} accent={accent} size={64} ring />
+          <Avatar data={data} accent={accent} size={80} ring />
         </div>
         {data.resumen && (
           <div className="mb-6">
@@ -1612,7 +1612,7 @@ function PreviewNocturno({ data, accent }) {
             iconSize={10}
           />
         </div>
-        <Avatar data={data} accent={accent} size={64} ring />
+        <Avatar data={data} accent={accent} size={80} ring />
       </div>
       {data.resumen && (
         <div className="mb-6">
@@ -1691,7 +1691,7 @@ function PreviewRevista({ data, accent }) {
       <p className="text-center text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: accent }}>
         Currículum · Edición personal
       </p>
-      <Avatar data={data} accent={accent} size={72} className="mx-auto mb-3" />
+      <Avatar data={data} accent={accent} size={88} className="mx-auto mb-3" />
       <h1 className="font-display text-[40px] text-center leading-none mb-2">{data.nombre || "Tu nombre"}</h1>
       {data.puesto && <p className="text-center text-[13px] text-stone-500 italic mb-3">{data.puesto}</p>}
       <div className="flex items-center gap-3 mb-6">
@@ -1748,7 +1748,7 @@ function PreviewContorno({ data, accent }) {
       <div className="h-full border-2 px-8 py-10" style={{ borderColor: accent }}>
         <div className="h-full border px-2 py-2" style={{ borderColor: "#d6d3cd" }}>
           <div className="text-center mb-6 px-4 py-4">
-            <Avatar data={data} accent={accent} size={68} ring className="mx-auto mb-3" />
+            <Avatar data={data} accent={accent} size={84} ring className="mx-auto mb-3" />
             <h1 className="font-display text-[27px]">{data.nombre || "Tu nombre"}</h1>
             {data.puesto && (
               <p className="text-[12px] mt-1 tracking-widest uppercase" style={{ color: accent }}>{data.puesto}</p>
@@ -1808,7 +1808,7 @@ function PreviewDinamico({ data, accent }) {
             iconSize={10}
           />
         </div>
-        <Avatar data={data} accent="white" size={64} ring />
+        <Avatar data={data} accent="white" size={80} ring />
       </div>
       <div className="px-10 -mt-6 pt-2 pb-8">
         {data.resumen && (
@@ -1851,7 +1851,7 @@ function PreviewTarjetas({ data, accent }) {
       style={{ backgroundColor: "#F0EDE6", backgroundImage: "radial-gradient(#00000012 1px, transparent 1px)", backgroundSize: "14px 14px" }}
     >
       <div className="mb-6 text-center">
-        <Avatar data={data} accent={accent} size={64} className="mx-auto mb-3 shadow-sm" />
+        <Avatar data={data} accent={accent} size={80} className="mx-auto mb-3 shadow-sm" />
         <h1 className="font-display text-[27px]">{data.nombre || "Tu nombre"}</h1>
         {data.puesto && <p className="text-[12px] mt-1" style={{ color: accent }}>{data.puesto}</p>}
         <ContactLine

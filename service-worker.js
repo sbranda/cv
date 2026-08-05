@@ -1,4 +1,4 @@
-const CACHE_NAME = "cv-builder-v5";
+const CACHE_NAME = "cv-builder-v6";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
