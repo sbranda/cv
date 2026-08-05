@@ -244,6 +244,13 @@ const TONOS = [
   { id: "entusiasta", name: "Entusiasta" },
 ];
 
+const RESUMEN_LENGTHS = [
+  { id: "muycorto", label: "1 frase", instruccion: "una sola frase concisa (máximo 20 palabras)" },
+  { id: "corto", label: "2 frases", instruccion: "exactamente 2 frases (entre 30 y 45 palabras en total)" },
+  { id: "medio", label: "3 frases", instruccion: "exactamente 3 frases (entre 50 y 70 palabras en total)" },
+  { id: "largo", label: "5 frases", instruccion: "4 a 5 frases (entre 80 y 110 palabras en total)" },
+];
+
 const OPTIONAL_SECTIONS = [
   { id: "proyectos", name: "Proyectos", template: "Desarrollador" },
   { id: "publicaciones", name: "Publicaciones", template: "Académico" },
@@ -3195,6 +3202,21 @@ Texto del currículum:
     }
   };
 
+  const adjustResumenLength = async (opt) => {
+    if (!data.resumen.trim()) return;
+    setLoadingField("resumen-len-" + opt.id);
+    try {
+      const result = await callClaude(
+        `Reescribí este resumen profesional de un currículum en español para que tenga ${opt.instruccion}. Mantené el sentido y la información más importante, sin inventar datos nuevos que no estén en el original. Responde solo con el resumen reescrito, sin comillas ni texto extra:\n\n"${data.resumen}"`
+      );
+      update({ resumen: result.replace(/^"|"$/g, "") });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingField(null);
+    }
+  };
+
   const improveExperience = async (exp) => {
     if (!exp.descripcion.trim()) return;
     setLoadingField(exp.id);
@@ -3886,6 +3908,25 @@ Texto del currículum:
               onChange={(e) => update({ resumen: e.target.value })}
               placeholder="Escribe 2-3 frases sobre tu experiencia y fortalezas..."
             />
+            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-stone-600 mr-0.5">
+                Ajustar largo:
+              </span>
+              {RESUMEN_LENGTHS.map((opt) => {
+                const loading = loadingField === "resumen-len-" + opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => adjustResumenLength(opt)}
+                    disabled={!data.resumen.trim() || loading}
+                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
+                  >
+                    {loading && <Loader2 size={10} className="animate-spin" />}
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
           </section>
 
           <section className="mb-8">

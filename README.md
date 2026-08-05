@@ -82,3 +82,7 @@ El botón "Comparar" en el encabezado abre un panel donde pegás la descripción
 - Las palabras clave que **faltan** — para que sepas qué agregar o reformular antes de postularte
 
 Usa la misma clave de Gemini configurada en el engranaje de configuración.
+
+## Ajustar el largo del resumen
+
+Debajo del campo de Resumen profesional hay chips ("1 frase", "2 frases", "3 frases", "5 frases") que reescriben el resumen con IA al largo elegido, sin perder la información más importante. Útil para adaptar el mismo perfil a un espacio más chico o para llenar más una plantilla con poco contenido.
