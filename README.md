@@ -69,3 +69,7 @@ El botón "Word" en el encabezado descarga tu CV como archivo `.docx`, útil par
 ## Texto plano para ATS
 
 El botón "Texto" abre un panel con tu CV en texto sin formato (sin negritas, sin viñetas especiales, con encabezados en mayúscula tipo PERFIL / EXPERIENCIA / EDUCACIÓN), listo para copiar y pegar directo en los cuadros de texto de formularios de postulación que no aceptan archivos. También se puede descargar como `.txt`.
+
+## Aviso de cantidad de páginas
+
+Si tu CV supera aproximadamente una página, aparece una franja de aviso debajo del encabezado ("Tu CV ocupa aproximadamente N páginas") con un link a sugerencias concretas para acortarlo (resumen muy largo, demasiadas experiencias cargadas, descripciones extensas, muchas habilidades listadas, etc.). Es una estimación calculada a partir de la altura real del contenido — puede variar un poco según el tamaño de papel configurado al imprimir.

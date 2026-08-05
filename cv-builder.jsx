@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import * as mammoth from "mammoth";
 import {
   Plus,
@@ -20,6 +20,7 @@ import {
   Upload,
   FileDown,
   AlignLeft,
+  AlertTriangle,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -867,6 +868,43 @@ function PlainTextModal({ open, onClose, text, accent }) {
             <FileDown size={15} /> Descargar .txt
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-display text-xl">Cómo acortar tu CV</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Estimamos que tu CV ocupa {pageCount} páginas con la plantilla y el tamaño de texto actuales.
+        </p>
+        {tips.length ? (
+          <ul className="flex flex-col gap-3">
+            {tips.map((tip, i) => (
+              <li key={i} className="flex gap-2.5 text-[13px] text-stone-300 leading-relaxed">
+                <span className="shrink-0 mt-0.5 font-bold" style={{ color: accent }}>
+                  —
+                </span>
+                {tip}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[13px] text-stone-400 leading-relaxed">
+            No encontramos algo puntual para recortar. Probá bajar el tamaño de texto a "Compacta" en
+            Apariencia, o cambiar a la plantilla Compacto, pensada para condensar más contenido en una
+            sola página.
+          </p>
+        )}
       </div>
     </div>
   );
@@ -2756,6 +2794,65 @@ export default function CVBuilder() {
   const [cartaGenerating, setCartaGenerating] = useState(false);
   const previewRef = useRef(null);
 
+  const [previewHeight, setPreviewHeight] = useState(0);
+  const [tipsOpen, setTipsOpen] = useState(false);
+
+  useEffect(() => {
+    const el = previewRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setPreviewHeight(entry.contentRect.height || el.getBoundingClientRect().height);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const PAGE_HEIGHT_PX = 1050;
+  const pageCount = previewHeight > 0 ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
+
+  const getShorteningTips = () => {
+    const tips = [];
+    if (data.resumen && data.resumen.length > 420) {
+      tips.push(
+        `Tu resumen tiene ${data.resumen.length} caracteres — probá acortarlo a 2 o 3 frases (unos 200 caracteres).`
+      );
+    }
+    const expConCount = data.experiencia.filter((e) => e.puesto || e.empresa).length;
+    if (expConCount > 4) {
+      tips.push(
+        `Tenés ${expConCount} experiencias cargadas — dejá solo las 3 o 4 más recientes o relevantes para este puesto.`
+      );
+    }
+    data.experiencia.forEach((exp) => {
+      if (!exp.descripcion) return;
+      const lineCount = exp.descripcion.split("\n").filter((l) => l.trim()).length;
+      if (lineCount > 4) {
+        tips.push(
+          `La descripción de "${exp.puesto || "un puesto"}" tiene ${lineCount} líneas — quedate con las 3 más relevantes.`
+        );
+      }
+    });
+    const habilidadesCount = data.habilidades ? data.habilidades.split(",").filter((h) => h.trim()).length : 0;
+    if (habilidadesCount > 14) {
+      tips.push(`Tenés ${habilidadesCount} habilidades listadas — priorizá 8 a 10, las más relacionadas con el puesto.`);
+    }
+    if (data.densidad === "amplia") {
+      tips.push(`Cambiá el tamaño de texto a "Compacta" en Apariencia para ganar espacio sin borrar contenido.`);
+    }
+    if (data.fotoEscala > 1.15) {
+      tips.push(`Achicá un poco el tamaño de la foto en el editor.`);
+    }
+    const activeOptional = Object.values(data.seccionesOpcionales || {}).filter(Boolean).length;
+    if (activeOptional >= 2) {
+      tips.push(`Tenés ${activeOptional} secciones opcionales activas — considerá dejar solo la más relevante para este puesto.`);
+    }
+    if (data.template !== "compacto") {
+      tips.push(`La plantilla "Compacto" está pensada para condensar más contenido en una sola página.`);
+    }
+    return tips;
+  };
+
   const update = (patch) => setData((d) => ({ ...d, ...patch }));
 
   const updateCarta = (patch) => update({ carta: { ...data.carta, ...patch } });
@@ -3352,6 +3449,14 @@ Texto del currículum:
         accent={accent}
       />
 
+      <ShortenTipsModal
+        open={tipsOpen}
+        onClose={() => setTipsOpen(false)}
+        tips={getShorteningTips()}
+        accent={accent}
+        pageCount={pageCount}
+      />
+
       <CoverLetterModal
         open={cartaOpen}
         onClose={() => setCartaOpen(false)}
@@ -3432,6 +3537,21 @@ Texto del currículum:
           </button>
         </div>
       </header>
+
+      {pageCount > 1 && (
+        <div className="no-print bg-amber-500/10 border-b border-amber-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">
+          <p className="text-[12.5px] text-amber-300 flex items-center gap-2">
+            <AlertTriangle size={14} className="shrink-0" />
+            Tu CV ocupa aproximadamente {pageCount} páginas (estimado).
+          </p>
+          <button
+            onClick={() => setTipsOpen(true)}
+            className="text-[12px] font-medium text-amber-200 underline hover:text-amber-100 transition"
+          >
+            Ver sugerencias para acortarlo
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
