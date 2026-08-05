@@ -172,6 +172,7 @@ const initialState = {
   linkedin: "",
   resumen: "",
   foto: null,
+  fotoEscala: 1,
   experiencia: [emptyExperience()],
   educacion: [emptyEducation()],
   habilidades: "",
@@ -544,14 +545,15 @@ function TemplateGallery({ open, onClose, current, accent, onSelect }) {
 // ---- Full preview renderers per template ----
 function Avatar({ data, accent, size = 64, shape = "circle", ring = false, className = "" }) {
   if (!data.foto) return null;
+  const finalSize = Math.round(size * (data.fotoEscala || 1));
   return (
     <img
       src={data.foto}
       alt=""
       className={"shrink-0 object-cover " + className}
       style={{
-        width: size,
-        height: size,
+        width: finalSize,
+        height: finalSize,
         borderRadius: shape === "circle" ? "9999px" : "8px",
         border: ring ? `2px solid ${accent}` : "none",
       }}
@@ -2124,6 +2126,28 @@ export default function CVBuilder() {
                 )}
               </div>
             </div>
+            {data.foto && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-stone-400">
+                    Tamaño de la foto
+                  </span>
+                  <span className="text-[11px] font-mono text-stone-500">
+                    {Math.round(data.fotoEscala * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.6"
+                  max="1.6"
+                  step="0.05"
+                  value={data.fotoEscala}
+                  onChange={(e) => update({ fotoEscala: parseFloat(e.target.value) })}
+                  className="w-full accent-current"
+                  style={{ color: accent }}
+                />
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-x-3">
               <Field label="Nombre completo">
                 <input
