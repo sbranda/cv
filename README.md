@@ -51,3 +51,9 @@ Si ya tenías un borrador guardado de una versión anterior de la app, se migra 
 ## Carta de presentación
 
 El botón "Carta" en el encabezado genera una carta de presentación con IA a partir de los datos del perfil activo (resumen, experiencia, habilidades). Completá la empresa, el puesto al que aplicás y el tono deseado, y la carta se genera y queda editable ahí mismo. Usa la misma clave de Gemini configurada en el engranaje de configuración.
+
+## Importar CV desde PDF/Word
+
+Dentro de "Mis perfiles" (ícono de personas) hay un botón "Importar desde PDF/Word". Subís tu CV actual en `.pdf` o `.docx` y la IA arma un perfil nuevo completando nombre, contacto, resumen, experiencia, educación y habilidades automáticamente — revisá siempre el resultado, porque la extracción de datos puede tener errores.
+
+**¿Y LinkedIn?** No hay una conexión directa (LinkedIn no ofrece esa integración para uso personal). Lo que funciona: entrá a tu perfil de LinkedIn → botón "Más" → "Guardar en PDF", y subí ese archivo con la misma opción de importar.

@@ -19,6 +19,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap');
@@ -67,6 +69,7 @@ const Settings = (p) => <Icon {...p}><circle cx="12" cy="12" r="3" /><path d="M1
 const Copy = (p) => <Icon {...p}><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></Icon>;
 const Users = (p) => <Icon {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></Icon>;
 const FileText = (p) => <Icon {...p}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2Z" /><path d="M14 2v6h6" /><path d="M16 13H8M16 17H8M10 9H8" /></Icon>;
+const Upload = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M17 8l-5-5-5 5" /><path d="M12 3v12" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
 const STORAGE_KEY = "cv-builder-profiles-v3";
@@ -743,7 +746,7 @@ function TemplateGallery({ open, onClose, current, accent, onSelect }) {
   );
 }
 
-function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename }) {
+function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
@@ -799,12 +802,20 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
             </div>
           ))}
         </div>
-        <button
-          onClick={onAdd}
-          className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
-        >
-          <Plus size={15} /> Nuevo perfil en blanco
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={onAdd}
+            className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
+          >
+            <Plus size={15} /> Nuevo perfil en blanco
+          </button>
+          <button
+            onClick={onImportClick}
+            className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
+          >
+            <Upload size={15} /> Importar desde PDF/Word
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -898,6 +909,41 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
             />
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function ImportModal({ open, onClose, onImport, importing, error }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl">Importar CV</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12.5px] text-stone-400 leading-relaxed mb-3">
+          Subí un PDF o Word de tu CV actual y la IA arma un perfil nuevo automáticamente con esos datos.
+        </p>
+        <p className="text-[11px] text-stone-500 leading-relaxed mb-4">
+          ¿Querés importar desde LinkedIn? Entrá a tu perfil de LinkedIn → botón "Más" → "Guardar en PDF", y
+          subí ese archivo acá (LinkedIn no ofrece una conexión directa de datos).
+        </p>
+        <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-stone-700 rounded-lg py-8 cursor-pointer hover:border-stone-500 transition">
+          <input type="file" accept=".pdf,.docx" className="hidden" onChange={onImport} disabled={importing} />
+          {importing ? (
+            <Loader2 size={22} className="text-stone-400 animate-spin" />
+          ) : (
+            <Upload size={22} className="text-stone-500" />
+          )}
+          <span className="text-[12px] text-stone-400">
+            {importing ? "Analizando el archivo…" : "Tocá para elegir un archivo (.pdf o .docx)"}
+          </span>
+        </label>
+        {error && <p className="text-[11px] text-red-400 mt-3 leading-relaxed">{error}</p>}
       </div>
     </div>
   );
@@ -2839,6 +2885,112 @@ Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que n
 
   const update = (patch) => setData((d) => ({ ...d, ...patch }));
 
+  const [importOpen, setImportOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importError, setImportError] = useState("");
+
+  const extractTextFromFile = async (file) => {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const arrayBuffer = await file.arrayBuffer();
+    if (ext === "docx") {
+      const result = await window.mammoth.extractRawText({ arrayBuffer });
+      return result.value;
+    }
+    if (ext === "pdf") {
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
+      }
+      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map((it) => it.str).join(" ") + "\n";
+      }
+      return text;
+    }
+    throw new Error("Formato no soportado. Usá un archivo PDF o Word (.docx).");
+  };
+
+  const handleImportFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!apiKey) { setImportOpen(false); setSettingsOpen(true); return; }
+    setImporting(true);
+    setImportError("");
+    try {
+      const text = await extractTextFromFile(file);
+      if (!text.trim()) throw new Error("No se encontró texto en el archivo.");
+      const truncated = text.slice(0, 8000);
+      const prompt = `A continuación está el texto extraído de un currículum. Extraé la información y devolvé SOLO un objeto JSON válido (sin texto extra, sin bloques de código), exactamente con esta forma:
+{
+  "nombre": "",
+  "puesto": "",
+  "email": "",
+  "telefono": "",
+  "ubicacion": "",
+  "linkedin": "",
+  "resumen": "",
+  "experiencia": [{"puesto":"","empresa":"","periodo":"","descripcion":""}],
+  "educacion": [{"titulo":"","institucion":"","periodo":""}],
+  "habilidades": "habilidad1, habilidad2, habilidad3"
+}
+Si algún dato no aparece en el texto, dejalo como string vacío o array vacío — no inventes datos que no estén en el original. El campo "descripcion" de cada experiencia puede tener varias líneas separadas por saltos de línea si el original usa viñetas.
+
+Texto del currículum:
+"""${truncated}"""`;
+      const result = await callClaude(prompt, apiKey);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+
+      const newData = {
+        ...initialState,
+        nombre: parsed.nombre || "",
+        puesto: parsed.puesto || "",
+        email: parsed.email || "",
+        telefono: parsed.telefono || "",
+        ubicacion: parsed.ubicacion || "",
+        linkedin: parsed.linkedin || "",
+        resumen: parsed.resumen || "",
+        habilidades: parsed.habilidades || "",
+        experiencia:
+          Array.isArray(parsed.experiencia) && parsed.experiencia.length
+            ? parsed.experiencia.map((x) => ({
+                ...emptyExperience(),
+                puesto: x.puesto || "",
+                empresa: x.empresa || "",
+                periodo: x.periodo || "",
+                descripcion: x.descripcion || "",
+              }))
+            : [emptyExperience()],
+        educacion:
+          Array.isArray(parsed.educacion) && parsed.educacion.length
+            ? parsed.educacion.map((x) => ({
+                ...emptyEducation(),
+                titulo: x.titulo || "",
+                institucion: x.institucion || "",
+                periodo: x.periodo || "",
+              }))
+            : [emptyEducation()],
+      };
+
+      const id = crypto.randomUUID();
+      setProfiles((prev) => [
+        ...prev,
+        { id, nombre: parsed.nombre ? `${parsed.nombre} (importado)` : "Importado", data: newData },
+      ]);
+      setActiveProfileId(id);
+      setImportOpen(false);
+    } catch (err) {
+      console.error(err);
+      setImportError("No se pudo importar el archivo. Probá con otro PDF/Word, o completá los datos a mano.");
+    } finally {
+      setImporting(false);
+      e.target.value = "";
+    }
+  };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -2990,6 +3142,19 @@ Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que n
         onDuplicate={duplicateProfile}
         onRemove={removeProfile}
         onRename={renameProfile}
+        onImportClick={() => {
+          setProfilesOpen(false);
+          setImportError("");
+          setImportOpen(true);
+        }}
+      />
+
+      <ImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImport={handleImportFile}
+        importing={importing}
+        error={importError}
       />
 
       <CoverLetterModal
