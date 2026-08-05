@@ -21,6 +21,7 @@ import {
   FileDown,
   AlignLeft,
   AlertTriangle,
+  Target,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -234,6 +235,7 @@ const initialState = {
   accent: ACCENTS[0].value,
   template: "clasico",
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
+  comparacion: { descripcion: "", resultado: null },
 };
 
 const TONOS = [
@@ -904,6 +906,95 @@ function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
             Apariencia, o cambiar a la plantilla Compacto, pensada para condensar más contenido en una
             sola página.
           </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, analyzing }) {
+  if (!open) return null;
+  const resultado = data.comparacion.resultado;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl">Comparar con un puesto</h2>
+          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-3 leading-relaxed">
+          Pegá la descripción del puesto y la IA revisa qué palabras clave y habilidades ya cubre tu CV
+          activo, y cuáles te conviene agregar.
+        </p>
+        <Field label="Descripción del puesto">
+          <textarea
+            className={inputClass + " min-h-[140px] resize-none"}
+            value={data.comparacion.descripcion}
+            onChange={(e) => onUpdateField({ descripcion: e.target.value })}
+            placeholder="Pegá acá el texto completo de la publicación del puesto..."
+          />
+        </Field>
+        <button
+          onClick={onAnalyze}
+          disabled={analyzing || !data.comparacion.descripcion.trim()}
+          className="w-full mt-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90 disabled:opacity-50"
+          style={{ background: accent }}
+        >
+          {analyzing ? <Loader2 size={15} className="animate-spin" /> : <Target size={15} />}
+          {analyzing ? "Analizando…" : resultado ? "Analizar de nuevo" : "Analizar"}
+        </button>
+
+        {resultado && (
+          <div className="mt-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 font-display text-base"
+                style={{ background: `${accent}22`, color: accent }}
+              >
+                {resultado.puntaje}%
+              </div>
+              <p className="text-[12.5px] text-stone-400 leading-relaxed">{resultado.comentario}</p>
+            </div>
+
+            {resultado.faltantes?.length > 0 && (
+              <div className="mb-4">
+                <p className="text-[11px] font-mono uppercase tracking-widest text-stone-400 mb-2">
+                  Palabras clave que faltan
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {resultado.faltantes.map((kw, i) => (
+                    <span
+                      key={i}
+                      className="text-[11.5px] px-2.5 py-1 rounded-full border border-amber-500/40 text-amber-300 bg-amber-500/10"
+                    >
+                      {kw}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {resultado.encontradas?.length > 0 && (
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-widest text-stone-400 mb-2">
+                  Ya cubiertas en tu CV
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {resultado.encontradas.map((kw, i) => (
+                    <span
+                      key={i}
+                      className="text-[11.5px] px-2.5 py-1 rounded-full"
+                      style={{ background: `${accent}18`, color: accent }}
+                    >
+                      {kw}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
@@ -2857,6 +2948,41 @@ export default function CVBuilder() {
 
   const updateCarta = (patch) => update({ carta: { ...data.carta, ...patch } });
 
+  const [matchOpen, setMatchOpen] = useState(false);
+  const [matchAnalyzing, setMatchAnalyzing] = useState(false);
+
+  const updateComparacion = (patch) => update({ comparacion: { ...data.comparacion, ...patch } });
+
+  const analyzeMatch = async () => {
+    if (!data.comparacion.descripcion.trim()) return;
+    setMatchAnalyzing(true);
+    try {
+      const cvText = buildPlainText();
+      const prompt = `Comparé el siguiente currículum contra la descripción de un puesto de trabajo, y devolvé SOLO un objeto JSON válido (sin texto extra, sin bloques de código), exactamente con esta forma:
+{
+  "puntaje": 72,
+  "comentario": "Frase breve (1-2 líneas) resumiendo qué tan alineado está el CV con el puesto.",
+  "encontradas": ["palabra clave 1", "palabra clave 2"],
+  "faltantes": ["palabra clave 3", "palabra clave 4"]
+}
+"puntaje" es un número entero de 0 a 100 que representa qué tan bien el CV cubre los requisitos del puesto. "encontradas" son palabras clave, habilidades o requisitos del puesto que el CV ya cubre (aunque estén escritas distinto). "faltantes" son palabras clave, habilidades técnicas o requisitos importantes que aparecen en la descripción del puesto pero NO están reflejados en el CV — máximo 10, ordenadas por relevancia. No inventes requisitos que no estén en la descripción del puesto.
+
+DESCRIPCIÓN DEL PUESTO:
+"""${data.comparacion.descripcion.slice(0, 4000)}"""
+
+CURRÍCULUM:
+"""${cvText.slice(0, 4000)}"""`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      updateComparacion({ resultado: parsed });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setMatchAnalyzing(false);
+    }
+  };
+
   const generateCoverLetter = async () => {
     setCartaGenerating(true);
     try {
@@ -3467,6 +3593,16 @@ Texto del currículum:
         generating={cartaGenerating}
       />
 
+      <MatchModal
+        open={matchOpen}
+        onClose={() => setMatchOpen(false)}
+        data={data}
+        accent={accent}
+        onUpdateField={updateComparacion}
+        onAnalyze={analyzeMatch}
+        analyzing={matchAnalyzing}
+      />
+
       {/* Header */}
       <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between sticky top-0 bg-stone-950/95 backdrop-blur z-20 flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -3493,6 +3629,12 @@ Texto del currículum:
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
           >
             <FileText size={15} /> Carta
+          </button>
+          <button
+            onClick={() => setMatchOpen(true)}
+            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <Target size={15} /> Comparar
           </button>
           <button
             onClick={() => setGalleryOpen(true)}

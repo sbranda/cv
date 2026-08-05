@@ -73,3 +73,12 @@ El botón "Texto" abre un panel con tu CV en texto sin formato (sin negritas, si
 ## Aviso de cantidad de páginas
 
 Si tu CV supera aproximadamente una página, aparece una franja de aviso debajo del encabezado ("Tu CV ocupa aproximadamente N páginas") con un link a sugerencias concretas para acortarlo (resumen muy largo, demasiadas experiencias cargadas, descripciones extensas, muchas habilidades listadas, etc.). Es una estimación calculada a partir de la altura real del contenido — puede variar un poco según el tamaño de papel configurado al imprimir.
+
+## Comparar con un puesto
+
+El botón "Comparar" en el encabezado abre un panel donde pegás la descripción de un puesto de trabajo. La IA analiza tu CV activo contra ese texto y devuelve:
+- Un puntaje aproximado de qué tan alineado está tu CV con el puesto
+- Las palabras clave y habilidades del aviso que **ya cubrís**
+- Las palabras clave que **faltan** — para que sepas qué agregar o reformular antes de postularte
+
+Usa la misma clave de Gemini configurada en el engranaje de configuración.
