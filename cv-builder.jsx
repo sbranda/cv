@@ -2560,16 +2560,22 @@ JSON original:
   useEffect(() => {
     const el = previewRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setPreviewHeight(entry.contentRect.height || el.getBoundingClientRect().height);
+    const observer = new ResizeObserver(() => {
+      // Usamos getBoundingClientRect (no contentRect) porque con "zoom" aplicado
+      // contentRect puede reportar el tamaño sin escalar y disparar falsos positivos.
+      setPreviewHeight(el.getBoundingClientRect().height);
     });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const PAGE_HEIGHT_PX = 1050;
-  const pageCount = previewHeight > 0 ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
+  const PAGE_HEIGHT_PX = 1150;
+  const hasMeaningfulContent =
+    data.nombre.trim() ||
+    data.resumen.trim() ||
+    data.experiencia.some((e) => e.puesto || e.empresa || e.descripcion);
+  const pageCount =
+    previewHeight > 0 && hasMeaningfulContent ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
 
   const getShorteningTips = () => {
     const tips = [];

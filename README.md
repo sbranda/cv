@@ -118,3 +118,9 @@ Los botones ↶ ↷ en el encabezado deshacen y rehacen cambios en el contenido 
 - **Botón de descarga fijo abajo**: en celular, "Descargar PDF" queda anclado en la parte inferior de la pantalla, al alcance del pulgar, en vez de solo arriba del todo.
 - **Experiencias colapsables**: cada experiencia laboral se puede plegar tocando su título — muestra solo "Puesto · Empresa" y se expande al tocar, para que un CV con muchos trabajos cargados no vuelva eterno el formulario.
 - **Modales a pantalla completa en celular**: los paneles (Perfiles, Comparar, Configuración, etc.) ahora se deslizan desde abajo y ocupan el ancho completo en pantallas chicas, en vez de ser una tarjeta flotante con márgenes — se siente más nativo. En pantallas grandes se ven igual que antes, centrados.
+
+## Clave de API fija (opcional)
+
+Cerca del inicio del archivo `index.html` hay una constante `HARDCODED_API_KEY = ""`. Si pegás tu clave de Gemini ahí (entre las comillas) antes de subir el archivo, la app la usa automáticamente sin pedirte que la cargues desde Configuración.
+
+⚠️ **Importante**: esta es una página estática y pública. Cualquiera que abra el código fuente de tu sitio (Ctrl+U en el navegador) puede ver y copiar esa clave. Con Gemini esto normalmente significa que te pueden agotar la cuota gratuita, no un cobro inesperado — pero de todas formas es tu clave expuesta. Si en algún momento cargás una clave distinta desde el panel de Configuración, esa queda guardada en tu navegador y tiene prioridad sobre la fija en el código.

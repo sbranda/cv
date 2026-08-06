@@ -85,6 +85,16 @@ const ChevronRight = (p) => <Icon {...p}><path d="m9 18 6-6-6-6" /></Icon>;
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
 const STORAGE_KEY = "cv-builder-profiles-v3";
 const LEGACY_STORAGE_KEY = "cv-builder-data-v2";
+const API_KEY_STORAGE = "cv-builder-gemini-key";
+const GEMINI_MODEL = "gemini-3.6-flash";
+
+// Pegá tu clave de Gemini acá si querés que quede fija en el código y no tengas que
+// cargarla desde el panel de Configuración. OJO: esta página es estática y pública —
+// cualquiera que vea el código fuente del sitio (Ctrl+U) puede copiar esta clave.
+// Dejala vacía ("") si preferís seguir cargándola vos desde Configuración.
+const HARDCODED_API_KEY = "";
+
+class MissingApiKeyError extends Error {}
 
 function InstallButton() {
   const [deferred, setDeferred] = useState(null);
@@ -2695,7 +2705,7 @@ JSON original:
   const [cartaGenerating, setCartaGenerating] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [apiKey, setApiKey] = useState(() => {
-    try { return localStorage.getItem(API_KEY_STORAGE) || ""; } catch (e) { return ""; }
+    try { return localStorage.getItem(API_KEY_STORAGE) || HARDCODED_API_KEY; } catch (e) { return HARDCODED_API_KEY; }
   });
   const previewRef = useRef(null);
   const editorSectionRef = useRef(null);
@@ -2706,16 +2716,22 @@ JSON original:
   useEffect(() => {
     const el = previewRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setPreviewHeight(entry.contentRect.height || el.getBoundingClientRect().height);
+    const observer = new ResizeObserver(() => {
+      // Usamos getBoundingClientRect (no contentRect) porque con "zoom" aplicado
+      // contentRect puede reportar el tamaño sin escalar y disparar falsos positivos.
+      setPreviewHeight(el.getBoundingClientRect().height);
     });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const PAGE_HEIGHT_PX = 1050;
-  const pageCount = previewHeight > 0 ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
+  const PAGE_HEIGHT_PX = 1150;
+  const hasMeaningfulContent =
+    data.nombre.trim() ||
+    data.resumen.trim() ||
+    data.experiencia.some((e) => e.puesto || e.empresa || e.descripcion);
+  const pageCount =
+    previewHeight > 0 && hasMeaningfulContent ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
 
   const getShorteningTips = () => {
     const tips = [];
