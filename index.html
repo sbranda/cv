@@ -2657,9 +2657,31 @@ JSON original:
     } catch (e) {}
   };
 
+  const [lastSavedAt, setLastSavedAt] = useState(null);
+  const [, forceTick] = useState(0);
+
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ profiles, activeProfileId })); } catch (e) {}
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ profiles, activeProfileId }));
+      setLastSavedAt(Date.now());
+    } catch (e) {}
   }, [profiles, activeProfileId]);
+
+  useEffect(() => {
+    const interval = setInterval(() => forceTick((t) => t + 1), 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatSavedAgo = (ts) => {
+    if (!ts) return null;
+    const diffSec = Math.floor((Date.now() - ts) / 1000);
+    if (diffSec < 10) return "Guardado ahora mismo";
+    if (diffSec < 60) return `Guardado hace ${diffSec} s`;
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `Guardado hace ${diffMin} min`;
+    const diffHr = Math.floor(diffMin / 60);
+    return `Guardado hace ${diffHr} h`;
+  };
 
   const updateCarta = (patch) => update({ carta: { ...data.carta, ...patch } });
 
@@ -3355,7 +3377,9 @@ Texto del currículum:
           </div>
           <div>
             <h1 className="font-display text-lg leading-none">Constructor de currículum</h1>
-            <p className="text-[11px] font-mono text-stone-500 mt-0.5">editor + vista previa en vivo</p>
+            <p className="text-[11px] font-mono text-stone-500 mt-0.5">
+              editor + vista previa en vivo{lastSavedAt && <span> · {formatSavedAgo(lastSavedAt)}</span>}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
