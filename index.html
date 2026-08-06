@@ -488,7 +488,7 @@ function SettingsModal({ open, onClose, apiKey, onSave }) {
 function Field({ label, children }) {
   return (
     <label className="block mb-3">
-      <span className="block text-[11px] font-mono uppercase tracking-wider text-stone-400 mb-1">
+      <span className="block text-[11px] font-mono uppercase tracking-wider text-white mb-1">
         {label}
       </span>
       {children}
@@ -4139,7 +4139,7 @@ Texto del currículum:
                 accent={accent}
                 onReorder={(newOrder) => update({ ordenSecciones: newOrder })}
               />
-              <p className="text-[10px] text-stone-600 mt-1.5 leading-relaxed">
+              <p className="text-[10px] text-white mt-1.5 leading-relaxed">
                 Arrastrá desde el ícono para reordenar. No aplica a Moderno, Ejecutivo, Académico,
                 Ventas/Marketing, Simetría, Prensa y Panel — su diseño en columnas o su secuencia
                 académica/de métricas depende de un orden fijo.
@@ -4156,18 +4156,18 @@ Texto del currículum:
                 {data.foto ? (
                   <img src={data.foto} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-stone-600 text-[10px] font-mono">FOTO</span>
+                  <span className="text-white text-[10px] font-mono">FOTO</span>
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-stone-300 hover:text-white transition cursor-pointer inline-flex items-center gap-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
                   <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                   {data.foto ? "Cambiar foto" : "Subir foto"}
                 </label>
                 {data.foto && (
                   <button
                     onClick={() => update({ foto: null })}
-                    className="text-[11px] font-mono uppercase tracking-wider text-stone-500 hover:text-red-400 transition text-left"
+                    className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-red-400 transition text-left"
                   >
                     Quitar foto
                   </button>
@@ -4177,10 +4177,10 @@ Texto del currículum:
             {data.foto && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-stone-400">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-white">
                     Tamaño de la foto
                   </span>
-                  <span className="text-[11px] font-mono text-stone-500">
+                  <span className="text-[11px] font-mono text-white">
                     {Math.round(data.fotoEscala * 100)}%
                   </span>
                 </div>
@@ -4254,11 +4254,11 @@ Texto del currículum:
                 className="w-3.5 h-3.5 accent-current"
                 style={{ color: accent }}
               />
-              <span className="text-[11px] text-stone-400">
+              <span className="text-[11px] text-white">
                 Mostrar el contacto al pie de la página en vez del encabezado
               </span>
             </label>
-            <p className="text-[10px] text-stone-600 mt-1 leading-relaxed">
+            <p className="text-[10px] text-white mt-1 leading-relaxed">
               Solo aplica a Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista.
             </p>
           </section>
@@ -4277,7 +4277,7 @@ Texto del currículum:
               placeholder="Escribe 2-3 frases sobre tu experiencia y fortalezas..."
             />
             <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-stone-600 mr-0.5">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-white mr-0.5">
                 Ajustar largo:
               </span>
               {RESUMEN_LENGTHS.map((opt) => {
@@ -4287,7 +4287,7 @@ Texto del currículum:
                     key={opt.id}
                     onClick={() => adjustResumenLength(opt)}
                     disabled={!data.resumen.trim() || loading}
-                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
+                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-stone-300 hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
                   >
                     {loading && <Loader2 size={10} className="animate-spin" />}
                     {opt.label}
@@ -4321,7 +4321,7 @@ Texto del currículum:
                       onClick={() => toggleExpCollapse(exp.id)}
                       className="flex-1 flex items-center justify-between gap-2 text-left py-1 min-w-0"
                     >
-                      <span className="text-[12.5px] text-stone-300 truncate">{summary}</span>
+                      <span className="text-[12.5px] text-white truncate">{summary}</span>
                       {isCollapsed ? (
                         <ChevronRight size={14} className="text-stone-500 shrink-0" />
                       ) : (
@@ -4366,7 +4366,7 @@ Texto del currículum:
                         />
                       </Field>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="block text-[11px] font-mono uppercase tracking-wider text-stone-400">
+                        <span className="block text-[11px] font-mono uppercase tracking-wider text-white">
                           Descripción
                         </span>
                         <AIButton
@@ -4458,7 +4458,7 @@ Texto del currículum:
           </section>
 
           <div className="mt-2 mb-3">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-stone-600 mb-2">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-white mb-2">
               Secciones opcionales — según la plantilla
             </p>
             <div className="flex flex-wrap gap-2">
