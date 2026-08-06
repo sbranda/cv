@@ -110,3 +110,11 @@ Debajo del título, en el encabezado, aparece "Guardado hace X" — se actualiza
 ## Deshacer / rehacer
 
 Los botones ↶ ↷ en el encabezado deshacen y rehacen cambios en el contenido del perfil activo. Los cambios de texto se agrupan automáticamente (no hace falta deshacer letra por letra), y el historial se reinicia al cambiar de perfil. La foto no queda incluida en el historial, para que deshacer no se vuelva pesado.
+
+## Mejoras para celular
+
+- **Menú "Más" (⋯)**: Carta, Comparar, Texto (ATS) y Word se agruparon ahí para no saturar el encabezado con botones.
+- **Pestañas Editar / Vista previa**: solo en pantallas chicas, debajo del encabezado — tocá para saltar directo a esa sección sin scrollear todo el formulario.
+- **Botón de descarga fijo abajo**: en celular, "Descargar PDF" queda anclado en la parte inferior de la pantalla, al alcance del pulgar, en vez de solo arriba del todo.
+- **Experiencias colapsables**: cada experiencia laboral se puede plegar tocando su título — muestra solo "Puesto · Empresa" y se expande al tocar, para que un CV con muchos trabajos cargados no vuelva eterno el formulario.
+- **Modales a pantalla completa en celular**: los paneles (Perfiles, Comparar, Configuración, etc.) ahora se deslizan desde abajo y ocupan el ancho completo en pantallas chicas, en vez de ser una tarjeta flotante con márgenes — se siente más nativo. En pantallas grandes se ven igual que antes, centrados.

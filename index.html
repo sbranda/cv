@@ -78,6 +78,9 @@ const Target = (p) => <Icon {...p}><circle cx="12" cy="12" r="10" /><circle cx="
 const Languages = (p) => <Icon {...p}><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-5-10-5 10" /><path d="M14 18h6" /></Icon>;
 const Undo2 = (p) => <Icon {...p}><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" /></Icon>;
 const Redo2 = (p) => <Icon {...p}><path d="m15 14 5-5-5-5" /><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" /></Icon>;
+const MoreHorizontal = (p) => <Icon {...p}><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></Icon>;
+const ChevronDown = (p) => <Icon {...p}><path d="m6 9 6 6 6-6" /></Icon>;
+const ChevronRight = (p) => <Icon {...p}><path d="m9 18 6-6-6-6" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
 const STORAGE_KEY = "cv-builder-profiles-v3";
@@ -390,8 +393,8 @@ function SettingsModal({ open, onClose, apiKey, onSave }) {
   useEffect(() => setValue(apiKey), [apiKey, open]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Configuración de IA</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition"><X size={20} /></button>
@@ -523,8 +526,8 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="font-display text-xl">Galería de plantillas</h2>
@@ -599,8 +602,8 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
 function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Mis perfiles</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -683,8 +686,8 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
   if (!open) return null;
   const carta = data.carta;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Carta de presentación</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -775,8 +778,8 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
 function ImportModal({ open, onClose, onImport, importing, error }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Importar CV</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -821,8 +824,8 @@ function PlainTextModal({ open, onClose, text, accent }) {
     URL.revokeObjectURL(url);
   };
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-xl">Texto plano para ATS</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -862,8 +865,8 @@ function PlainTextModal({ open, onClose, text, accent }) {
 function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-display text-xl">Cómo acortar tu CV</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -896,12 +899,59 @@ function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   );
 }
 
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, exportingDocx }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        title="Más herramientas"
+        className="p-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+      >
+        <MoreHorizontal size={15} />
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 mt-2 w-48 bg-stone-900 border border-stone-800 rounded-md shadow-xl z-40 py-1 no-print">
+            <button
+              onClick={() => { onCarta(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <FileText size={14} /> Carta de presentación
+            </button>
+            <button
+              onClick={() => { onCompare(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <Target size={14} /> Comparar con puesto
+            </button>
+            <button
+              onClick={() => { onTexto(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <AlignLeft size={14} /> Texto plano (ATS)
+            </button>
+            <button
+              onClick={() => { onWord(); setOpen(false); }}
+              disabled={exportingDocx}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
+            >
+              {exportingDocx ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />} Exportar Word
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, analyzing }) {
   if (!open) return null;
   const resultado = data.comparacion.resultado;
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Comparar con un puesto</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -2648,6 +2698,7 @@ JSON original:
     try { return localStorage.getItem(API_KEY_STORAGE) || ""; } catch (e) { return ""; }
   });
   const previewRef = useRef(null);
+  const editorSectionRef = useRef(null);
 
   const [previewHeight, setPreviewHeight] = useState(0);
   const [tipsOpen, setTipsOpen] = useState(false);
@@ -2948,6 +2999,15 @@ Texto del currículum:
       ...d,
       educacion: d.educacion.map((e) => (e.id === id ? { ...e, ...patch } : e)),
     }));
+
+  const [collapsedExp, setCollapsedExp] = useState(() => new Set());
+  const toggleExpCollapse = (id) =>
+    setCollapsedExp((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   const addExperience = () =>
     setData((d) => ({ ...d, experiencia: [...d.experiencia, emptyExperience()] }));
@@ -3332,7 +3392,7 @@ Texto del currículum:
   const currentTemplateName = TEMPLATES.find((t) => t.id === data.template)?.name;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans">
+    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap');
         .font-display { font-family: ${TYPO_PRESETS[data.tipografia].display}; }
@@ -3469,18 +3529,6 @@ Texto del currículum:
             <Users size={15} /> {activeProfile.nombre}
           </button>
           <button
-            onClick={() => setCartaOpen(true)}
-            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
-          >
-            <FileText size={15} /> Carta
-          </button>
-          <button
-            onClick={() => setMatchOpen(true)}
-            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
-          >
-            <Target size={15} /> Comparar
-          </button>
-          <button
             onClick={() => setSettingsOpen(true)}
             title={apiKey ? "Clave de Gemini configurada" : "Configurar clave de API (Gemini) para IA"}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition relative"
@@ -3525,29 +3573,37 @@ Texto del currículum:
               />
             </label>
           </div>
-          <button
-            onClick={() => setPlainTextOpen(true)}
-            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
-          >
-            <AlignLeft size={15} /> Texto
-          </button>
-          <button
-            onClick={handleExportDocx}
-            disabled={exportingDocx}
-            className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition disabled:opacity-50"
-          >
-            {exportingDocx ? <Loader2 size={15} className="animate-spin" /> : <FileDown size={15} />}
-            {exportingDocx ? "Generando…" : "Word"}
-          </button>
+          <MoreMenu
+            onCarta={() => setCartaOpen(true)}
+            onCompare={() => setMatchOpen(true)}
+            onTexto={() => setPlainTextOpen(true)}
+            onWord={handleExportDocx}
+            exportingDocx={exportingDocx}
+          />
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"
+            className="hidden lg:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"
             style={{ background: accent }}
           >
             <Download size={15} /> Descargar PDF
           </button>
         </div>
       </header>
+
+      <div className="lg:hidden no-print flex border-b border-stone-800 bg-stone-950">
+        <button
+          onClick={() => editorSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          className="flex-1 py-2.5 text-[13px] font-medium text-stone-300 hover:text-white transition"
+        >
+          Editar
+        </button>
+        <button
+          onClick={() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          className="flex-1 py-2.5 text-[13px] font-medium text-stone-300 hover:text-white transition border-l border-stone-800"
+        >
+          Vista previa
+        </button>
+      </div>
 
       {pageCount > 1 && (
         <div className="no-print bg-amber-500/10 border-b border-amber-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">
@@ -3566,7 +3622,7 @@ Texto del currículum:
 
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
-        <div className="no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
+        <div ref={editorSectionRef} className="no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
           <section className="mb-8">
             <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Apariencia
@@ -3769,64 +3825,81 @@ Texto del currículum:
                 <Plus size={16} />
               </button>
             </div>
-            {data.experiencia.map((exp) => (
-              <div key={exp.id} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
-                <div className="flex items-start gap-2">
-                  <GripVertical size={14} className="text-stone-700 mt-2.5 shrink-0" />
-                  <div className="flex-1">
-                    <div className="grid grid-cols-2 gap-x-3">
-                      <Field label="Puesto">
-                        <input
-                          className={inputClass}
-                          value={exp.puesto}
-                          onChange={(e) => updateExperience(exp.id, { puesto: e.target.value })}
-                          placeholder="Desarrolladora backend"
-                        />
-                      </Field>
-                      <Field label="Empresa">
-                        <input
-                          className={inputClass}
-                          value={exp.empresa}
-                          onChange={(e) => updateExperience(exp.id, { empresa: e.target.value })}
-                          placeholder="Acme Inc."
-                        />
-                      </Field>
-                    </div>
-                    <Field label="Periodo">
-                      <input
-                        className={inputClass}
-                        value={exp.periodo}
-                        onChange={(e) => updateExperience(exp.id, { periodo: e.target.value })}
-                        placeholder="Ene 2022 — Presente"
-                      />
-                    </Field>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="block text-[11px] font-mono uppercase tracking-wider text-stone-400">
-                        Descripción
-                      </span>
-                      <AIButton
-                        onClick={() => improveExperience(exp)}
-                        loading={loadingField === exp.id}
-                      />
-                    </div>
-                    <textarea
-                      className={inputClass + " min-h-[80px] resize-none"}
-                      value={exp.descripcion}
-                      onChange={(e) => updateExperience(exp.id, { descripcion: e.target.value })}
-                      placeholder="Responsabilidades y logros principales..."
-                    />
-                  </div>
-                  {data.experiencia.length > 1 && (
+            {data.experiencia.map((exp) => {
+              const isCollapsed = collapsedExp.has(exp.id);
+              const summary = [exp.puesto, exp.empresa].filter(Boolean).join(" · ") || "Nueva experiencia";
+              return (
+                <div key={exp.id} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
+                  <div className="flex items-center gap-2">
+                    <GripVertical size={14} className="text-stone-700 shrink-0" />
                     <button
-                      onClick={() => removeExperience(exp.id)}
-                      className="text-stone-600 hover:text-red-400 transition mt-2.5"
+                      onClick={() => toggleExpCollapse(exp.id)}
+                      className="flex-1 flex items-center justify-between gap-2 text-left py-1 min-w-0"
                     >
-                      <Trash2 size={14} />
+                      <span className="text-[12.5px] text-stone-300 truncate">{summary}</span>
+                      {isCollapsed ? (
+                        <ChevronRight size={14} className="text-stone-500 shrink-0" />
+                      ) : (
+                        <ChevronDown size={14} className="text-stone-500 shrink-0" />
+                      )}
                     </button>
+                    {data.experiencia.length > 1 && (
+                      <button
+                        onClick={() => removeExperience(exp.id)}
+                        className="text-stone-600 hover:text-red-400 transition shrink-0"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
+                  {!isCollapsed && (
+                    <div className="pl-6 mt-2">
+                      <div className="grid grid-cols-2 gap-x-3">
+                        <Field label="Puesto">
+                          <input
+                            className={inputClass}
+                            value={exp.puesto}
+                            onChange={(e) => updateExperience(exp.id, { puesto: e.target.value })}
+                            placeholder="Desarrolladora backend"
+                          />
+                        </Field>
+                        <Field label="Empresa">
+                          <input
+                            className={inputClass}
+                            value={exp.empresa}
+                            onChange={(e) => updateExperience(exp.id, { empresa: e.target.value })}
+                            placeholder="Acme Inc."
+                          />
+                        </Field>
+                      </div>
+                      <Field label="Periodo">
+                        <input
+                          className={inputClass}
+                          value={exp.periodo}
+                          onChange={(e) => updateExperience(exp.id, { periodo: e.target.value })}
+                          placeholder="Ene 2022 — Presente"
+                        />
+                      </Field>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="block text-[11px] font-mono uppercase tracking-wider text-stone-400">
+                          Descripción
+                        </span>
+                        <AIButton
+                          onClick={() => improveExperience(exp)}
+                          loading={loadingField === exp.id}
+                        />
+                      </div>
+                      <textarea
+                        className={inputClass + " min-h-[80px] resize-none"}
+                        value={exp.descripcion}
+                        onChange={(e) => updateExperience(exp.id, { descripcion: e.target.value })}
+                        placeholder="Responsabilidades y logros principales..."
+                      />
+                    </div>
                   )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
 
           <section className="mb-8">
@@ -4112,6 +4185,16 @@ Texto del currículum:
             <PreviewComponent data={data} accent={accent} />
           </div>
         </div>
+      </div>
+
+      <div className="lg:hidden no-print fixed bottom-0 left-0 right-0 z-30 bg-stone-950/95 backdrop-blur border-t border-stone-800 px-4 py-3">
+        <button
+          onClick={handlePrint}
+          className="w-full inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-md text-stone-950 transition hover:opacity-90"
+          style={{ background: accent }}
+        >
+          <Download size={16} /> Descargar PDF
+        </button>
       </div>
     </div>
   );
