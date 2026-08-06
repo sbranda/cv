@@ -98,3 +98,7 @@ Junto a los 4 colores de acento fijos hay un quinto círculo con degradado arco�
 ## Orden de secciones por arrastre
 
 En "Apariencia" ahora podés reordenar Resumen, Experiencia, Educación y Habilidades arrastrando desde el ícono de agarre (⋮⋮). Funciona con el dedo en el celular y con el mouse en escritorio. Aplica a 15 de las 19 plantillas — Moderno, Ejecutivo, Académico y Ventas/Marketing mantienen su orden fijo porque su diseño (columnas, secuencia académica formal, métricas primero) depende de eso. El orden elegido también se respeta al exportar a Word y a texto plano.
+
+## Miniaturas con tus datos reales
+
+La galería de plantillas ya no muestra formas grises genéricas — cada miniatura es una versión reducida en vivo de la plantilla real, con tu nombre, puesto y contenido actuales. Se actualiza automáticamente a medida que completás el CV.
