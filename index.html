@@ -308,7 +308,7 @@ const initialState = {
   fotoEscala: 1,
   tipografia: "clasica",
   densidad: "normal",
-  ordenSecciones: "experiencia-primero",
+  ordenSecciones: ["resumen", "experiencia", "educacion", "habilidades"],
   experiencia: [emptyExperience()],
   educacion: [emptyEducation()],
   habilidades: "",
@@ -343,10 +343,13 @@ const OPTIONAL_SECTIONS = [
   { id: "logros", name: "Logros destacados", template: "Ventas/Marketing" },
 ];
 
-const API_KEY_STORAGE = "cv-builder-gemini-key";
-const GEMINI_MODEL = "gemini-3.6-flash";
-
-class MissingApiKeyError extends Error {}
+const DEFAULT_SECTION_ORDER = ["resumen", "experiencia", "educacion", "habilidades"];
+const SECTION_LABELS = {
+  resumen: "Perfil / Resumen",
+  experiencia: "Experiencia",
+  educacion: "Educación",
+  habilidades: "Habilidades",
+};
 
 async function callClaude(prompt, apiKey) {
   if (!apiKey) throw new MissingApiKeyError("Falta configurar la clave de API");
@@ -434,6 +437,67 @@ function Field({ label, children }) {
       </span>
       {children}
     </label>
+  );
+}
+
+function SectionOrderList({ order, accent, onReorder }) {
+  const [dragIndex, setDragIndex] = useState(null);
+  const [overIndex, setOverIndex] = useState(null);
+  const itemRefs = useRef([]);
+
+  const handlePointerDown = (index) => (e) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setDragIndex(index);
+    setOverIndex(index);
+  };
+
+  const handlePointerMove = (e) => {
+    if (dragIndex === null) return;
+    const y = e.clientY;
+    itemRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (y >= rect.top && y <= rect.bottom) setOverIndex(i);
+    });
+  };
+
+  const finishDrag = () => {
+    if (dragIndex !== null && overIndex !== null && dragIndex !== overIndex) {
+      const newOrder = [...order];
+      const [moved] = newOrder.splice(dragIndex, 1);
+      newOrder.splice(overIndex, 0, moved);
+      onReorder(newOrder);
+    }
+    setDragIndex(null);
+    setOverIndex(null);
+  };
+
+  return (
+    <div>
+      {order.map((key, i) => (
+        <div
+          key={key}
+          ref={(el) => (itemRefs.current[i] = el)}
+          className="flex items-center gap-2 px-3 py-2 rounded-md border mb-1.5 bg-stone-800/40 transition"
+          style={{
+            borderColor: dragIndex === i ? accent : overIndex === i && dragIndex !== null ? `${accent}88` : "#3f3a35",
+            opacity: dragIndex === i ? 0.5 : 1,
+          }}
+        >
+          <button
+            onPointerDown={handlePointerDown(i)}
+            onPointerMove={handlePointerMove}
+            onPointerUp={finishDrag}
+            onPointerCancel={finishDrag}
+            className="cursor-grab active:cursor-grabbing text-stone-500 shrink-0"
+            style={{ touchAction: "none" }}
+          >
+            <GripVertical size={15} />
+          </button>
+          <span className="text-[12.5px] text-stone-300">{SECTION_LABELS[key] || key}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -1279,6 +1343,32 @@ function SectionLabel({ children, accent, className = "" }) {
 function PreviewClasico({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  const sections = {
+    resumen: data.resumen && (
+      <div className="mb-6">
+        <SectionLabel accent={accent}>Perfil</SectionLabel>
+        <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
+      </div>
+    ),
+    experiencia: hasExp && (
+      <div className="mb-6">
+        <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+        <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
+      </div>
+    ),
+    educacion: hasEdu && (
+      <div className="mb-6">
+        <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+        <EducacionBlock data={data} />
+      </div>
+    ),
+    habilidades: data.habilidades && (
+      <div>
+        <SectionLabel accent={accent}>Habilidades</SectionLabel>
+        <SkillChips data={data} accent={accent} />
+      </div>
+    ),
+  };
   return (
     <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
       <div className="mb-6 pb-6 flex items-start justify-between gap-4" style={{ borderBottom: `2px solid ${accent}` }}>
@@ -1295,49 +1385,9 @@ function PreviewClasico({ data, accent }) {
         </div>
         <Avatar data={data} accent={accent} size={80} />
       </div>
-      {data.resumen && (
-        <div className="mb-6">
-          <SectionLabel accent={accent}>Perfil</SectionLabel>
-          <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
-        </div>
-      )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
-      {data.habilidades && (
-        <div>
-          <SectionLabel accent={accent}>Habilidades</SectionLabel>
-          <SkillChips data={data} accent={accent} />
-        </div>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER).map((key) => (
+        <React.Fragment key={key}>{sections[key]}</React.Fragment>
+      ))}
     </div>
   );
 }
@@ -1431,37 +1481,24 @@ function PreviewMinimalista({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-600 italic">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-7">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Educación</p>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-7">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Experiencia</p>
-          <ExperienciaBlock data={data} accent={accent} titleClass="text-[14px] font-medium text-stone-900" />
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-7">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Experiencia</p>
-          <ExperienciaBlock data={data} accent={accent} titleClass="text-[14px] font-medium text-stone-900" />
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-7">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Educación</p>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-7">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Experiencia</p>
+                <ExperienciaBlock data={data} accent={accent} titleClass="text-[14px] font-medium text-stone-900" />
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className="mb-7">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-3 text-center">Educación</p>
+                <EducacionBlock data={data} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div className="text-center">
           <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-2">Habilidades</p>
@@ -1571,95 +1608,53 @@ function PreviewCorporativo({ data, accent }) {
           <p className="text-[12.5px] leading-relaxed text-stone-800">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-5">
-          <h3 className={label} style={ruleStyle}>Educación</h3>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12.5px]">
-                    <span className="font-bold">{edu.titulo}</span>
-                    {edu.institucion && ` — ${edu.institucion}`}
-                  </p>
-                  <span className="text-[11px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-5">
-          <h3 className={label} style={ruleStyle}>Experiencia profesional</h3>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[13px] font-bold">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal"> — {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[11px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[12px] text-stone-700 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-5">
-          <h3 className={label} style={ruleStyle}>Experiencia profesional</h3>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[13px] font-bold">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal"> — {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[11px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[12px] text-stone-700 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-5">
-          <h3 className={label} style={ruleStyle}>Educación</h3>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12.5px]">
-                    <span className="font-bold">{edu.titulo}</span>
-                    {edu.institucion && ` — ${edu.institucion}`}
-                  </p>
-                  <span className="text-[11px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-5">
+                <h3 className={label} style={ruleStyle}>Experiencia profesional</h3>
+                {data.experiencia.map(
+                  (exp) =>
+                    (exp.puesto || exp.empresa) && (
+                      <div key={exp.id} className="mb-3 last:mb-0">
+                        <div className="flex justify-between items-baseline gap-2">
+                          <p className="text-[13px] font-bold">
+                            {exp.puesto}
+                            {exp.empresa && <span className="font-normal"> — {exp.empresa}</span>}
+                          </p>
+                          <span className="text-[11px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+                        </div>
+                        {exp.descripcion && (
+                          <div className="text-[12px] text-stone-700 mt-1 leading-relaxed whitespace-pre-line">
+                            {exp.descripcion}
+                          </div>
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className="mb-5">
+                <h3 className={label} style={ruleStyle}>Educación</h3>
+                {data.educacion.map(
+                  (edu) =>
+                    (edu.titulo || edu.institucion) && (
+                      <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                        <p className="text-[12.5px]">
+                          <span className="font-bold">{edu.titulo}</span>
+                          {edu.institucion && ` — ${edu.institucion}`}
+                        </p>
+                        <span className="text-[11px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div>
           <h3 className={label} style={ruleStyle}>Habilidades</h3>
@@ -1690,85 +1685,48 @@ function PreviewCompacto({ data, accent }) {
           {data.resumen}
         </p>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-5">
-          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-5">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <div className="relative pl-4 border-l-2" style={{ borderColor: `${accent}40` }}>
-            {data.experiencia.map(
-              (exp) =>
-                (exp.puesto || exp.empresa) && (
-                  <div key={exp.id} className="mb-3 last:mb-0 relative">
-                    <span
-                      className="absolute -left-[21px] top-1 w-2 h-2 rounded-full"
-                      style={{ background: accent }}
-                    />
-                    <div className="flex justify-between items-baseline gap-2">
-                      <p className="text-[13px] font-semibold text-stone-900">
-                        {exp.puesto}
-                        <span className="font-normal text-stone-500 text-[11.5px]"> · {exp.empresa}</span>
-                      </p>
-                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
-                    </div>
-                    {exp.descripcion && (
-                      <div className="text-[11.5px] text-stone-600 mt-0.5 leading-snug whitespace-pre-line">
-                        {exp.descripcion}
-                      </div>
-                    )}
-                  </div>
-                )
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-5">
+                <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                <div className="relative pl-4 border-l-2" style={{ borderColor: `${accent}40` }}>
+                  {data.experiencia.map(
+                    (exp) =>
+                      (exp.puesto || exp.empresa) && (
+                        <div key={exp.id} className="mb-3 last:mb-0 relative">
+                          <span
+                            className="absolute -left-[21px] top-1 w-2 h-2 rounded-full"
+                            style={{ background: accent }}
+                          />
+                          <div className="flex justify-between items-baseline gap-2">
+                            <p className="text-[13px] font-semibold text-stone-900">
+                              {exp.puesto}
+                              <span className="font-normal text-stone-500 text-[11.5px]"> · {exp.empresa}</span>
+                            </p>
+                            <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
+                          </div>
+                          {exp.descripcion && (
+                            <div className="text-[11.5px] text-stone-600 mt-0.5 leading-snug whitespace-pre-line">
+                              {exp.descripcion}
+                            </div>
+                          )}
+                        </div>
+                      )
+                  )}
+                </div>
+              </div>
             )}
-          </div>
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-5">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <div className="relative pl-4 border-l-2" style={{ borderColor: `${accent}40` }}>
-            {data.experiencia.map(
-              (exp) =>
-                (exp.puesto || exp.empresa) && (
-                  <div key={exp.id} className="mb-3 last:mb-0 relative">
-                    <span
-                      className="absolute -left-[21px] top-1 w-2 h-2 rounded-full"
-                      style={{ background: accent }}
-                    />
-                    <div className="flex justify-between items-baseline gap-2">
-                      <p className="text-[13px] font-semibold text-stone-900">
-                        {exp.puesto}
-                        <span className="font-normal text-stone-500 text-[11.5px]"> · {exp.empresa}</span>
-                      </p>
-                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
-                    </div>
-                    {exp.descripcion && (
-                      <div className="text-[11.5px] text-stone-600 mt-0.5 leading-snug whitespace-pre-line">
-                        {exp.descripcion}
-                      </div>
-                    )}
-                  </div>
-                )
+            {key === "educacion" && hasEdu && (
+              <div className="mb-5">
+                <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+                <EducacionBlock data={data} />
+              </div>
             )}
-          </div>
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-5">
-          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div>
           <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
@@ -1805,37 +1763,24 @@ function PreviewCreativo({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {data.ordenSecciones === "educacion-primero" ? (
-          <>
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-          </>
-        ) : (
-          <>
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-          </>
-        )}
+        {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+          .filter((k) => k !== "resumen" && k !== "habilidades")
+          .map((key) => (
+            <React.Fragment key={key}>
+              {key === "experiencia" && hasExp && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                  <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[15px] font-medium text-stone-900" />
+                </div>
+              )}
+              {key === "educacion" && hasEdu && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+                  <EducacionBlock data={data} />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         {data.habilidades && (
           <div>
             <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -1918,87 +1863,49 @@ function PreviewDesarrollador({ data, accent }) {
           )}
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div>
-          <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12px] text-stone-300">
-                    {edu.titulo}
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="text-[10px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-6">
-          <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[13px] font-bold text-white">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[10px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && <div className="text-[11.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-6">
-          <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[13px] font-bold text-white">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[10px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && <div className="text-[11.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasEdu && (
-        <div>
-          <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12px] text-stone-300">
-                    {edu.titulo}
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="text-[10px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-6">
+                <p className="text-[11px] mb-2" style={{ color: accent }}>// experiencia</p>
+                {data.experiencia.map(
+                  (exp) =>
+                    (exp.puesto || exp.empresa) && (
+                      <div key={exp.id} className="mb-3 last:mb-0">
+                        <div className="flex justify-between items-baseline gap-2">
+                          <p className="text-[13px] font-bold text-white">
+                            {exp.puesto}
+                            {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                          </p>
+                          <span className="text-[10px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+                        </div>
+                        {exp.descripcion && <div className="text-[11.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div>
+                <p className="text-[11px] mb-2" style={{ color: accent }}>// educación</p>
+                {data.educacion.map(
+                  (edu) =>
+                    (edu.titulo || edu.institucion) && (
+                      <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                        <p className="text-[12px] text-stone-300">
+                          {edu.titulo}
+                          {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                        </p>
+                        <span className="text-[10px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+          </React.Fragment>
+        ))}
     </div>
   );
 }
@@ -2164,73 +2071,42 @@ function PreviewImpacto({ data, accent }) {
       {data.puesto && <p className="text-[14px] font-mono uppercase tracking-widest mb-4" style={{ color: accent }}>{data.puesto}</p>}
       <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-[11.5px] text-stone-500" iconSize={10} />
       {data.resumen && <p className="text-[15px] leading-relaxed text-stone-700 mb-8 max-w-[480px]">{data.resumen}</p>}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-8">
-          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-8">
-          {data.experiencia.map(
-            (exp, i) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="flex gap-4 mb-5 last:mb-0">
-                  <span className="font-display text-[22px] leading-none shrink-0 w-16" style={{ color: accent }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1 pb-5 border-b border-stone-100 last:border-0">
-                    <div className="flex justify-between items-baseline gap-2">
-                      <p className="text-[15px] font-bold">
-                        {exp.puesto}
-                        {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                      </p>
-                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
-                    </div>
-                    {exp.descripcion && <div className="text-[12.5px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
-                  </div>
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-8">
-          {data.experiencia.map(
-            (exp, i) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="flex gap-4 mb-5 last:mb-0">
-                  <span className="font-display text-[22px] leading-none shrink-0 w-16" style={{ color: accent }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1 pb-5 border-b border-stone-100 last:border-0">
-                    <div className="flex justify-between items-baseline gap-2">
-                      <p className="text-[15px] font-bold">
-                        {exp.puesto}
-                        {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                      </p>
-                      <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
-                    </div>
-                    {exp.descripcion && <div className="text-[12.5px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
-                  </div>
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-8">
-          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-8">
+                {data.experiencia.map(
+                  (exp, i) =>
+                    (exp.puesto || exp.empresa) && (
+                      <div key={exp.id} className="flex gap-4 mb-5 last:mb-0">
+                        <span className="font-display text-[22px] leading-none shrink-0 w-16" style={{ color: accent }}>
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div className="flex-1 pb-5 border-b border-stone-100 last:border-0">
+                          <div className="flex justify-between items-baseline gap-2">
+                            <p className="text-[15px] font-bold">
+                              {exp.puesto}
+                              {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                            </p>
+                            <span className="font-mono text-[10px] text-stone-400 whitespace-nowrap">{exp.periodo}</span>
+                          </div>
+                          {exp.descripcion && <div className="text-[12.5px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">{exp.descripcion}</div>}
+                        </div>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className="mb-8">
+                <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+                <EducacionBlock data={data} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div>
           <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2268,37 +2144,24 @@ function PreviewAurora({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className={card}>
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className={card}>
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className={card}>
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-          {hasEdu && (
-        <div className={card}>
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className={card}>
+                <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className={card}>
+                <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+                <EducacionBlock data={data} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div className={card}>
           <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2348,95 +2211,53 @@ function PreviewBlueprint({ data, accent }) {
           <p className="text-[12px] leading-relaxed text-stone-700">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-5">
-          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12px] text-stone-700">
-                    {edu.titulo}
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="text-[10px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-5">
-          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[12.5px] font-bold">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[10px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[11px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-5">
-          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-3 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="text-[12.5px] font-bold">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="text-[10px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[11px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-5">
-          <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
-                  <p className="text-[12px] text-stone-700">
-                    {edu.titulo}
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="text-[10px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-5">
+                <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// experiencia</p>
+                {data.experiencia.map(
+                  (exp) =>
+                    (exp.puesto || exp.empresa) && (
+                      <div key={exp.id} className="mb-3 last:mb-0">
+                        <div className="flex justify-between items-baseline gap-2">
+                          <p className="text-[12.5px] font-bold">
+                            {exp.puesto}
+                            {exp.empresa && <span className="font-normal text-stone-500"> · {exp.empresa}</span>}
+                          </p>
+                          <span className="text-[10px] text-stone-500 whitespace-nowrap">{exp.periodo}</span>
+                        </div>
+                        {exp.descripcion && (
+                          <div className="text-[11px] text-stone-600 mt-1 leading-relaxed whitespace-pre-line">
+                            {exp.descripcion}
+                          </div>
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className="mb-5">
+                <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// educación</p>
+                {data.educacion.map(
+                  (edu) =>
+                    (edu.titulo || edu.institucion) && (
+                      <div key={edu.id} className="flex justify-between items-baseline gap-2 mb-1 last:mb-0">
+                        <p className="text-[12px] text-stone-700">
+                          {edu.titulo}
+                          {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                        </p>
+                        <span className="text-[10px] text-stone-500 whitespace-nowrap">{edu.periodo}</span>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div>
           <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// habilidades</p>
@@ -2482,37 +2303,24 @@ function PreviewBloques({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {data.ordenSecciones === "educacion-primero" ? (
-          <>
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-          </>
-        ) : (
-          <>
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-          </>
-        )}
+        {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+          .filter((k) => k !== "resumen" && k !== "habilidades")
+          .map((key) => (
+            <React.Fragment key={key}>
+              {key === "experiencia" && hasExp && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                  <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+                </div>
+              )}
+              {key === "educacion" && hasEdu && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+                  <EducacionBlock data={data} />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         {data.habilidades && (
           <div>
             <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2551,95 +2359,53 @@ function PreviewNocturno({ data, accent }) {
           <p className="text-[13px] leading-relaxed text-stone-400">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="mb-2 last:mb-0 flex items-baseline justify-between gap-2">
-                  <p className="text-[13px] text-stone-300">
-                    <span className="font-medium text-white">{edu.titulo}</span>
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-4 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="font-display text-[15px] font-medium text-white">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-sans text-stone-500 text-[13px] font-normal"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[12.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-          {data.experiencia.map(
-            (exp) =>
-              (exp.puesto || exp.empresa) && (
-                <div key={exp.id} className="mb-4 last:mb-0">
-                  <div className="flex justify-between items-baseline gap-2">
-                    <p className="font-display text-[15px] font-medium text-white">
-                      {exp.puesto}
-                      {exp.empresa && <span className="font-sans text-stone-500 text-[13px] font-normal"> · {exp.empresa}</span>}
-                    </p>
-                    <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
-                  </div>
-                  {exp.descripcion && (
-                    <div className="text-[12.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">
-                      {exp.descripcion}
-                    </div>
-                  )}
-                </div>
-              )
-          )}
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-6">
-          <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-          {data.educacion.map(
-            (edu) =>
-              (edu.titulo || edu.institucion) && (
-                <div key={edu.id} className="mb-2 last:mb-0 flex items-baseline justify-between gap-2">
-                  <p className="text-[13px] text-stone-300">
-                    <span className="font-medium text-white">{edu.titulo}</span>
-                    {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
-                  </p>
-                  <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
-                </div>
-              )
-          )}
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className="mb-6">
+                <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                {data.experiencia.map(
+                  (exp) =>
+                    (exp.puesto || exp.empresa) && (
+                      <div key={exp.id} className="mb-4 last:mb-0">
+                        <div className="flex justify-between items-baseline gap-2">
+                          <p className="font-display text-[15px] font-medium text-white">
+                            {exp.puesto}
+                            {exp.empresa && <span className="font-sans text-stone-500 text-[13px] font-normal"> · {exp.empresa}</span>}
+                          </p>
+                          <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{exp.periodo}</span>
+                        </div>
+                        {exp.descripcion && (
+                          <div className="text-[12.5px] text-stone-400 mt-1 leading-relaxed whitespace-pre-line">
+                            {exp.descripcion}
+                          </div>
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className="mb-6">
+                <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+                {data.educacion.map(
+                  (edu) =>
+                    (edu.titulo || edu.institucion) && (
+                      <div key={edu.id} className="mb-2 last:mb-0 flex items-baseline justify-between gap-2">
+                        <p className="text-[13px] text-stone-300">
+                          <span className="font-medium text-white">{edu.titulo}</span>
+                          {edu.institucion && <span className="text-stone-500"> · {edu.institucion}</span>}
+                        </p>
+                        <span className="font-mono text-[11px] text-stone-600 whitespace-nowrap">{edu.periodo}</span>
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div>
           <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2687,49 +2453,32 @@ function PreviewRevista({ data, accent }) {
           {restText}
         </p>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4" style={{ background: accent }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-widest">Educación</h3>
-          </div>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-          {hasExp && (
-        <div className="mb-6 clear-both">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4" style={{ background: accent }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-widest">Experiencia</h3>
-          </div>
-          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className="mb-6 clear-both">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4" style={{ background: accent }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-widest">Experiencia</h3>
-          </div>
-          <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-        </div>
-      )}
-          {hasEdu && (
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4" style={{ background: accent }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-widest">Educación</h3>
-          </div>
-          <EducacionBlock data={data} />
-        </div>
-      )}
-        </>
-      )}
+      {(() => {
+        const orderedCore = (data.ordenSecciones || DEFAULT_SECTION_ORDER).filter((k) => k !== "resumen" && k !== "habilidades");
+        const firstVisible = orderedCore.find((k) => (k === "experiencia" && hasExp) || (k === "educacion" && hasEdu));
+        return orderedCore.map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className={key === firstVisible ? "mb-6 clear-both" : "mb-6"}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-4" style={{ background: accent }} />
+                  <h3 className="text-[11px] font-bold uppercase tracking-widest">Experiencia</h3>
+                </div>
+                <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className={key === firstVisible ? "mb-6 clear-both" : "mb-6"}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-4" style={{ background: accent }} />
+                  <h3 className="text-[11px] font-bold uppercase tracking-widest">Educación</h3>
+                </div>
+                <EducacionBlock data={data} />
+              </div>
+            )}
+          </React.Fragment>
+        ));
+      })()}
       {data.habilidades && (
         <div>
           <div className="flex items-center gap-2 mb-2">
@@ -2769,37 +2518,24 @@ function PreviewContorno({ data, accent }) {
                 <p className="text-[12.5px] leading-relaxed text-stone-600 italic max-w-[420px] mx-auto">{data.resumen}</p>
               </div>
             )}
-            {data.ordenSecciones === "educacion-primero" ? (
-              <>
-                {hasEdu && (
-              <div className="mb-5">
-                <SectionLabel accent={accent} className="mb-2 text-center">Educación</SectionLabel>
-                <EducacionBlock data={data} />
-              </div>
-            )}
-                {hasExp && (
-              <div className="mb-5">
-                <SectionLabel accent={accent} className="mb-3 text-center">Experiencia</SectionLabel>
-                <ExperienciaBlock data={data} titleClass="text-[13.5px] font-medium text-stone-900" />
-              </div>
-            )}
-              </>
-            ) : (
-              <>
-                {hasExp && (
-              <div className="mb-5">
-                <SectionLabel accent={accent} className="mb-3 text-center">Experiencia</SectionLabel>
-                <ExperienciaBlock data={data} titleClass="text-[13.5px] font-medium text-stone-900" />
-              </div>
-            )}
-                {hasEdu && (
-              <div className="mb-5">
-                <SectionLabel accent={accent} className="mb-2 text-center">Educación</SectionLabel>
-                <EducacionBlock data={data} />
-              </div>
-            )}
-              </>
-            )}
+            {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+              .filter((k) => k !== "resumen" && k !== "habilidades")
+              .map((key) => (
+                <React.Fragment key={key}>
+                  {key === "experiencia" && hasExp && (
+                    <div className="mb-5">
+                      <SectionLabel accent={accent} className="mb-3 text-center">Experiencia</SectionLabel>
+                      <ExperienciaBlock data={data} titleClass="text-[13.5px] font-medium text-stone-900" />
+                    </div>
+                  )}
+                  {key === "educacion" && hasEdu && (
+                    <div className="mb-5">
+                      <SectionLabel accent={accent} className="mb-2 text-center">Educación</SectionLabel>
+                      <EducacionBlock data={data} />
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
             {data.habilidades && (
               <div className="text-center">
                 <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2840,37 +2576,24 @@ function PreviewDinamico({ data, accent }) {
             <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
           </div>
         )}
-        {data.ordenSecciones === "educacion-primero" ? (
-          <>
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-          </>
-        ) : (
-          <>
-            {hasExp && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
-            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
-          </div>
-        )}
-            {hasEdu && (
-          <div className="mb-6">
-            <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
-            <EducacionBlock data={data} />
-          </div>
-        )}
-          </>
-        )}
+        {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+          .filter((k) => k !== "resumen" && k !== "habilidades")
+          .map((key) => (
+            <React.Fragment key={key}>
+              {key === "experiencia" && hasExp && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+                  <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+                </div>
+              )}
+              {key === "educacion" && hasEdu && (
+                <div className="mb-6">
+                  <SectionLabel accent={accent} className="mb-3">Educación</SectionLabel>
+                  <EducacionBlock data={data} />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         {data.habilidades && (
           <div>
             <SectionLabel accent={accent}>Habilidades</SectionLabel>
@@ -2908,45 +2631,28 @@ function PreviewTarjetas({ data, accent }) {
           <p className="text-[12.5px] leading-relaxed text-stone-700 mt-1">{data.resumen}</p>
         </div>
       )}
-      {data.ordenSecciones === "educacion-primero" ? (
-        <>
-          {hasEdu && (
-        <div className={cardBase} style={{ transform: "rotate(-0.5deg)" }}>
-          <span className={tab} style={{ background: accent }}>EDUCACIÓN</span>
-          <div className="mt-1">
-            <EducacionBlock data={data} />
-          </div>
-        </div>
-      )}
-          {hasExp && (
-        <div className={cardBase} style={{ transform: "rotate(0.6deg)" }}>
-          <span className={tab} style={{ background: accent }}>EXPERIENCIA</span>
-          <div className="mt-1">
-            <ExperienciaBlock data={data} titleClass="text-[14px] font-medium text-stone-900" />
-          </div>
-        </div>
-      )}
-        </>
-      ) : (
-        <>
-          {hasExp && (
-        <div className={cardBase} style={{ transform: "rotate(0.6deg)" }}>
-          <span className={tab} style={{ background: accent }}>EXPERIENCIA</span>
-          <div className="mt-1">
-            <ExperienciaBlock data={data} titleClass="text-[14px] font-medium text-stone-900" />
-          </div>
-        </div>
-      )}
-          {hasEdu && (
-        <div className={cardBase} style={{ transform: "rotate(-0.5deg)" }}>
-          <span className={tab} style={{ background: accent }}>EDUCACIÓN</span>
-          <div className="mt-1">
-            <EducacionBlock data={data} />
-          </div>
-        </div>
-      )}
-        </>
-      )}
+      {(data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .filter((k) => k !== "resumen" && k !== "habilidades")
+        .map((key) => (
+          <React.Fragment key={key}>
+            {key === "experiencia" && hasExp && (
+              <div className={cardBase} style={{ transform: "rotate(0.6deg)" }}>
+                <span className={tab} style={{ background: accent }}>EXPERIENCIA</span>
+                <div className="mt-1">
+                  <ExperienciaBlock data={data} titleClass="text-[14px] font-medium text-stone-900" />
+                </div>
+              </div>
+            )}
+            {key === "educacion" && hasEdu && (
+              <div className={cardBase} style={{ transform: "rotate(-0.5deg)" }}>
+                <span className={tab} style={{ background: accent }}>EDUCACIÓN</span>
+                <div className="mt-1">
+                  <EducacionBlock data={data} />
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       {data.habilidades && (
         <div className={cardBase} style={{ transform: "rotate(0.8deg)" }}>
           <span className={tab} style={{ background: accent }}>HABILIDADES</span>
@@ -3508,11 +3214,12 @@ Texto del currículum:
     if (contact.length) lines.push(contact.join(" | "));
     lines.push("");
 
-    if (data.resumen) {
+    const addResumen = () => {
+      if (!data.resumen) return;
       lines.push("PERFIL");
       lines.push(data.resumen);
       lines.push("");
-    }
+    };
 
     const addExperiencia = () => {
       const items = data.experiencia.filter((e) => e.puesto || e.empresa);
@@ -3543,19 +3250,15 @@ Texto del currículum:
       lines.push("");
     };
 
-    if (data.ordenSecciones === "educacion-primero") {
-      addEducacion();
-      addExperiencia();
-    } else {
-      addExperiencia();
-      addEducacion();
-    }
-
-    if (data.habilidades) {
+    const addHabilidades = () => {
+      if (!data.habilidades) return;
       lines.push("HABILIDADES");
       lines.push(data.habilidades);
       lines.push("");
-    }
+    };
+
+    const sectionFns = { resumen: addResumen, experiencia: addExperiencia, educacion: addEducacion, habilidades: addHabilidades };
+    (data.ordenSecciones || DEFAULT_SECTION_ORDER).forEach((key) => sectionFns[key]?.());
 
     if (data.seccionesOpcionales?.proyectos) {
       const items = data.proyectos.filter((p) => p.nombre);
@@ -3644,10 +3347,11 @@ Texto del currículum:
           spacing: { before: 220, after: 100 },
         });
 
-      if (data.resumen) {
+      const addResumen = () => {
+        if (!data.resumen) return;
         children.push(heading("Perfil"));
         children.push(new Paragraph({ children: [new TextRun({ text: data.resumen, size: 22 })] }));
-      }
+      };
 
       const addExperiencia = () => {
         const items = data.experiencia.filter((e) => e.puesto || e.empresa);
@@ -3700,18 +3404,14 @@ Texto del currículum:
         });
       };
 
-      if (data.ordenSecciones === "educacion-primero") {
-        addEducacion();
-        addExperiencia();
-      } else {
-        addExperiencia();
-        addEducacion();
-      }
-
-      if (data.habilidades) {
+      const addHabilidades = () => {
+        if (!data.habilidades) return;
         children.push(heading("Habilidades"));
         children.push(new Paragraph({ children: [new TextRun({ text: data.habilidades, size: 22 })] }));
-      }
+      };
+
+      const docxSectionFns = { resumen: addResumen, experiencia: addExperiencia, educacion: addEducacion, habilidades: addHabilidades };
+      (data.ordenSecciones || DEFAULT_SECTION_ORDER).forEach((key) => docxSectionFns[key]?.());
 
       if (data.seccionesOpcionales?.proyectos) {
         const items = data.proyectos.filter((p) => p.nombre);
@@ -4042,34 +3742,16 @@ Texto del currículum:
                 ))}
               </div>
             </Field>
-            <Field label="Orden: Experiencia / Educación">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => update({ ordenSecciones: "experiencia-primero" })}
-                  className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
-                  style={{
-                    borderColor: data.ordenSecciones === "experiencia-primero" ? accent : "#44403c",
-                    background: data.ordenSecciones === "experiencia-primero" ? `${accent}22` : "transparent",
-                    color: data.ordenSecciones === "experiencia-primero" ? accent : "#a8a29e",
-                  }}
-                >
-                  Experiencia primero
-                </button>
-                <button
-                  onClick={() => update({ ordenSecciones: "educacion-primero" })}
-                  className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
-                  style={{
-                    borderColor: data.ordenSecciones === "educacion-primero" ? accent : "#44403c",
-                    background: data.ordenSecciones === "educacion-primero" ? `${accent}22` : "transparent",
-                    color: data.ordenSecciones === "educacion-primero" ? accent : "#a8a29e",
-                  }}
-                >
-                  Educación primero
-                </button>
-              </div>
+            <Field label="Orden de las secciones">
+              <SectionOrderList
+                order={data.ordenSecciones}
+                accent={accent}
+                onReorder={(newOrder) => update({ ordenSecciones: newOrder })}
+              />
               <p className="text-[10px] text-stone-600 mt-1.5 leading-relaxed">
-                No aplica a Moderno, Ejecutivo, Académico y Ventas/Marketing — su diseño en columnas o su
-                secuencia académica/de métricas depende de un orden fijo.
+                Arrastrá desde el ícono para reordenar. No aplica a Moderno, Ejecutivo, Académico y
+                Ventas/Marketing — su diseño en columnas o su secuencia académica/de métricas depende de un
+                orden fijo.
               </p>
             </Field>
           </section>

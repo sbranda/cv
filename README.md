@@ -94,3 +94,7 @@ Dentro de "Mis perfiles" hay un ícono de traducción (🌐) en cada fila. Al to
 ## Color personalizado
 
 Junto a los 4 colores de acento fijos hay un quinto círculo con degradado arcoíris — tocalo para abrir el selector de color nativo del dispositivo y elegir cualquier color, no solo los 4 predefinidos. Se aplica igual que los demás: a los encabezados, líneas divisorias y acentos de las 19 plantillas.
+
+## Orden de secciones por arrastre
+
+En "Apariencia" ahora podés reordenar Resumen, Experiencia, Educación y Habilidades arrastrando desde el ícono de agarre (⋮⋮). Funciona con el dedo en el celular y con el mouse en escritorio. Aplica a 15 de las 19 plantillas — Moderno, Ejecutivo, Académico y Ventas/Marketing mantienen su orden fijo porque su diseño (columnas, secuencia académica formal, métricas primero) depende de eso. El orden elegido también se respeta al exportar a Word y a texto plano.
