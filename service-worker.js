@@ -1,4 +1,4 @@
-const CACHE_NAME = "cv-builder-v42";
+const CACHE_NAME = "cv-builder-v43";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -18,7 +18,21 @@ const PRECACHE_URLS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)).catch(() => {})
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        PRECACHE_URLS.map((url) =>
+          // { cache: "reload" } ignora la caché HTTP del navegador y fuerza a pedir
+          // el archivo fresco del servidor — sin esto, una app ya instalada podía
+          // quedar guardando una copia vieja de index.html aunque el archivo en el
+          // servidor ya estuviera actualizado.
+          fetch(url, { cache: "reload" })
+            .then((response) => {
+              if (response.ok) return cache.put(url, response);
+            })
+            .catch(() => {})
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
