@@ -145,3 +145,7 @@ El aviso de "tu CV ocupa aproximadamente N páginas" estaba sobreestimando: med�
 ## Calibración A4
 
 La estimación de páginas está calibrada específicamente para papel A4 (210×297mm, el estándar fuera de EE.UU.) con márgenes mínimos de impresión, que es lo más común al guardar un CV en PDF.
+
+## Sin márgenes al imprimir
+
+Se agregó una regla `@page { size: A4; margin: 0; }` para que el navegador imprima/guarde en PDF sin márgenes en blanco alrededor de la hoja, usando el espacio completo. Si igual ves márgenes al probarlo, revisá que en el cuadro de diálogo de impresión el campo "Márgenes" esté en "Ninguno" (o "None") — algunos navegadores respetan esta regla como sugerencia pero igual muestran el selector de márgenes, y si quedó en "Predeterminado" de una impresión anterior, puede pisar esta configuración.

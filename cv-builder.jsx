@@ -2744,14 +2744,14 @@ JSON original:
     return () => observer.disconnect();
   }, []);
 
-  // Calibrado para A4 (210×297mm ≈ 794×1123px a 96dpi) con márgenes mínimos de impresión,
-  // que es lo más común al imprimir/guardar un CV para no desperdiciar espacio.
-  const PAGE_HEIGHT_PX = 1090;
+  // Calibrado para A4 (210×297mm ≈ 794×1123px a 96dpi) con margen 0 (@page margin:0),
+  // usando la hoja completa sin descontar márgenes de impresión.
+  const PAGE_HEIGHT_PX = 1123;
   // El preview en pantalla mide el CV a 600px de ancho, pero al imprimir la hoja usa
-  // el ancho completo del papel (más ancho, ~760px útiles en A4) — con más ancho el
+  // el ancho completo del papel (794px en A4 con margen 0) — con más ancho el
   // texto envuelve menos líneas y ocupa menos alto. Corregimos la medición para
   // aproximar el alto real impreso.
-  const PRINT_WIDTH_CORRECTION = 0.79;
+  const PRINT_WIDTH_CORRECTION = 0.755;
   const hasMeaningfulContent =
     data.nombre.trim() ||
     data.resumen.trim() ||
@@ -3404,6 +3404,10 @@ Texto del currículum:
         .font-sans { font-family: ${TYPO_PRESETS[data.tipografia].body}; }
         .font-mono { font-family: 'IBM Plex Mono', monospace; }
         input:focus, textarea:focus { border-color: ${accent} !important; box-shadow: 0 0 0 2px ${accent}33; }
+        @page {
+          size: A4;
+          margin: 0;
+        }
         @media print {
           .no-print { display: none !important; }
           .print-page { box-shadow: none !important; margin: 0 !important; width: 100% !important; min-height: 0 !important; }
