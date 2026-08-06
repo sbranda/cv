@@ -137,3 +137,11 @@ Estas 3 nuevas, junto con Moderno y Ejecutivo, no soportan el reordenamiento por
 ## Corrección: página en negro extra al imprimir/guardar PDF
 
 El contenedor raíz de la app tenía fondo oscuro y una altura mínima de pantalla completa sin excepción para impresión — eso hacía que, al imprimir, se colara un área negra debajo del CV y a veces una segunda página completamente en negro y vacía. Ya está corregido: ese contenedor ahora se resetea a fondo blanco y sin altura forzada específicamente en modo impresión.
+
+## Corrección: falso positivo en el aviso de páginas
+
+El aviso de "tu CV ocupa aproximadamente N páginas" estaba sobreestimando: medía el alto del CV en la vista previa (que se renderiza a 600px de ancho), pero al imprimir la hoja usa el ancho completo del papel, así que el texto real envuelve menos y ocupa menos alto que en la pantalla. Ahora la estimación aplica una corrección para acercarse más al alto real impreso. Sigue siendo una aproximación (puede variar según el papel y los márgenes de impresión configurados), pero debería dar muchos menos falsos positivos.
+
+## Calibración A4
+
+La estimación de páginas está calibrada específicamente para papel A4 (210×297mm, el estándar fuera de EE.UU.) con márgenes mínimos de impresión, que es lo más común al guardar un CV en PDF.

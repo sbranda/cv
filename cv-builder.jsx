@@ -2744,13 +2744,23 @@ JSON original:
     return () => observer.disconnect();
   }, []);
 
-  const PAGE_HEIGHT_PX = 1150;
+  // Calibrado para A4 (210×297mm ≈ 794×1123px a 96dpi) con márgenes mínimos de impresión,
+  // que es lo más común al imprimir/guardar un CV para no desperdiciar espacio.
+  const PAGE_HEIGHT_PX = 1090;
+  // El preview en pantalla mide el CV a 600px de ancho, pero al imprimir la hoja usa
+  // el ancho completo del papel (más ancho, ~760px útiles en A4) — con más ancho el
+  // texto envuelve menos líneas y ocupa menos alto. Corregimos la medición para
+  // aproximar el alto real impreso.
+  const PRINT_WIDTH_CORRECTION = 0.79;
   const hasMeaningfulContent =
     data.nombre.trim() ||
     data.resumen.trim() ||
     data.experiencia.some((e) => e.puesto || e.empresa || e.descripcion);
+  const correctedHeight = previewHeight * PRINT_WIDTH_CORRECTION;
   const pageCount =
-    previewHeight > 0 && hasMeaningfulContent ? Math.max(1, Math.ceil(previewHeight / PAGE_HEIGHT_PX)) : 1;
+    correctedHeight > 0 && hasMeaningfulContent
+      ? Math.max(1, Math.ceil(correctedHeight / PAGE_HEIGHT_PX))
+      : 1;
 
   const getShorteningTips = () => {
     const tips = [];
