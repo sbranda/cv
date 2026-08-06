@@ -153,3 +153,12 @@ Se agregó una regla `@page { size: A4; margin: 0; }` para que el navegador impr
 ## Vista previa en proporción A4
 
 Las 19 plantillas ahora usan la proporción real de A4 (210×297mm) en la vista previa: con el ancho fijo de 600px, el alto pasó de 780px a 849px para que coincida exactamente con la relación de aspecto de una hoja A4, en vez de una proporción aproximada. Esto es solo el tamaño "base" (una hoja vacía); si cargás mucho contenido, la plantilla sigue creciendo hacia abajo como antes.
+
+## Más plantillas de columna angosta a la izquierda
+
+Se sumaron 3 plantillas con el patrón de columna compacta a la izquierda y el área principal ocupando el resto del ancho:
+- **Columna**: barra clara con borde, tono sobrio y formal (variante clara de Moderno).
+- **Franja**: barra de color sólido (tu acento elegido) a la izquierda — la versión "espejo" de Panel, que la tiene a la derecha.
+- **Retrato**: columna angosta centrada en la foto, con la educación movida al área principal para dejar la barra lateral enfocada solo en identidad y contacto.
+
+Con estas, ya hay 8 plantillas de dos columnas en total (Moderno, Ejecutivo, Simetría, Prensa, Panel, Columna, Franja, Retrato).
