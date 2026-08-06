@@ -149,3 +149,7 @@ La estimación de páginas está calibrada específicamente para papel A4 (210×
 ## Sin márgenes al imprimir
 
 Se agregó una regla `@page { size: A4; margin: 0; }` para que el navegador imprima/guarde en PDF sin márgenes en blanco alrededor de la hoja, usando el espacio completo. Si igual ves márgenes al probarlo, revisá que en el cuadro de diálogo de impresión el campo "Márgenes" esté en "Ninguno" (o "None") — algunos navegadores respetan esta regla como sugerencia pero igual muestran el selector de márgenes, y si quedó en "Predeterminado" de una impresión anterior, puede pisar esta configuración.
+
+## Vista previa en proporción A4
+
+Las 19 plantillas ahora usan la proporción real de A4 (210×297mm) en la vista previa: con el ancho fijo de 600px, el alto pasó de 780px a 849px para que coincida exactamente con la relación de aspecto de una hoja A4, en vez de una proporción aproximada. Esto es solo el tamaño "base" (una hoja vacía); si cargás mucho contenido, la plantilla sigue creciendo hacia abajo como antes.

@@ -1216,7 +1216,7 @@ function PreviewClasico({ data, accent }) {
     ),
   };
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px]">
       <div className="mb-6 pb-6 flex items-start justify-between gap-4" style={{ borderBottom: `2px solid ${accent}` }}>
         <div>
           <h1 className="font-display text-[32px] leading-tight break-words" style={{ color: "#1a1a1a" }}>
@@ -1242,7 +1242,7 @@ function PreviewModerno({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex overflow-hidden">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] flex overflow-hidden">
       <div className="w-[34%] bg-[#1c1a18] text-stone-200 px-6 py-10 flex flex-col gap-6">
         <Avatar data={data} accent={accent} size={88} ring />
         <div>
@@ -1309,7 +1309,7 @@ function PreviewMinimalista({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-white text-[#222] w-full max-w-[600px] shadow-2xl px-12 py-14 min-h-[780px]">
+    <div className="print-page bg-white text-[#222] w-full max-w-[600px] shadow-2xl px-12 py-14 min-h-[849px]">
       <div className="text-center mb-8">
         <Avatar data={data} accent={accent} size={88} className="mx-auto mb-3" />
         <h1 className="font-display text-[30px] tracking-tight break-words" style={{ color: "#161616" }}>
@@ -1359,7 +1359,7 @@ function PreviewEjecutivo({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px]">
       <div className="text-center mb-5">
         <Avatar data={data} accent={accent} size={84} ring className="mx-auto mb-3" />
         <h1 className="font-display text-[30px] break-words" style={{ color: "#1a1a1a" }}>
@@ -1437,7 +1437,7 @@ function PreviewCorporativo({ data, accent }) {
   const label = "text-[11px] font-bold uppercase tracking-widest pb-1 mb-2 border-b";
   return (
     <div
-      className="print-page bg-white text-[#1a1a1a] w-full max-w-[600px] shadow-2xl px-11 py-12 min-h-[780px]"
+      className="print-page bg-white text-[#1a1a1a] w-full max-w-[600px] shadow-2xl px-11 py-12 min-h-[849px]"
       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
       <div className="text-center mb-6 pb-4 border-b border-stone-300">
@@ -1515,7 +1515,7 @@ function PreviewCompacto({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-9 py-10 min-h-[780px]">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-9 py-10 min-h-[849px]">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-[26px] leading-tight break-words">{data.nombre || "Tu nombre"}</h1>
@@ -1587,7 +1587,7 @@ function PreviewCreativo({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] overflow-hidden">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
       <div className="px-10 py-9 flex items-start justify-between gap-4" style={{ background: accent }}>
         <div>
           <h1 className="font-display text-[30px] text-white leading-tight break-words">{data.nombre || "Tu nombre"}</h1>
@@ -1656,7 +1656,7 @@ function PreviewDesarrollador({ data, accent }) {
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   const hasProj = data.proyectos.some((p) => p.nombre);
   return (
-    <div className="print-page bg-[#0f0f0f] text-stone-200 w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px]" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+    <div className="print-page bg-[#0f0f0f] text-stone-200 w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[849px]" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <p className="text-[11px] text-stone-500">$ whoami</p>
@@ -1763,7 +1763,7 @@ function PreviewAcademico({ data, accent }) {
   const hasBecas = data.becas.some((b) => b.nombre);
   const label = "text-[11px] font-bold uppercase tracking-widest pb-1 mb-2 border-b border-stone-300";
   return (
-    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-11 py-12 min-h-[780px]" style={{ fontFamily: "Georgia, serif" }}>
+    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-11 py-12 min-h-[849px]" style={{ fontFamily: "Georgia, serif" }}>
       <div className="mb-6 pb-4 border-b-2 flex items-start justify-between gap-4" style={{ borderColor: accent }}>
         <div>
           <h1 className="text-[24px] font-bold break-words">{data.nombre || "Tu nombre"}</h1>
@@ -1861,7 +1861,7 @@ function PreviewComercial({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasLogros = data.logros.some((l) => l.metrica || l.descripcion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[780px]">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[849px]">
       <div className="mb-6 pb-5 flex items-start justify-between gap-4" style={{ borderBottom: `2px solid ${accent}` }}>
         <div>
           <h1 className="font-display text-[30px] leading-tight break-words" style={{ color: "#1a1a1a" }}>{data.nombre || "Tu nombre"}</h1>
@@ -1909,7 +1909,7 @@ function PreviewImpacto({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-white text-[#161616] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+    <div className="print-page bg-white text-[#161616] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px]">
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="font-display text-[46px] leading-[0.95] tracking-tight break-words">{data.nombre || "Tu nombre"}</h1>
         <Avatar data={data} accent={accent} size={66} className="mt-1" />
@@ -1971,7 +1971,7 @@ function PreviewAurora({ data, accent }) {
   };
   const card = "mb-4 last:mb-0 bg-white/70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm";
   return (
-    <div className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px] text-[#232323]" style={bg}>
+    <div className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[849px] text-[#232323]" style={bg}>
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-[30px] leading-tight break-words" style={{ color: "#1a1a1a" }}>
@@ -2029,7 +2029,7 @@ function PreviewBlueprint({ data, accent }) {
   const corner = "absolute w-4 h-4";
   return (
     <div
-      className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[780px] text-[#232323] relative overflow-hidden"
+      className="print-page w-full max-w-[600px] shadow-2xl px-9 py-11 min-h-[849px] text-[#232323] relative overflow-hidden"
       style={{ ...gridBg, fontFamily: "'IBM Plex Mono', monospace" }}
     >
       <div className={corner + " top-3 left-3 border-l-2 border-t-2"} style={{ borderColor: accent }} />
@@ -2127,7 +2127,7 @@ function PreviewBloques({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] relative overflow-hidden">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] relative overflow-hidden">
       <div className="absolute -top-10 -right-16 w-52 h-52 rounded-full" style={{ background: accent, opacity: 0.15 }} />
       <div className="absolute top-28 -left-12 w-36 h-36 rotate-45" style={{ background: accent, opacity: 0.1 }} />
       <div className="relative px-10 py-11">
@@ -2182,7 +2182,7 @@ function PreviewNocturno({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#121212] text-stone-300 w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[780px]">
+    <div className="print-page bg-[#121212] text-stone-300 w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px]">
       <div className="mb-6 pb-5 border-b flex items-start justify-between gap-4" style={{ borderColor: `${accent}44` }}>
         <div>
           <h1 className="font-display text-[30px] leading-tight text-white break-words">{data.nombre || "Tu nombre"}</h1>
@@ -2278,7 +2278,7 @@ function PreviewRevista({ data, accent }) {
   const firstLetter = resumenText.charAt(0);
   const restText = resumenText.slice(1);
   return (
-    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[780px]">
+    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[849px]">
       <p className="text-center text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: accent }}>
         Currículum · Edición personal
       </p>
@@ -2343,7 +2343,7 @@ function PreviewContorno({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-white text-[#1f1f1f] w-full max-w-[600px] shadow-2xl p-5 min-h-[780px]">
+    <div className="print-page bg-white text-[#1f1f1f] w-full max-w-[600px] shadow-2xl p-5 min-h-[849px]">
       <div className="border-2 px-8 py-10" style={{ borderColor: accent }}>
         <div className="border px-2 py-2" style={{ borderColor: "#d6d3cd" }}>
           <div className="text-center mb-6 px-4 py-4">
@@ -2399,7 +2399,7 @@ function PreviewDinamico({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] overflow-hidden">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
       <div
         className="px-10 pt-10 pb-14 flex items-start justify-between gap-4"
         style={{ background: accent, clipPath: "polygon(0 0, 100% 0, 100% 78%, 0 100%)" }}
@@ -2458,7 +2458,7 @@ function PreviewTarjetas({ data, accent }) {
   const tab = "absolute -top-2.5 left-4 text-[9px] px-2 py-0.5 rounded-sm text-white tracking-wide";
   return (
     <div
-      className="print-page w-full max-w-[600px] shadow-2xl px-8 py-10 min-h-[780px] text-[#232323]"
+      className="print-page w-full max-w-[600px] shadow-2xl px-8 py-10 min-h-[849px] text-[#232323]"
       style={{ backgroundColor: "#F0EDE6", backgroundImage: "radial-gradient(#00000012 1px, transparent 1px)", backgroundSize: "14px 14px" }}
     >
       <div className="mb-6 text-center">
@@ -2515,7 +2515,7 @@ function PreviewSimetria({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] flex">
       <div className="w-1/2 px-8 py-11 border-r" style={{ borderColor: `${accent}30` }}>
         <Avatar data={data} accent={accent} size={72} className="mb-4" />
         <h1 className="font-display text-[24px] leading-tight break-words" style={{ color: "#1a1a1a" }}>
@@ -2560,7 +2560,7 @@ function PreviewPrensa({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[780px]">
+    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[849px]">
       <div className="text-center mb-2">
         <p className="text-[10px] tracking-[0.3em] uppercase" style={{ color: accent }}>Currículum</p>
         <h1 className="font-display text-[34px] leading-none mt-1 break-words">{data.nombre || "Tu nombre"}</h1>
@@ -2605,7 +2605,7 @@ function PreviewPanel({ data, accent }) {
   const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex overflow-hidden">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] flex overflow-hidden">
       <div className="flex-1 px-8 py-10">
         {data.resumen && (
           <div className="mb-6">
