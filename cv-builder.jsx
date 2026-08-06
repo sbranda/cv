@@ -3880,7 +3880,7 @@ Texto del currículum:
         {/* Editor */}
         <div ref={editorSectionRef} className="no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
           <section className="mb-8">
-            <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+            <h2 className="font-mono text-[11px] uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Apariencia
             </h2>
             <Field label="Tipografía">
@@ -3934,7 +3934,7 @@ Texto del currículum:
           </section>
 
           <section className="mb-8">
-            <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+            <h2 className="font-mono text-[11px] uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Datos personales
             </h2>
             <div className="flex items-center gap-4 mb-4">
@@ -4053,7 +4053,7 @@ Texto del currículum:
 
           <section className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> Resumen profesional
               </h2>
               <AIButton onClick={improveSummary} loading={loadingField === "resumen"} />
@@ -4087,7 +4087,7 @@ Texto del currículum:
 
           <section className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> Experiencia
               </h2>
               <button
@@ -4177,7 +4177,7 @@ Texto del currículum:
 
           <section className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> Educación
               </h2>
               <button
@@ -4232,7 +4232,7 @@ Texto del currículum:
 
           <section>
             <div className="flex items-center justify-between mb-2">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> Habilidades
               </h2>
               <AIButton onClick={improveSkills} loading={loadingField === "habilidades"} />
@@ -4276,7 +4276,7 @@ Texto del currículum:
           {data.seccionesOpcionales?.proyectos && (
             <section className="mt-6 mb-8">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                   <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
                 </h2>
                 <div className="flex items-center gap-3">
@@ -4323,7 +4323,7 @@ Texto del currículum:
           {data.seccionesOpcionales?.publicaciones && (
             <section className="mb-8">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                   <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
@@ -4367,7 +4367,7 @@ Texto del currículum:
           {data.seccionesOpcionales?.becas && (
             <section className="mb-8">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                   <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
@@ -4411,7 +4411,7 @@ Texto del currículum:
           {data.seccionesOpcionales?.logros && (
             <section>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-mono text-[11px] uppercase tracking-widest text-stone-500 flex items-center gap-2">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                   <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
                 </h2>
                 <div className="flex items-center gap-3">
