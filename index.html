@@ -4252,12 +4252,24 @@ Texto del currículum:
   );
 }
 
+function normalizeOrder(value) {
+  if (Array.isArray(value) && value.length) return value;
+  if (value === "educacion-primero") return ["resumen", "educacion", "experiencia", "habilidades"];
+  return DEFAULT_SECTION_ORDER;
+}
+
+function normalizeProfile(p) {
+  return { ...p, data: { ...initialState, ...p.data, ordenSecciones: normalizeOrder(p.data?.ordenSecciones) } };
+}
+
 function loadProfiles() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed && Array.isArray(parsed.profiles) && parsed.profiles.length) return parsed;
+      if (parsed && Array.isArray(parsed.profiles) && parsed.profiles.length) {
+        return { ...parsed, profiles: parsed.profiles.map(normalizeProfile) };
+      }
     }
   } catch (e) {}
   // Migration: try the old single-profile format
@@ -4266,7 +4278,7 @@ function loadProfiles() {
     if (legacy) {
       const legacyData = JSON.parse(legacy);
       return {
-        profiles: [{ id: "profile-1", nombre: "Perfil 1", data: { ...initialState, ...legacyData } }],
+        profiles: [normalizeProfile({ id: "profile-1", nombre: "Perfil 1", data: { ...initialState, ...legacyData } })],
         activeProfileId: "profile-1",
       };
     }
