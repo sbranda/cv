@@ -3387,7 +3387,7 @@ Texto del currículum:
   const currentTemplateName = TEMPLATES.find((t) => t.id === data.template)?.name;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0">
+    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap');
         .font-display { font-family: ${TYPO_PRESETS[data.tipografia].display}; }
@@ -3397,7 +3397,7 @@ Texto del currículum:
         @media print {
           .no-print { display: none !important; }
           .print-page { box-shadow: none !important; margin: 0 !important; width: 100% !important; min-height: 0 !important; }
-          body { background: white !important; }
+          html, body { background: white !important; min-height: 0 !important; height: auto !important; }
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
         }
       `}</style>

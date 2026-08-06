@@ -133,3 +133,7 @@ Ahora hay 5 plantillas de dos columnas en total (antes solo Moderno y Ejecutivo)
 - **Panel**: barra lateral de color sólido (el acento elegido) a la **derecha** — al revés de Moderno, que la tiene oscura y a la izquierda.
 
 Estas 3 nuevas, junto con Moderno y Ejecutivo, no soportan el reordenamiento por arrastre de secciones (su estructura en columnas depende de un orden fijo), tal como ya pasaba con esos dos.
+
+## Corrección: página en negro extra al imprimir/guardar PDF
+
+El contenedor raíz de la app tenía fondo oscuro y una altura mínima de pantalla completa sin excepción para impresión — eso hacía que, al imprimir, se colara un área negra debajo del CV y a veces una segunda página completamente en negro y vacía. Ya está corregido: ese contenedor ahora se resetea a fondo blanco y sin altura forzada específicamente en modo impresión.
