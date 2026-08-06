@@ -266,6 +266,24 @@ const TEMPLATES = [
     desc: "Secciones como notas apiladas, estilo scrapbook",
     category: "creativo",
   },
+  {
+    id: "simetria",
+    name: "Simetría",
+    desc: "Dos columnas parejas al 50/50, con línea divisoria",
+    category: "formal",
+  },
+  {
+    id: "prensa",
+    name: "Prensa",
+    desc: "Texto en columnas tipo periódico",
+    category: "creativo",
+  },
+  {
+    id: "panel",
+    name: "Panel",
+    desc: "Barra lateral de color sólido, a la derecha",
+    category: "fondos",
+  },
 ];
 
 const emptyExperience = () => ({
@@ -2489,6 +2507,160 @@ function PreviewTarjetas({ data, accent }) {
   );
 }
 
+function PreviewSimetria({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex">
+      <div className="w-1/2 px-8 py-11 border-r" style={{ borderColor: `${accent}30` }}>
+        <Avatar data={data} accent={accent} size={72} className="mb-4" />
+        <h1 className="font-display text-[24px] leading-tight break-words" style={{ color: "#1a1a1a" }}>
+          {data.nombre || "Tu nombre"}
+        </h1>
+        {data.puesto && (
+          <p className="font-mono text-[12px] mt-1" style={{ color: accent }}>{data.puesto}</p>
+        )}
+        <ContactLine data={data} className="flex flex-col gap-1.5 mt-4 text-[11px] text-stone-600" iconSize={10} />
+        {hasEdu && (
+          <div className="mt-6">
+            <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+        {data.habilidades && (
+          <div className="mt-6">
+            <SectionLabel accent={accent}>Habilidades</SectionLabel>
+            <SkillChips data={data} accent={accent} />
+          </div>
+        )}
+      </div>
+      <div className="w-1/2 px-8 py-11">
+        {data.resumen && (
+          <div className="mb-6">
+            <SectionLabel accent={accent}>Perfil</SectionLabel>
+            <p className="text-[12.5px] leading-relaxed text-stone-700">{data.resumen}</p>
+          </div>
+        )}
+        {hasExp && (
+          <div>
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} titleClass="font-display text-[14px] font-medium text-stone-900" />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PreviewPrensa({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#1c1c1c] w-full max-w-[600px] shadow-2xl px-10 py-11 min-h-[780px]">
+      <div className="text-center mb-2">
+        <p className="text-[10px] tracking-[0.3em] uppercase" style={{ color: accent }}>Currículum</p>
+        <h1 className="font-display text-[34px] leading-none mt-1 break-words">{data.nombre || "Tu nombre"}</h1>
+        {data.puesto && <p className="text-[12.5px] mt-1 text-stone-500 italic">{data.puesto}</p>}
+      </div>
+      <div className="h-[3px] my-4" style={{ background: accent }} />
+      <ContactLine
+        data={data}
+        className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-6 text-[11px] text-stone-500"
+        iconSize={10}
+      />
+      {data.resumen && (
+        <p className="text-[12.5px] leading-relaxed text-stone-700 mb-6 text-center italic max-w-[440px] mx-auto">
+          {data.resumen}
+        </p>
+      )}
+      <div style={{ columnCount: 2, columnGap: "28px" }}>
+        {hasExp && (
+          <div className="mb-5" style={{ breakInside: "avoid" }}>
+            <SectionLabel accent={accent} className="mb-2">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} titleClass="text-[13px] font-bold text-stone-900" />
+          </div>
+        )}
+        {hasEdu && (
+          <div className="mb-5" style={{ breakInside: "avoid" }}>
+            <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+        {data.habilidades && (
+          <div style={{ breakInside: "avoid" }}>
+            <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
+            <SkillChips data={data} accent={accent} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PreviewPanel({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[780px] flex overflow-hidden">
+      <div className="flex-1 px-8 py-10">
+        {data.resumen && (
+          <div className="mb-6">
+            <SectionLabel accent={accent}>Perfil</SectionLabel>
+            <p className="text-[13px] leading-relaxed text-stone-700">{data.resumen}</p>
+          </div>
+        )}
+        {hasExp && (
+          <div>
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} titleClass="font-display text-[15px] font-medium text-stone-900" />
+          </div>
+        )}
+      </div>
+      <div className="w-[34%] px-6 py-10 flex flex-col gap-6" style={{ background: accent }}>
+        <div>
+          <Avatar data={data} accent="white" size={64} ring className="mb-3" />
+          <h1 className="font-display text-[20px] leading-tight text-white break-words">
+            {data.nombre || "Tu nombre"}
+          </h1>
+          {data.puesto && <p className="text-[11px] mt-1 text-white/80 font-mono">{data.puesto}</p>}
+        </div>
+        <ContactLine data={data} className="flex flex-col gap-1.5 text-[11px] text-white/85" iconSize={10} />
+        {hasEdu && (
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-white/70 mb-2">Educación</p>
+            <div className="flex flex-col gap-2">
+              {data.educacion.map(
+                (edu) =>
+                  (edu.titulo || edu.institucion) && (
+                    <div key={edu.id}>
+                      <p className="text-[11.5px] text-white font-medium">{edu.titulo}</p>
+                      <p className="text-[10.5px] text-white/70">{edu.institucion}</p>
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        )}
+        {data.habilidades && (
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-white/70 mb-2">Habilidades</p>
+            <div className="flex flex-wrap gap-1">
+              {data.habilidades.split(",").map(
+                (h, i) =>
+                  h.trim() && (
+                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-sm bg-white/15 text-white">
+                      {h.trim()}
+                    </span>
+                  )
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const TEMPLATE_COMPONENTS = {
   clasico: PreviewClasico,
   moderno: PreviewModerno,
@@ -2509,6 +2681,9 @@ const TEMPLATE_COMPONENTS = {
   contorno: PreviewContorno,
   dinamico: PreviewDinamico,
   tarjetas: PreviewTarjetas,
+  simetria: PreviewSimetria,
+  prensa: PreviewPrensa,
+  panel: PreviewPanel,
 };
 
 function CVBuilder() {
@@ -3686,9 +3861,9 @@ Texto del currículum:
                 onReorder={(newOrder) => update({ ordenSecciones: newOrder })}
               />
               <p className="text-[10px] text-stone-600 mt-1.5 leading-relaxed">
-                Arrastrá desde el ícono para reordenar. No aplica a Moderno, Ejecutivo, Académico y
-                Ventas/Marketing — su diseño en columnas o su secuencia académica/de métricas depende de un
-                orden fijo.
+                Arrastrá desde el ícono para reordenar. No aplica a Moderno, Ejecutivo, Académico,
+                Ventas/Marketing, Simetría, Prensa y Panel — su diseño en columnas o su secuencia
+                académica/de métricas depende de un orden fijo.
               </p>
             </Field>
           </section>

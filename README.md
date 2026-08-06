@@ -124,3 +124,12 @@ Los botones ↶ ↷ en el encabezado deshacen y rehacen cambios en el contenido 
 Cerca del inicio del archivo `index.html` hay una constante `HARDCODED_API_KEY = ""`. Si pegás tu clave de Gemini ahí (entre las comillas) antes de subir el archivo, la app la usa automáticamente sin pedirte que la cargues desde Configuración.
 
 ⚠️ **Importante**: esta es una página estática y pública. Cualquiera que abra el código fuente de tu sitio (Ctrl+U en el navegador) puede ver y copiar esa clave. Con Gemini esto normalmente significa que te pueden agotar la cuota gratuita, no un cobro inesperado — pero de todas formas es tu clave expuesta. Si en algún momento cargás una clave distinta desde el panel de Configuración, esa queda guardada en tu navegador y tiene prioridad sobre la fija en el código.
+
+## Plantillas de dos columnas
+
+Ahora hay 5 plantillas de dos columnas en total (antes solo Moderno y Ejecutivo):
+- **Simetría**: dos columnas parejas al 50/50 con una línea divisoria fina — foto, contacto, educación y habilidades a la izquierda; perfil y experiencia a la derecha.
+- **Prensa**: encabezado centrado, y el cuerpo (experiencia, educación, habilidades) fluye en dos columnas tipo periódico usando `column-count` de CSS, en vez de una división fija por secciones.
+- **Panel**: barra lateral de color sólido (el acento elegido) a la **derecha** — al revés de Moderno, que la tiene oscura y a la izquierda.
+
+Estas 3 nuevas, junto con Moderno y Ejecutivo, no soportan el reordenamiento por arrastre de secciones (su estructura en columnas depende de un orden fijo), tal como ya pasaba con esos dos.
