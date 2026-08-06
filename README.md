@@ -162,3 +162,7 @@ Se sumaron 3 plantillas con el patrón de columna compacta a la izquierda y el �
 - **Retrato**: columna angosta centrada en la foto, con la educación movida al área principal para dejar la barra lateral enfocada solo en identidad y contacto.
 
 Con estas, ya hay 8 plantillas de dos columnas en total (Moderno, Ejecutivo, Simetría, Prensa, Panel, Columna, Franja, Retrato).
+
+## Contacto al pie de la página
+
+Debajo de "LinkedIn / portafolio" hay un casillero: "Mostrar el contacto al pie de la página en vez del encabezado". Al activarlo, el email/teléfono/ubicación/LinkedIn se mueven de debajo del nombre a una línea al final de la hoja, con una línea divisoria arriba. Solo funciona en **Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista** — en Revista además se combina con el numerito de página que ya tenía esa plantilla.

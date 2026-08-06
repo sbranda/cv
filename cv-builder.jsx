@@ -278,6 +278,7 @@ const initialState = {
   template: "clasico",
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
   comparacion: { descripcion: "", resultado: null },
+  contactoAlPie: false,
 };
 
 const TONOS = [
@@ -1077,7 +1078,7 @@ function PreviewClasico({ data, accent }) {
     ),
   };
   return (
-    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px]">
+    <div className="print-page bg-[#FBF9F5] text-[#232323] w-full max-w-[600px] shadow-2xl px-10 py-12 min-h-[849px] flex flex-col">
       <div className="mb-6 pb-6 flex items-start justify-between gap-4" style={{ borderBottom: `2px solid ${accent}` }}>
         <div>
           <h1 className="font-display text-[32px] leading-tight break-words" style={{ color: "#1a1a1a" }}>
@@ -1088,13 +1089,24 @@ function PreviewClasico({ data, accent }) {
               {data.puesto}
             </p>
           )}
-          <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+          {!data.contactoAlPie && (
+            <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+          )}
         </div>
         <Avatar data={data} accent={accent} size={80} />
       </div>
-      {(data.ordenSecciones || DEFAULT_SECTION_ORDER).map((key) => (
-        <React.Fragment key={key}>{sections[key]}</React.Fragment>
-      ))}
+      <div className="flex-1">
+        {(data.ordenSecciones || DEFAULT_SECTION_ORDER).map((key) => (
+          <React.Fragment key={key}>{sections[key]}</React.Fragment>
+        ))}
+      </div>
+      {data.contactoAlPie && (
+        <ContactLine
+          data={data}
+          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
+          iconSize={10}
+        />
+      )}
     </div>
   );
 }
@@ -1177,11 +1189,13 @@ function PreviewMinimalista({ data, accent }) {
           {data.nombre || "Tu nombre"}
         </h1>
         {data.puesto && <p className="text-[13px] mt-1 tracking-wide" style={{ color: accent }}>{data.puesto}</p>}
-        <ContactLine
-          data={data}
-          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
-          iconSize={10}
-        />
+        {!data.contactoAlPie && (
+          <ContactLine
+            data={data}
+            className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
+            iconSize={10}
+          />
+        )}
       </div>
       {data.resumen && (
         <div className="mb-7 text-center max-w-[440px] mx-auto">
@@ -1212,6 +1226,13 @@ function PreviewMinimalista({ data, accent }) {
           <p className="text-[12.5px] text-stone-600">{data.habilidades}</p>
         </div>
       )}
+      {data.contactoAlPie && (
+        <ContactLine
+          data={data}
+          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
+          iconSize={10}
+        />
+      )}
     </div>
   );
 }
@@ -1231,10 +1252,12 @@ function PreviewEjecutivo({ data, accent }) {
             {data.puesto}
           </p>
         )}
-        <ContactLine
-          data={data}
-          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600"
-        />
+        {!data.contactoAlPie && (
+          <ContactLine
+            data={data}
+            className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600"
+          />
+        )}
       </div>
       <div className="h-[2px] mb-6" style={{ background: accent, opacity: 0.5 }} />
       <div className="grid grid-cols-[38%_62%] gap-6">
@@ -1287,6 +1310,13 @@ function PreviewEjecutivo({ data, accent }) {
           )}
         </div>
       </div>
+      {data.contactoAlPie && (
+        <ContactLine
+          data={data}
+          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
+          iconSize={10}
+        />
+      )}
     </div>
   );
 }
@@ -1305,9 +1335,11 @@ function PreviewCorporativo({ data, accent }) {
         <Avatar data={data} accent={accent} size={80} shape="square" className="mx-auto mb-3" />
         <h1 className="text-[25px] font-bold tracking-tight break-words">{data.nombre || "Tu nombre"}</h1>
         {data.puesto && <p className="text-[12.5px] mt-1 text-stone-600">{data.puesto}</p>}
-        <p className="text-[11px] mt-2 text-stone-500">
-          {[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   |   ")}
-        </p>
+        {!data.contactoAlPie && (
+          <p className="text-[11px] mt-2 text-stone-500">
+            {[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   |   ")}
+          </p>
+        )}
       </div>
       {data.resumen && (
         <div className="mb-5">
@@ -1367,6 +1399,11 @@ function PreviewCorporativo({ data, accent }) {
           <h3 className={label} style={ruleStyle}>Habilidades</h3>
           <p className="text-[12.5px] text-stone-700 break-words">{data.habilidades}</p>
         </div>
+      )}
+      {data.contactoAlPie && (
+        <p className="text-[11px] mt-8 pt-4 border-t border-stone-300 text-center text-stone-500">
+          {[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   |   ")}
+        </p>
       )}
     </div>
   );
@@ -2151,7 +2188,13 @@ function PreviewRevista({ data, accent }) {
         <div className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
         <div className="flex-1 h-px bg-stone-300" />
       </div>
-      <ContactLine data={data} className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-7 text-[11px] text-stone-500" iconSize={10} />
+      {!data.contactoAlPie && (
+        <ContactLine
+          data={data}
+          className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-7 text-[11px] text-stone-500"
+          iconSize={10}
+        />
+      )}
       {data.resumen && (
         <p className="text-[13px] leading-relaxed text-stone-700 mb-7">
           <span className="font-display float-left text-[52px] leading-[0.8] pr-2 pt-1" style={{ color: accent }}>
@@ -2195,7 +2238,18 @@ function PreviewRevista({ data, accent }) {
           <SkillChips data={data} accent={accent} />
         </div>
       )}
-      <p className="text-center text-[10px] text-stone-300 mt-8 tracking-widest">— 01 —</p>
+      {data.contactoAlPie ? (
+        <div className="mt-8 pt-4 border-t border-stone-200">
+          <ContactLine
+            data={data}
+            className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] text-stone-500"
+            iconSize={10}
+          />
+          <p className="text-center text-[10px] text-stone-300 mt-3 tracking-widest">— 01 —</p>
+        </div>
+      ) : (
+        <p className="text-center text-[10px] text-stone-300 mt-8 tracking-widest">— 01 —</p>
+      )}
     </div>
   );
 }
@@ -2213,11 +2267,13 @@ function PreviewContorno({ data, accent }) {
             {data.puesto && (
               <p className="text-[12px] mt-1 tracking-widest uppercase" style={{ color: accent }}>{data.puesto}</p>
             )}
-            <ContactLine
-              data={data}
-              className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
-              iconSize={10}
-            />
+            {!data.contactoAlPie && (
+              <ContactLine
+                data={data}
+                className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
+                iconSize={10}
+              />
+            )}
           </div>
           <div className="px-4">
             {data.resumen && (
@@ -2248,6 +2304,13 @@ function PreviewContorno({ data, accent }) {
                 <SectionLabel accent={accent}>Habilidades</SectionLabel>
                 <p className="text-[12px] text-stone-600 break-words">{data.habilidades}</p>
               </div>
+            )}
+            {data.contactoAlPie && (
+              <ContactLine
+                data={data}
+                className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-6 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
+                iconSize={10}
+              />
             )}
           </div>
         </div>
@@ -3971,6 +4034,21 @@ Texto del currículum:
                 />
               </Field>
             </div>
+            <label className="flex items-center gap-2 cursor-pointer mt-1">
+              <input
+                type="checkbox"
+                checked={data.contactoAlPie}
+                onChange={(e) => update({ contactoAlPie: e.target.checked })}
+                className="w-3.5 h-3.5 accent-current"
+                style={{ color: accent }}
+              />
+              <span className="text-[11px] text-stone-400">
+                Mostrar el contacto al pie de la página en vez del encabezado
+              </span>
+            </label>
+            <p className="text-[10px] text-stone-600 mt-1 leading-relaxed">
+              Solo aplica a Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista.
+            </p>
           </section>
 
           <section className="mb-8">
