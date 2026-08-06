@@ -166,3 +166,7 @@ Con estas, ya hay 8 plantillas de dos columnas en total (Moderno, Ejecutivo, Sim
 ## Contacto al pie de la página
 
 Debajo de "LinkedIn / portafolio" hay un casillero: "Mostrar el contacto al pie de la página en vez del encabezado". Al activarlo, el email/teléfono/ubicación/LinkedIn se mueven de debajo del nombre a una línea al final de la hoja, con una línea divisoria arriba. Solo funciona en **Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista** — en Revista además se combina con el numerito de página que ya tenía esa plantilla.
+
+## Tomar foto con la cámara
+
+Junto a "Subir foto" ahora hay un botón "Tomar foto" que abre directamente la cámara del celular (cámara frontal, ideal para una selfie de perfil) en vez de tener que ir a la galería primero. En computadoras de escritorio sin cámara, este botón normalmente abre el selector de archivos común.

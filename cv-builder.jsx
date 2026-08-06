@@ -28,6 +28,7 @@ import {
   MoreHorizontal,
   ChevronDown,
   ChevronRight,
+  Camera,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3948,10 +3949,24 @@ Texto del currículum:
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
-                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-                  {data.foto ? "Cambiar foto" : "Subir foto"}
-                </label>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
+                    <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                    <Upload size={12} />
+                    {data.foto ? "Cambiar foto" : "Subir foto"}
+                  </label>
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="user"
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                    <Camera size={12} />
+                    Tomar foto
+                  </label>
+                </div>
                 {data.foto && (
                   <button
                     onClick={() => update({ foto: null })}
