@@ -106,3 +106,7 @@ La galería de plantillas ya no muestra formas grises genéricas — cada miniat
 ## Indicador de guardado
 
 Debajo del título, en el encabezado, aparece "Guardado hace X" — se actualiza cada vez que cambiás algo (se guarda al instante en `localStorage`) y el texto se refresca solo cada 15 segundos para reflejar el tiempo transcurrido.
+
+## Deshacer / rehacer
+
+Los botones ↶ ↷ en el encabezado deshacen y rehacen cambios en el contenido del perfil activo. Los cambios de texto se agrupan automáticamente (no hace falta deshacer letra por letra), y el historial se reinicia al cambiar de perfil. La foto no queda incluida en el historial, para que deshacer no se vuelva pesado.

@@ -76,6 +76,8 @@ const AlignLeft = (p) => <Icon {...p}><path d="M21 6H3M15 12H3M17 18H3" /></Icon
 const AlertTriangle = (p) => <Icon {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></Icon>;
 const Target = (p) => <Icon {...p}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></Icon>;
 const Languages = (p) => <Icon {...p}><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-5-10-5 10" /><path d="M14 18h6" /></Icon>;
+const Undo2 = (p) => <Icon {...p}><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" /></Icon>;
+const Redo2 = (p) => <Icon {...p}><path d="m15 14 5-5-5-5" /><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
 const STORAGE_KEY = "cv-builder-profiles-v3";
@@ -2466,6 +2468,64 @@ function CVBuilder() {
     );
   };
 
+  // ---- Undo / redo (historial por perfil; se reinicia al cambiar de perfil, excluye la foto) ----
+  const historyRef = useRef({ stack: [], index: -1, skip: false });
+  const [historyVersion, setHistoryVersion] = useState(0);
+
+  const snapshotData = (d) => {
+    const { foto, ...rest } = d;
+    return JSON.parse(JSON.stringify(rest));
+  };
+
+  useEffect(() => {
+    historyRef.current = { stack: [snapshotData(activeProfile.data)], index: 0, skip: false };
+    setHistoryVersion((v) => v + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfileId]);
+
+  useEffect(() => {
+    const h = historyRef.current;
+    if (h.skip) {
+      h.skip = false;
+      return;
+    }
+    const timeout = setTimeout(() => {
+      const snap = snapshotData(data);
+      const newStack = h.stack.slice(0, h.index + 1);
+      const last = newStack[newStack.length - 1];
+      if (last && JSON.stringify(last) === JSON.stringify(snap)) return;
+      newStack.push(snap);
+      if (newStack.length > 40) newStack.shift();
+      historyRef.current = { stack: newStack, index: newStack.length - 1, skip: false };
+      setHistoryVersion((v) => v + 1);
+    }, 700);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const canUndo = historyRef.current.index > 0;
+  const canRedo = historyRef.current.index < historyRef.current.stack.length - 1;
+
+  const undo = () => {
+    const h = historyRef.current;
+    if (h.index <= 0) return;
+    h.index -= 1;
+    h.skip = true;
+    const snap = h.stack[h.index];
+    setData((d) => ({ ...d, ...snap }));
+    setHistoryVersion((v) => v + 1);
+  };
+
+  const redo = () => {
+    const h = historyRef.current;
+    if (h.index >= h.stack.length - 1) return;
+    h.index += 1;
+    h.skip = true;
+    const snap = h.stack[h.index];
+    setData((d) => ({ ...d, ...snap }));
+    setHistoryVersion((v) => v + 1);
+  };
+
   const addProfile = () => {
     const id = crypto.randomUUID();
     setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState } }]);
@@ -3384,6 +3444,24 @@ Texto del currículum:
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <InstallButton />
+          <div className="flex items-center gap-1 border border-stone-700 rounded-md p-0.5">
+            <button
+              onClick={undo}
+              disabled={!canUndo}
+              title="Deshacer"
+              className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
+            >
+              <Undo2 size={15} />
+            </button>
+            <button
+              onClick={redo}
+              disabled={!canRedo}
+              title="Rehacer"
+              className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
+            >
+              <Redo2 size={15} />
+            </button>
+          </div>
           <button
             onClick={() => setProfilesOpen(true)}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"

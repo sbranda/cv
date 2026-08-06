@@ -23,6 +23,8 @@ import {
   AlertTriangle,
   Target,
   Languages,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -2325,6 +2327,64 @@ export default function CVBuilder() {
     );
   };
 
+  // ---- Undo / redo (historial por perfil; se reinicia al cambiar de perfil, excluye la foto) ----
+  const historyRef = useRef({ stack: [], index: -1, skip: false });
+  const [historyVersion, setHistoryVersion] = useState(0);
+
+  const snapshotData = (d) => {
+    const { foto, ...rest } = d;
+    return JSON.parse(JSON.stringify(rest));
+  };
+
+  useEffect(() => {
+    historyRef.current = { stack: [snapshotData(activeProfile.data)], index: 0, skip: false };
+    setHistoryVersion((v) => v + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfileId]);
+
+  useEffect(() => {
+    const h = historyRef.current;
+    if (h.skip) {
+      h.skip = false;
+      return;
+    }
+    const timeout = setTimeout(() => {
+      const snap = snapshotData(data);
+      const newStack = h.stack.slice(0, h.index + 1);
+      const last = newStack[newStack.length - 1];
+      if (last && JSON.stringify(last) === JSON.stringify(snap)) return;
+      newStack.push(snap);
+      if (newStack.length > 40) newStack.shift();
+      historyRef.current = { stack: newStack, index: newStack.length - 1, skip: false };
+      setHistoryVersion((v) => v + 1);
+    }, 700);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const canUndo = historyRef.current.index > 0;
+  const canRedo = historyRef.current.index < historyRef.current.stack.length - 1;
+
+  const undo = () => {
+    const h = historyRef.current;
+    if (h.index <= 0) return;
+    h.index -= 1;
+    h.skip = true;
+    const snap = h.stack[h.index];
+    setData((d) => ({ ...d, ...snap }));
+    setHistoryVersion((v) => v + 1);
+  };
+
+  const redo = () => {
+    const h = historyRef.current;
+    if (h.index >= h.stack.length - 1) return;
+    h.index += 1;
+    h.skip = true;
+    const snap = h.stack[h.index];
+    setData((d) => ({ ...d, ...snap }));
+    setHistoryVersion((v) => v + 1);
+  };
+
   const addProfile = () => {
     const id = crypto.randomUUID();
     setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState } }]);
@@ -3188,6 +3248,24 @@ Texto del currículum:
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-1 border border-stone-700 rounded-md p-0.5">
+            <button
+              onClick={undo}
+              disabled={!canUndo}
+              title="Deshacer"
+              className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
+            >
+              <Undo2 size={15} />
+            </button>
+            <button
+              onClick={redo}
+              disabled={!canRedo}
+              title="Rehacer"
+              className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
+            >
+              <Redo2 size={15} />
+            </button>
+          </div>
           <button
             onClick={() => setProfilesOpen(true)}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
