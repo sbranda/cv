@@ -246,3 +246,12 @@ En celular, el texto debajo de "HazTuCV" ahora muestra solo "Guardado hace X" �
 ## Pie de página
 
 Al final de la app (debajo del editor y la vista previa) ahora aparece "Desarrollado por @sebranda".
+
+## 3 plantillas nuevas: familia "Bandera"
+
+Inspiradas en un diseño de referencia con franja superior de color y foto que se sobrepone al borde:
+- **Bandera**: franja de color arriba, foto circular a la izquierda que se sobrepone al borde inferior de la franja, nombre en mayúsculas grande. Debajo, dos columnas (Contacto+Educación / Acerca de mí+Habilidades) y Experiencia laboral a todo el ancho.
+- **Bandera Central**: misma idea pero con la foto y el nombre centrados, resumen centrado debajo, más simétrica y formal.
+- **Bandera Línea**: versión sin bloque de color sólido — reemplaza la franja por una línea fina de acento debajo del encabezado, para quien prefiera algo más restrained.
+
+Ya son 28 plantillas en total. Nota: la plantilla de referencia que compartiste incluía campos como edad, DNI, nacionalidad y estado civil, que la app no maneja — estas plantillas usan los campos existentes (nombre, puesto, contacto, foto, resumen, experiencia, educación, habilidades).

@@ -211,6 +211,24 @@ const TEMPLATES = [
     desc: "Columna angosta enfocada en la foto, centrada",
     category: "creativo",
   },
+  {
+    id: "bandera",
+    name: "Bandera",
+    desc: "Franja superior de color con foto que se sobrepone",
+    category: "formal",
+  },
+  {
+    id: "banderaCentral",
+    name: "Bandera Central",
+    desc: "Igual que Bandera, pero foto y nombre centrados",
+    category: "formal",
+  },
+  {
+    id: "banderaLinea",
+    name: "Bandera Línea",
+    desc: "Versión sin bloque de color, con una línea fina de acento",
+    category: "creativo",
+  },
 ];
 
 const emptyExperience = () => ({
@@ -2929,6 +2947,180 @@ function PreviewRetrato({ data, accent }) {
   );
 }
 
+function PreviewBandera({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
+      <div style={{ background: accent }} className="px-10 pt-10 pb-8">
+        <div className="flex items-end gap-6">
+          <div className="shrink-0 -mb-14">
+            <Avatar data={data} accent="white" size={104} ring />
+          </div>
+          <div className="pb-1 min-w-0">
+            <h1 className="font-display text-[26px] leading-[1.1] text-white uppercase font-bold break-words">
+              {data.nombre || "Tu nombre"}
+            </h1>
+            {data.puesto && (
+              <p className="text-[12px] font-bold uppercase tracking-wide mt-1.5" style={{ color: "#1a2f4a" }}>
+                {data.puesto}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-x-8 px-10 pt-16 pb-8">
+        <div>
+          <SectionLabel accent={accent} className="mb-3">Contacto</SectionLabel>
+          <ContactLine data={data} className="flex flex-col gap-1.5 text-[11.5px] text-stone-600" iconSize={11} />
+          {hasEdu && (
+            <div className="mt-6">
+              <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+              <EducacionBlock data={data} />
+            </div>
+          )}
+        </div>
+        <div>
+          {data.resumen && (
+            <div className="mb-6">
+              <SectionLabel accent={accent}>Acerca de mí</SectionLabel>
+              <p className="text-[12px] leading-relaxed text-stone-700">{data.resumen}</p>
+            </div>
+          )}
+          {data.habilidades && (
+            <div>
+              <SectionLabel accent={accent}>Habilidades</SectionLabel>
+              <SkillChips data={data} accent={accent} />
+            </div>
+          )}
+        </div>
+      </div>
+      {hasExp && (
+        <div className="px-10 pb-10">
+          <SectionLabel accent={accent} className="mb-3">Experiencia laboral</SectionLabel>
+          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[14px] font-medium text-stone-900" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewBanderaCentral({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
+      <div style={{ background: accent }} className="px-10 pt-10 pb-8 text-center">
+        <div className="flex justify-center -mb-14">
+          <Avatar data={data} accent="white" size={104} ring />
+        </div>
+        <div className="pt-3">
+          <h1 className="font-display text-[26px] leading-[1.1] text-white uppercase font-bold break-words">
+            {data.nombre || "Tu nombre"}
+          </h1>
+          {data.puesto && (
+            <p className="text-[12px] font-bold uppercase tracking-wide mt-1.5" style={{ color: "#1a2f4a" }}>
+              {data.puesto}
+            </p>
+          )}
+        </div>
+      </div>
+      <div className="px-10 pt-16">
+        {data.resumen && (
+          <p className="text-[12px] leading-relaxed text-stone-700 text-center max-w-[420px] mx-auto mb-8">
+            {data.resumen}
+          </p>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-x-8 px-10 pb-8">
+        <div>
+          <SectionLabel accent={accent} className="mb-3">Contacto</SectionLabel>
+          <ContactLine data={data} className="flex flex-col gap-1.5 text-[11.5px] text-stone-600" iconSize={11} />
+        </div>
+        <div>
+          {data.habilidades && (
+            <div>
+              <SectionLabel accent={accent}>Habilidades</SectionLabel>
+              <SkillChips data={data} accent={accent} />
+            </div>
+          )}
+        </div>
+      </div>
+      {hasExp && (
+        <div className="px-10 pb-6">
+          <SectionLabel accent={accent} className="mb-3">Experiencia laboral</SectionLabel>
+          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[14px] font-medium text-stone-900" />
+        </div>
+      )}
+      {hasEdu && (
+        <div className="px-10 pb-10">
+          <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+          <EducacionBlock data={data} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewBanderaLinea({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
+      <div className="px-10 pt-10 pb-6">
+        <div className="flex items-end gap-6">
+          <div className="shrink-0">
+            <Avatar data={data} accent={accent} size={92} ring />
+          </div>
+          <div className="pb-1 min-w-0">
+            <h1 className="font-display text-[26px] leading-[1.1] uppercase font-bold break-words" style={{ color: "#1a2f4a" }}>
+              {data.nombre || "Tu nombre"}
+            </h1>
+            {data.puesto && (
+              <p className="text-[12px] font-bold uppercase tracking-wide mt-1.5" style={{ color: accent }}>
+                {data.puesto}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="h-[3px] mx-10" style={{ background: accent }} />
+      <div className="grid grid-cols-2 gap-x-8 px-10 pt-8 pb-8">
+        <div>
+          <SectionLabel accent={accent} className="mb-3">Contacto</SectionLabel>
+          <ContactLine data={data} className="flex flex-col gap-1.5 text-[11.5px] text-stone-600" iconSize={11} />
+          {hasEdu && (
+            <div className="mt-6">
+              <SectionLabel accent={accent} className="mb-2">Educación</SectionLabel>
+              <EducacionBlock data={data} />
+            </div>
+          )}
+        </div>
+        <div>
+          {data.resumen && (
+            <div className="mb-6">
+              <SectionLabel accent={accent}>Acerca de mí</SectionLabel>
+              <p className="text-[12px] leading-relaxed text-stone-700">{data.resumen}</p>
+            </div>
+          )}
+          {data.habilidades && (
+            <div>
+              <SectionLabel accent={accent}>Habilidades</SectionLabel>
+              <SkillChips data={data} accent={accent} />
+            </div>
+          )}
+        </div>
+      </div>
+      {hasExp && (
+        <div className="px-10 pb-10">
+          <SectionLabel accent={accent} className="mb-3">Experiencia laboral</SectionLabel>
+          <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[14px] font-medium text-stone-900" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 const TEMPLATE_COMPONENTS = {
   clasico: PreviewClasico,
   moderno: PreviewModerno,
@@ -2955,6 +3147,9 @@ const TEMPLATE_COMPONENTS = {
   columna: PreviewColumna,
   franja: PreviewFranja,
   retrato: PreviewRetrato,
+  bandera: PreviewBandera,
+  banderaCentral: PreviewBanderaCentral,
+  banderaLinea: PreviewBanderaLinea,
 };
 
 export default function CVBuilder() {
