@@ -242,3 +242,7 @@ En el menú **⋯** hay una nueva opción en rojo: "Vaciar formulario". Borra to
 ## Subtítulo más corto en celular
 
 En celular, el texto debajo de "HazTuCV" ahora muestra solo "Guardado hace X" — se ocultó "editor + vista previa en vivo" para que no quede largo ni se corte. En pantallas grandes se sigue viendo completo.
+
+## Pie de página
+
+Al final de la app (debajo del editor y la vista previa) ahora aparece "Desarrollado por @sebranda".

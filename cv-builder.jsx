@@ -4708,6 +4708,10 @@ Texto del currículum:
         </div>
       </div>
 
+      <p className="no-print text-center text-[11px] text-stone-600 py-6 px-4">
+        Desarrollado por <span className="text-stone-400">@sebranda</span>
+      </p>
+
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
