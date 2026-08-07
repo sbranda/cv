@@ -218,3 +218,19 @@ En celular, al scrollear más de una pantalla hacia abajo aparece un botón circ
 ## Recorrido guiado de bienvenida
 
 La primera vez que se abre la app, aparece un recorrido de 6 pasos explicando las funciones principales (plantillas, apariencia, IA, herramientas extra, descarga). Se puede saltar en cualquier momento con "Omitir". Una vez visto, no vuelve a aparecer solo — queda guardado en `localStorage`. Para volver a verlo cuando quieras, andá al menú **⋯ → Ver tutorial**.
+
+## Clave de Gemini oculta con un Worker intermediario (opcional)
+
+Si preferís que tu clave de Gemini no quede expuesta en el código público del sitio, podés usar `haztucv-gemini-proxy-worker.js` como una función de Cloudflare Workers (plan gratuito) que hace de intermediario.
+
+**Cómo configurarlo:**
+1. Entrá a [dash.cloudflare.com](https://dash.cloudflare.com) → creá una cuenta gratis si no tenés
+2. Andá a **Workers & Pages → Create → Create Worker**
+3. Pegá el contenido de `haztucv-gemini-proxy-worker.js` en el editor y hacé **Deploy**
+4. Andá a **Settings → Variables and Secrets → Add**:
+   - `GEMINI_API_KEY` (tipo **Secret**) → tu clave real de Gemini
+   - `GEMINI_MODEL` (tipo Text, opcional) → `gemini-3.6-flash`
+5. Copiá la URL que te da Cloudflare (algo como `https://tu-worker.tu-usuario.workers.dev`)
+6. En `index.html`, pegá esa URL en la constante `PROXY_URL` (cerca del principio del archivo)
+
+Con esto configurado, tu clave real de Gemini nunca viaja al navegador ni queda en ningún archivo público — vive únicamente como Secret dentro de Cloudflare. `HARDCODED_API_KEY` y el panel de Configuración dejan de hacer falta (aunque siguen funcionando como respaldo si en algún momento borrás `PROXY_URL`).

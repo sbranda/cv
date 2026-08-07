@@ -130,6 +130,13 @@ const GEMINI_MODEL = "gemini-3.6-flash";
 // Dejala vacía ("") si preferís seguir cargándola vos desde Configuración.
 const HARDCODED_API_KEY = "";
 
+// Si configurás un Worker intermediario de Cloudflare (ver
+// haztucv-gemini-proxy-worker.js), pegá acá la URL que te da Cloudflare al
+// desplegarlo (algo como "https://tu-worker.tu-usuario.workers.dev"). Con esto
+// configurado, tu clave de Gemini NUNCA viaja al navegador — queda guardada
+// como Secret en Cloudflare, y ni HARDCODED_API_KEY ni Configuración hacen falta.
+const PROXY_URL = "";
+
 class MissingApiKeyError extends Error {}
 
 function InstallButton() {
@@ -440,6 +447,30 @@ const SECTION_LABELS = {
 };
 
 async function callClaude(prompt, apiKey) {
+  if (PROXY_URL) {
+    const response = await fetch(PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      let detail = errText.slice(0, 300);
+      try {
+        const parsed = JSON.parse(errText);
+        if (parsed?.error?.message) detail = parsed.error.message;
+        else if (parsed?.error) detail = parsed.error;
+      } catch (e) {}
+      console.error("Proxy/Gemini error", response.status, errText);
+      throw new Error(`(${response.status}) ${detail}`);
+    }
+    const data = await response.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text = parts.map((p) => p.text || "").join("").trim();
+    if (!text) throw new Error("La API no devolvió texto. Revisá la configuración del Worker.");
+    return text;
+  }
+
   if (!apiKey) throw new MissingApiKeyError("Falta configurar la clave de API");
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
@@ -3238,7 +3269,7 @@ function CVBuilder() {
   const [translatingId, setTranslatingId] = useState(null);
 
   const translateProfileToEnglish = async (id) => {
-    if (!apiKey) { setProfilesOpen(false); setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setProfilesOpen(false); setSettingsOpen(true); return; }
     const source = profiles.find((p) => p.id === id);
     if (!source) return;
     setTranslatingId(id);
@@ -3475,7 +3506,7 @@ JSON original:
 
   const analyzeMatch = async () => {
     if (!data.comparacion.descripcion.trim()) return;
-    if (!apiKey) { setMatchOpen(false); setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setMatchOpen(false); setSettingsOpen(true); return; }
     setMatchAnalyzing(true);
     try {
       const cvText = buildPlainText();
@@ -3506,7 +3537,7 @@ CURRÍCULUM:
   };
 
   const generateCoverLetter = async () => {
-    if (!apiKey) { setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setSettingsOpen(true); return; }
     setCartaGenerating(true);
     try {
       const expText = data.experiencia
@@ -3573,7 +3604,7 @@ Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que n
   const handleImportFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!apiKey) { setImportOpen(false); setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setImportOpen(false); setSettingsOpen(true); return; }
     setImporting(true);
     setImportError("");
     try {
@@ -3742,7 +3773,7 @@ Texto del currículum:
 
   const improveSummary = async () => {
     if (!data.resumen.trim()) return;
-    if (!apiKey) { setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setSettingsOpen(true); return; }
     setLoadingField("resumen");
     try {
       const result = await callClaude(
@@ -3760,7 +3791,7 @@ Texto del currículum:
 
   const adjustResumenLength = async (opt) => {
     if (!data.resumen.trim()) return;
-    if (!apiKey) { setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setSettingsOpen(true); return; }
     setLoadingField("resumen-len-" + opt.id);
     try {
       const result = await callClaude(
@@ -3778,7 +3809,7 @@ Texto del currículum:
 
   const improveExperience = async (exp) => {
     if (!exp.descripcion.trim()) return;
-    if (!apiKey) { setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setSettingsOpen(true); return; }
     setLoadingField(exp.id);
     try {
       const result = await callClaude(
@@ -3796,7 +3827,7 @@ Texto del currículum:
 
   const improveSkills = async () => {
     if (!data.habilidades.trim()) return;
-    if (!apiKey) { setSettingsOpen(true); return; }
+    if (!apiKey && !PROXY_URL) { setSettingsOpen(true); return; }
     setLoadingField("habilidades");
     try {
       const result = await callClaude(
@@ -4255,7 +4286,7 @@ Texto del currículum:
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition relative"
           >
             <Settings size={15} />
-            {!apiKey && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 absolute -top-0.5 -right-0.5" />}
+            {!apiKey && !PROXY_URL && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 absolute -top-0.5 -right-0.5" />}
           </button>
           <button
             onClick={() => setGalleryOpen(true)}
