@@ -190,3 +190,7 @@ Reemplacé el ícono de la app: una "H" serif (de HazTuCV) con un acento arriba 
 ## Corrección: zoom automático al tocar un campo (iPhone)
 
 En iOS Safari, cualquier campo de texto con letra menor a 16px hace que la pantalla haga zoom automáticamente al tocarlo para escribir. Los campos de la app usaban 14px. Ahora, solo en pantallas chicas (celular), se fuerza 16px en todos los inputs, textareas y selects — en pantallas grandes se mantiene el tamaño compacto de siempre.
+
+## Corrección: cambiar tipografía no se veía reflejado
+
+Tailwind (el framework de estilos) ya trae su propia clase `.font-sans` predefinida, que competía con la que usa la app para aplicar la tipografía elegida (Clásica/Moderna/Elegante) — dependiendo del orden de carga, la de Tailwind podía ganar y dejar la tipografía sin cambios visibles. Ahora la regla de la app tiene prioridad forzada, así que cambiar la tipografía en "Apariencia" se aplica siempre.
