@@ -238,3 +238,7 @@ Con esto configurado, tu clave real de Gemini nunca viaja al navegador ni queda 
 ## Vaciar formulario
 
 En el menú **⋯** hay una nueva opción en rojo: "Vaciar formulario". Borra todos los datos cargados en el perfil activo (vuelve a los valores en blanco, incluida foto, plantilla, color y todo lo demás), pidiendo confirmación antes. Si te arrepentís, se puede deshacer con el botón ↶.
+
+## Subtítulo más corto en celular
+
+En celular, el texto debajo de "HazTuCV" ahora muestra solo "Guardado hace X" — se ocultó "editor + vista previa en vivo" para que no quede largo ni se corte. En pantallas grandes se sigue viendo completo.

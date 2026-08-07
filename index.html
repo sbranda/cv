@@ -4265,7 +4265,13 @@ Texto del currículum:
           <div>
             <h1 className="font-display text-lg leading-none">HazTuCV</h1>
             <p className="text-[11px] font-mono text-stone-500 mt-0.5">
-              editor + vista previa en vivo{lastSavedAt && <span> · {formatSavedAgo(lastSavedAt)}</span>}
+              <span className="hidden sm:inline">editor + vista previa en vivo</span>
+              {lastSavedAt && (
+                <span>
+                  <span className="hidden sm:inline"> · </span>
+                  {formatSavedAgo(lastSavedAt)}
+                </span>
+              )}
             </p>
           </div>
         </div>
