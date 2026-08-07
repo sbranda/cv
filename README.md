@@ -178,3 +178,7 @@ Debajo de la lista arrastrable de "Orden de las secciones" hay un botón "↺ Re
 ## Volver al lugar exacto del formulario
 
 Antes, tocar "Editar" (en celular) siempre te llevaba al principio del formulario. Ahora recuerda dónde estabas justo antes de tocar "Vista previa", y "Editar" te devuelve ahí mismo, no al inicio.
+
+## Cambio de nombre: HazTuCV
+
+La app pasó a llamarse **HazTuCV** en todos lados: título de la pestaña, encabezado, y el nombre que aparece al instalarla en el celular (`manifest.json`). Si ya la tenías instalada de antes, es posible que tengas que desinstalarla y volver a instalarla para que el ícono/nombre en tu pantalla de inicio se actualice — algunos sistemas no refrescan el nombre de una PWA ya instalada automáticamente.

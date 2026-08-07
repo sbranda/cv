@@ -1,6 +1,6 @@
 {
-  "name": "Constructor de Currículum",
-  "short_name": "Mi CV",
+  "name": "HazTuCV",
+  "short_name": "HazTuCV",
   "description": "Crea y edita tu currículum con vista previa en vivo, plantillas y ayuda de IA.",
   "start_url": "./index.html",
   "scope": "./",

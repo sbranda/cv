@@ -3765,7 +3765,7 @@ Texto del currículum:
             CV
           </div>
           <div>
-            <h1 className="font-display text-lg leading-none">Constructor de currículum</h1>
+            <h1 className="font-display text-lg leading-none">HazTuCV</h1>
             <p className="text-[11px] font-mono text-stone-500 mt-0.5">editor + vista previa en vivo</p>
           </div>
         </div>
