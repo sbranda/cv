@@ -3900,6 +3900,16 @@ Texto del currículum:
         .font-sans { font-family: ${TYPO_PRESETS[data.tipografia].body}; }
         .font-mono { font-family: 'IBM Plex Mono', monospace; }
         input:focus, textarea:focus { border-color: ${accent} !important; box-shadow: 0 0 0 2px ${accent}33; }
+        /* En iOS Safari, cualquier input con letra menor a 16px dispara un zoom
+           automático al tocarlo. Forzamos 16px solo en pantallas chicas para
+           evitarlo, sin agrandar la letra en escritorio. */
+        @media (max-width: 767px) {
+          input,
+          textarea,
+          select {
+            font-size: 16px !important;
+          }
+        }
         @media print {
           .no-print { display: none !important; }
           .print-page { box-shadow: none !important; margin: 0 !important; width: 100% !important; min-height: 0 !important; }
@@ -4126,7 +4136,7 @@ Texto del currículum:
 
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
-        <div ref={editorSectionRef} className="no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
+        <div ref={editorSectionRef} className="editor-panel no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
           <section className="mb-8">
             <h2 className="font-mono text-[11px] uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Apariencia

@@ -186,3 +186,7 @@ La app pasó a llamarse **HazTuCV** en todos lados: título de la pestaña, enca
 ## Ícono nuevo
 
 Reemplacé el ícono de la app: una "H" serif (de HazTuCV) con un acento arriba a la derecha, en verde bosque (el mismo tono del acento por defecto de la app) con fondo degradado sutil. Genera los tres tamaños que pide `manifest.json` (192px, 512px, y una versión 512px "maskable" con más margen para que no se corte cuando el sistema operativo la recorta en círculo).
+
+## Corrección: zoom automático al tocar un campo (iPhone)
+
+En iOS Safari, cualquier campo de texto con letra menor a 16px hace que la pantalla haga zoom automáticamente al tocarlo para escribir. Los campos de la app usaban 14px. Ahora, solo en pantallas chicas (celular), se fuerza 16px en todos los inputs, textareas y selects — en pantallas grandes se mantiene el tamaño compacto de siempre.
