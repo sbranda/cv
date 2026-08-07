@@ -174,3 +174,7 @@ Junto a "Subir foto" ahora hay un botón "Tomar foto" que abre directamente la c
 ## Restablecer orden de secciones
 
 Debajo de la lista arrastrable de "Orden de las secciones" hay un botón "↺ Restablecer orden" que vuelve a Resumen → Experiencia → Educación → Habilidades (el orden original). Se desactiva automáticamente cuando ya estás en ese orden por defecto, para que sepas de un vistazo si tenés algo reordenado o no.
+
+## Volver al lugar exacto del formulario
+
+Antes, tocar "Editar" (en celular) siempre te llevaba al principio del formulario. Ahora recuerda dónde estabas justo antes de tocar "Vista previa", y "Editar" te devuelve ahí mismo, no al inicio.

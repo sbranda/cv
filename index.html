@@ -3183,6 +3183,7 @@ JSON original:
   });
   const previewRef = useRef(null);
   const editorSectionRef = useRef(null);
+  const lastEditorScrollRef = useRef(0);
 
   const [previewHeight, setPreviewHeight] = useState(0);
   const [tipsOpen, setTipsOpen] = useState(false);
@@ -4092,13 +4093,16 @@ Texto del currículum:
 
       <div className="lg:hidden no-print flex border-b border-stone-800 bg-stone-950">
         <button
-          onClick={() => editorSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          onClick={() => window.scrollTo({ top: lastEditorScrollRef.current, behavior: "smooth" })}
           className="flex-1 py-2.5 text-[13px] font-medium text-stone-300 hover:text-white transition"
         >
           Editar
         </button>
         <button
-          onClick={() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          onClick={() => {
+            lastEditorScrollRef.current = window.scrollY;
+            previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
           className="flex-1 py-2.5 text-[13px] font-medium text-stone-300 hover:text-white transition border-l border-stone-800"
         >
           Vista previa
