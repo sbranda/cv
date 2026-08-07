@@ -194,3 +194,7 @@ En iOS Safari, cualquier campo de texto con letra menor a 16px hace que la panta
 ## Corrección: cambiar tipografía no se veía reflejado
 
 Tailwind (el framework de estilos) ya trae su propia clase `.font-sans` predefinida, que competía con la que usa la app para aplicar la tipografía elegida (Clásica/Moderna/Elegante) — dependiendo del orden de carga, la de Tailwind podía ganar y dejar la tipografía sin cambios visibles. Ahora la regla de la app tiene prioridad forzada, así que cambiar la tipografía en "Apariencia" se aplica siempre.
+
+## Corrección: no se podía volver a "Editar" desde la vista previa (celular)
+
+La barra de pestañas "Editar" / "Vista previa" no era fija — al bajar a la vista previa, se scrolleaba fuera de la pantalla junto con todo lo demás, sin dejar ningún botón visible para volver. Ahora el encabezado y la barra de pestañas quedan fijos juntos arriba de la pantalla todo el tiempo, así "Editar" siempre está a mano.

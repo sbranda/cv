@@ -3766,7 +3766,8 @@ Texto del currículum:
       />
 
       {/* Header */}
-      <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between sticky top-0 bg-stone-950/95 backdrop-blur z-20 flex-wrap gap-3">
+      <div className="sticky top-0 z-20">
+      <header className="no-print border-b border-stone-800 px-6 py-4 flex items-center justify-between bg-stone-950/95 backdrop-blur flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div
             className="w-8 h-8 rounded-sm flex items-center justify-center font-display text-lg"
@@ -3874,6 +3875,7 @@ Texto del currículum:
         >
           Vista previa
         </button>
+      </div>
       </div>
 
       {pageCount > 1 && (
