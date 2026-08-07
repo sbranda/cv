@@ -255,3 +255,7 @@ Inspiradas en un diseño de referencia con franja superior de color y foto que s
 - **Bandera Línea**: versión sin bloque de color sólido — reemplaza la franja por una línea fina de acento debajo del encabezado, para quien prefiera algo más restrained.
 
 Ya son 28 plantillas en total. Nota: la plantilla de referencia que compartiste incluía campos como edad, DNI, nacionalidad y estado civil, que la app no maneja — estas plantillas usan los campos existentes (nombre, puesto, contacto, foto, resumen, experiencia, educación, habilidades).
+
+## Corrección: nombre pegado al margen en "Bandera Central"
+
+Un margen negativo mal aplicado empujaba el nombre hacia arriba en vez de hacer que la foto se sobrepusiera al borde de la franja (que era la intención original). Se corrigió: en esta plantilla la foto queda completa dentro de la franja de color, sin sobreponerse — el efecto de sobreposición se mantiene solo en "Bandera" (la versión con foto a la izquierda).

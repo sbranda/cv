@@ -3231,22 +3231,20 @@ function PreviewBanderaCentral({ data, accent }) {
   const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
   return (
     <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
-      <div style={{ background: accent }} className="px-10 pt-10 pb-8 text-center">
-        <div className="flex justify-center -mb-14">
-          <Avatar data={data} accent="white" size={104} ring />
+      <div style={{ background: accent }} className="px-10 py-10 text-center">
+        <div className="flex justify-center mb-4">
+          <Avatar data={data} accent="white" size={100} ring />
         </div>
-        <div className="pt-3">
-          <h1 className="font-display text-[26px] leading-[1.1] text-white uppercase font-bold break-words">
-            {data.nombre || "Tu nombre"}
-          </h1>
-          {data.puesto && (
-            <p className="text-[12px] font-bold uppercase tracking-wide mt-1.5" style={{ color: "#1a2f4a" }}>
-              {data.puesto}
-            </p>
-          )}
-        </div>
+        <h1 className="font-display text-[26px] leading-[1.1] text-white uppercase font-bold break-words">
+          {data.nombre || "Tu nombre"}
+        </h1>
+        {data.puesto && (
+          <p className="text-[12px] font-bold uppercase tracking-wide mt-1.5" style={{ color: "#1a2f4a" }}>
+            {data.puesto}
+          </p>
+        )}
       </div>
-      <div className="px-10 pt-16">
+      <div className="px-10 pt-8">
         {data.resumen && (
           <p className="text-[12px] leading-relaxed text-stone-700 text-center max-w-[420px] mx-auto mb-8">
             {data.resumen}
