@@ -29,6 +29,7 @@ import {
   ChevronDown,
   ChevronRight,
   Camera,
+  ArrowUp,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3378,6 +3379,13 @@ Texto del currículum:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [justAddedId, data.experiencia, data.educacion]);
 
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowBackToTop(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const addExperience = () => {
     const nueva = emptyExperience();
     setData((d) => ({ ...d, experiencia: [...d.experiencia, nueva] }));
@@ -4588,6 +4596,17 @@ Texto del currículum:
           </div>
         </div>
       </div>
+
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          title="Volver arriba"
+          className="lg:hidden no-print fixed right-4 bottom-24 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition hover:opacity-90"
+          style={{ background: accent }}
+        >
+          <ArrowUp size={18} className="text-stone-950" />
+        </button>
+      )}
 
       <div className="lg:hidden no-print fixed bottom-0 left-0 right-0 z-30 bg-stone-950/95 backdrop-blur border-t border-stone-800 px-4 py-3">
         <button

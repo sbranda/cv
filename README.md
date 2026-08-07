@@ -210,3 +210,7 @@ Al tocar "+ Agregar experiencia" o "+ Agregar educación", la app ahora salta au
 ## Cerrar modales deslizando hacia abajo
 
 En celular, todos los paneles (Perfiles, Plantillas, Carta, Comparar, Configuración, Texto ATS, Consejos, Importar) tienen ahora una barrita chica arriba — agarrala y deslizá hacia abajo para cerrarlos, como en una app nativa. Si no la deslizás lo suficiente, el panel vuelve a su lugar solo. En pantallas grandes (tablet/desktop) esa barrita no aparece, ya que ahí los modales son tarjetas centradas, no hojas deslizables.
+
+## Botón flotante "volver arriba"
+
+En celular, al scrollear más de una pantalla hacia abajo aparece un botón circular flotante (con el color de acento elegido) abajo a la derecha, arriba de la barra de "Descargar PDF". Te lleva de vuelta al principio del formulario con un toque.
