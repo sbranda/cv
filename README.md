@@ -170,3 +170,7 @@ Debajo de "LinkedIn / portafolio" hay un casillero: "Mostrar el contacto al pie 
 ## Tomar foto con la cámara
 
 Junto a "Subir foto" ahora hay un botón "Tomar foto" que abre directamente la cámara del celular (cámara frontal, ideal para una selfie de perfil) en vez de tener que ir a la galería primero. En computadoras de escritorio sin cámara, este botón normalmente abre el selector de archivos común.
+
+## Restablecer orden de secciones
+
+Debajo de la lista arrastrable de "Orden de las secciones" hay un botón "↺ Restablecer orden" que vuelve a Resumen → Experiencia → Educación → Habilidades (el orden original). Se desactiva automáticamente cuando ya estás en ese orden por defecto, para que sepas de un vistazo si tenés algo reordenado o no.

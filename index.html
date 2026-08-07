@@ -4169,6 +4169,13 @@ Texto del currículum:
                 accent={accent}
                 onReorder={(newOrder) => update({ ordenSecciones: newOrder })}
               />
+              <button
+                onClick={() => update({ ordenSecciones: [...DEFAULT_SECTION_ORDER] })}
+                disabled={JSON.stringify(data.ordenSecciones) === JSON.stringify(DEFAULT_SECTION_ORDER)}
+                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition mt-2 disabled:opacity-30 disabled:cursor-default disabled:hover:text-white"
+              >
+                ↺ Restablecer orden
+              </button>
               <p className="text-[10px] text-white mt-1.5 leading-relaxed">
                 Arrastrá desde el ícono para reordenar. No aplica a Moderno, Ejecutivo, Académico,
                 Ventas/Marketing, Simetría, Prensa y Panel — su diseño en columnas o su secuencia
