@@ -206,3 +206,7 @@ En celular, al tocar un campo cerca del borde inferior de la pantalla, ahora la 
 ## Scroll automático al agregar experiencia/educación
 
 Al tocar "+ Agregar experiencia" o "+ Agregar educación", la app ahora salta automáticamente hasta esa nueva entrada, para que no tengas que buscarla scrolleando manualmente.
+
+## Cerrar modales deslizando hacia abajo
+
+En celular, todos los paneles (Perfiles, Plantillas, Carta, Comparar, Configuración, Texto ATS, Consejos, Importar) tienen ahora una barrita chica arriba — agarrala y deslizá hacia abajo para cerrarlos, como en una app nativa. Si no la deslizás lo suficiente, el panel vuelve a su lugar solo. En pantallas grandes (tablet/desktop) esa barrita no aparece, ya que ahí los modales son tarjetas centradas, no hojas deslizables.

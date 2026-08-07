@@ -417,11 +417,59 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 }
 
 // ---- Mini thumbnail mockups for the gallery ----
+// Gesto de "deslizar hacia abajo para cerrar", como en apps nativas. Se engancha
+// a un handle chico arriba del modal (no a todo el modal, para no interferir con
+// el scroll normal del contenido de adentro). Solo tiene efecto visual relevante
+// en mobile, ya que en desktop el handle queda oculto (sm:hidden).
+function useSwipeToDismiss(onClose) {
+  const [dragY, setDragY] = useState(0);
+  const draggingRef = useRef(false);
+  const startYRef = useRef(0);
+
+  const onPointerDown = (e) => {
+    draggingRef.current = true;
+    startYRef.current = e.clientY;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    if (!draggingRef.current) return;
+    const delta = e.clientY - startYRef.current;
+    if (delta > 0) setDragY(delta);
+  };
+  const finish = () => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    if (dragY > 110) onClose();
+    setDragY(0);
+  };
+
+  return {
+    cardStyle: {
+      transform: dragY ? `translateY(${dragY}px)` : undefined,
+      transition: draggingRef.current ? "none" : "transform 0.25s ease",
+    },
+    handle: (
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={finish}
+        onPointerCancel={finish}
+        className="sm:hidden flex justify-center pt-2 pb-3 -mt-6 -mx-6 mb-1 cursor-grab active:cursor-grabbing"
+        style={{ touchAction: "none" }}
+      >
+        <div className="w-10 h-1 rounded-full bg-stone-700" />
+      </div>
+    ),
+  };
+}
+
 function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="font-display text-xl">Galería de plantillas</h2>
@@ -494,10 +542,12 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
 }
 
 function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Mis perfiles</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -577,11 +627,13 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
 }
 
 function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenerate, generating }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   const carta = data.carta;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Carta de presentación</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -670,10 +722,12 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
 }
 
 function ImportModal({ open, onClose, onImport, importing, error }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
+        {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Importar CV</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -705,6 +759,7 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
 }
 
 function PlainTextModal({ open, onClose, text, accent }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   const handleDownload = () => {
     const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
@@ -719,7 +774,8 @@ function PlainTextModal({ open, onClose, text, accent }) {
   };
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+        {handle}
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-xl">Texto plano para ATS</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -757,10 +813,12 @@ function PlainTextModal({ open, onClose, text, accent }) {
 }
 
 function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-display text-xl">Cómo acortar tu CV</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
@@ -841,11 +899,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, exportingDocx }) {
 }
 
 function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, analyzing }) {
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
   if (!open) return null;
   const resultado = data.comparacion.resultado;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Comparar con un puesto</h2>
           <button onClick={onClose} className="text-stone-500 hover:text-white transition">
