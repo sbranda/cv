@@ -214,3 +214,7 @@ En celular, todos los paneles (Perfiles, Plantillas, Carta, Comparar, Configurac
 ## Botón flotante "volver arriba"
 
 En celular, al scrollear más de una pantalla hacia abajo aparece un botón circular flotante (con el color de acento elegido) abajo a la derecha, arriba de la barra de "Descargar PDF". Te lleva de vuelta al principio del formulario con un toque.
+
+## Recorrido guiado de bienvenida
+
+La primera vez que se abre la app, aparece un recorrido de 6 pasos explicando las funciones principales (plantillas, apariencia, IA, herramientas extra, descarga). Se puede saltar en cualquier momento con "Omitir". Una vez visto, no vuelve a aparecer solo — queda guardado en `localStorage`. Para volver a verlo cuando quieras, andá al menú **⋯ → Ver tutorial**.

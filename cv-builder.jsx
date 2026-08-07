@@ -30,6 +30,7 @@ import {
   ChevronRight,
   Camera,
   ArrowUp,
+  HelpCircle,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -422,6 +423,88 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 // a un handle chico arriba del modal (no a todo el modal, para no interferir con
 // el scroll normal del contenido de adentro). Solo tiene efecto visual relevante
 // en mobile, ya que en desktop el handle queda oculto (sm:hidden).
+const TOUR_STEPS = [
+  {
+    title: "¡Bienvenido a HazTuCV!",
+    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha.",
+  },
+  {
+    title: "25 plantillas para elegir",
+    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar.",
+  },
+  {
+    title: "Personalizá el estilo",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\".",
+  },
+  {
+    title: "Mejorá tu texto con IA",
+    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones de experiencia para que suenen más profesionales.",
+  },
+  {
+    title: "Herramientas extra",
+    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, e importación de un CV existente.",
+  },
+  {
+    title: "Descargá cuando quieras",
+    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano. ¡Listo para empezar!",
+  },
+];
+
+function OnboardingTour({ open, onClose, accent }) {
+  const [step, setStep] = useState(0);
+  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  useEffect(() => {
+    if (open) setStep(0);
+  }, [open]);
+  if (!open) return null;
+  const total = TOUR_STEPS.length;
+  const current = TOUR_STEPS[step];
+  const isLast = step === total - 1;
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-sm p-6">
+        {handle}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-1.5">
+            {TOUR_STEPS.map((_, i) => (
+              <span
+                key={i}
+                className="w-1.5 h-1.5 rounded-full transition"
+                style={{ background: i === step ? accent : "#44403c" }}
+              />
+            ))}
+          </div>
+          <button
+            onClick={onClose}
+            className="text-stone-500 hover:text-white transition text-[11px] font-mono uppercase tracking-wider"
+          >
+            Omitir
+          </button>
+        </div>
+        <h2 className="font-display text-xl mb-2">{current.title}</h2>
+        <p className="text-[13px] text-stone-400 leading-relaxed mb-6">{current.body}</p>
+        <div className="flex items-center gap-2">
+          {step > 0 && (
+            <button
+              onClick={() => setStep((s) => s - 1)}
+              className="px-4 py-2.5 rounded-md border border-stone-700 text-stone-300 text-sm hover:border-stone-500 transition"
+            >
+              Atrás
+            </button>
+          )}
+          <button
+            onClick={() => (isLast ? onClose() : setStep((s) => s + 1))}
+            className="flex-1 px-4 py-2.5 rounded-md text-stone-950 text-sm font-semibold hover:opacity-90 transition"
+            style={{ background: accent }}
+          >
+            {isLast ? "Empezar" : "Siguiente"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function useSwipeToDismiss(onClose) {
   const [dragY, setDragY] = useState(0);
   const draggingRef = useRef(false);
@@ -852,7 +935,7 @@ function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, exportingDocx }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, exportingDocx }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -891,6 +974,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, exportingDocx }) {
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
             >
               {exportingDocx ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />} Exportar Word
+            </button>
+            <div className="my-1 border-t border-stone-800" />
+            <button
+              onClick={() => { onTour(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <HelpCircle size={14} /> Ver tutorial
             </button>
           </div>
         </>
@@ -3386,6 +3476,8 @@ Texto del currículum:
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [tourOpen, setTourOpen] = useState(true);
+
   const addExperience = () => {
     const nueva = emptyExperience();
     setData((d) => ({ ...d, experiencia: [...d.experiencia, nueva] }));
@@ -3792,6 +3884,8 @@ Texto del currículum:
         }
       `}</style>
 
+      <OnboardingTour open={tourOpen} onClose={() => setTourOpen(false)} accent={accent} />
+
       <TemplateGallery
         open={galleryOpen}
         onClose={() => setGalleryOpen(false)}
@@ -3946,6 +4040,7 @@ Texto del currículum:
             onCompare={() => setMatchOpen(true)}
             onTexto={() => setPlainTextOpen(true)}
             onWord={handleExportDocx}
+            onTour={() => setTourOpen(true)}
             exportingDocx={exportingDocx}
           />
           <button
