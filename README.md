@@ -182,3 +182,7 @@ Antes, tocar "Editar" (en celular) siempre te llevaba al principio del formulari
 ## Cambio de nombre: HazTuCV
 
 La app pasó a llamarse **HazTuCV** en todos lados: título de la pestaña, encabezado, y el nombre que aparece al instalarla en el celular (`manifest.json`). Si ya la tenías instalada de antes, es posible que tengas que desinstalarla y volver a instalarla para que el ícono/nombre en tu pantalla de inicio se actualice — algunos sistemas no refrescan el nombre de una PWA ya instalada automáticamente.
+
+## Ícono nuevo
+
+Reemplacé el ícono de la app: una "H" serif (de HazTuCV) con un acento arriba a la derecha, en verde bosque (el mismo tono del acento por defecto de la app) con fondo degradado sutil. Genera los tres tamaños que pide `manifest.json` (192px, 512px, y una versión 512px "maskable" con más margen para que no se corte cuando el sistema operativo la recorta en círculo).
