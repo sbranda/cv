@@ -4196,18 +4196,16 @@ Texto del currículum:
                     <Upload size={12} />
                     {data.foto ? "Cambiar foto" : "Subir foto"}
                   </label>
-                  <label
-                    style={{ background: "red", color: "yellow", fontSize: "20px", padding: "10px", border: "5px solid lime" }}
-                    className="font-mono uppercase cursor-pointer inline-flex items-center gap-1.5"
-                  >
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
                     <input
                       type="file"
                       accept="image/*"
+                      capture="user"
                       className="hidden"
                       onChange={handlePhotoChange}
                     />
                     <Camera size={12} />
-                    Tomar foto TEST
+                    Tomar foto
                   </label>
                 </div>
                 {data.foto && (
