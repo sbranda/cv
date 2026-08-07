@@ -3526,13 +3526,28 @@ Texto del currículum:
       return next;
     });
 
-  const addExperience = () =>
-    setData((d) => ({ ...d, experiencia: [...d.experiencia, emptyExperience()] }));
+  const [justAddedId, setJustAddedId] = useState(null);
+  useEffect(() => {
+    if (!justAddedId) return;
+    const el = document.getElementById(`entry-${justAddedId}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setJustAddedId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [justAddedId, data.experiencia, data.educacion]);
+
+  const addExperience = () => {
+    const nueva = emptyExperience();
+    setData((d) => ({ ...d, experiencia: [...d.experiencia, nueva] }));
+    setJustAddedId(nueva.id);
+  };
   const removeExperience = (id) =>
     setData((d) => ({ ...d, experiencia: d.experiencia.filter((e) => e.id !== id) }));
 
-  const addEducation = () =>
-    setData((d) => ({ ...d, educacion: [...d.educacion, emptyEducation()] }));
+  const addEducation = () => {
+    const nueva = emptyEducation();
+    setData((d) => ({ ...d, educacion: [...d.educacion, nueva] }));
+    setJustAddedId(nueva.id);
+  };
   const removeEducation = (id) =>
     setData((d) => ({ ...d, educacion: d.educacion.filter((e) => e.id !== id) }));
 
@@ -4397,7 +4412,7 @@ Texto del currículum:
               const isCollapsed = collapsedExp.has(exp.id);
               const summary = [exp.puesto, exp.empresa].filter(Boolean).join(" · ") || "Nueva experiencia";
               return (
-                <div key={exp.id} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
+                <div key={exp.id} id={`entry-${exp.id}`} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
                   <div className="flex items-center gap-2">
                     <GripVertical size={14} className="text-stone-700 shrink-0" />
                     <button
@@ -4484,7 +4499,7 @@ Texto del currículum:
               </button>
             </div>
             {data.educacion.map((edu) => (
-              <div key={edu.id} className="mb-4 flex items-start gap-2">
+              <div key={edu.id} id={`entry-${edu.id}`} className="mb-4 flex items-start gap-2">
                 <div className="flex-1">
                   <Field label="Título / carrera">
                     <input

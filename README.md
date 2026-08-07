@@ -202,3 +202,7 @@ La barra de pestañas "Editar" / "Vista previa" no era fija — al bajar a la vi
 ## El teclado ya no tapa el campo que estás editando
 
 En celular, al tocar un campo cerca del borde inferior de la pantalla, ahora la app espera a que el teclado termine de abrirse y centra ese campo automáticamente, para que no quede escondido detrás del teclado.
+
+## Scroll automático al agregar experiencia/educación
+
+Al tocar "+ Agregar experiencia" o "+ Agregar educación", la app ahora salta automáticamente hasta esa nueva entrada, para que no tengas que buscarla scrolleando manualmente.
