@@ -198,3 +198,7 @@ Tailwind (el framework de estilos) ya trae su propia clase `.font-sans` predefin
 ## Corrección: no se podía volver a "Editar" desde la vista previa (celular)
 
 La barra de pestañas "Editar" / "Vista previa" no era fija — al bajar a la vista previa, se scrolleaba fuera de la pantalla junto con todo lo demás, sin dejar ningún botón visible para volver. Ahora el encabezado y la barra de pestañas quedan fijos juntos arriba de la pantalla todo el tiempo, así "Editar" siempre está a mano.
+
+## El teclado ya no tapa el campo que estás editando
+
+En celular, al tocar un campo cerca del borde inferior de la pantalla, ahora la app espera a que el teclado termine de abrirse y centra ese campo automáticamente, para que no quede escondido detrás del teclado.

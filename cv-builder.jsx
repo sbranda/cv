@@ -2996,6 +2996,22 @@ JSON original:
   const editorSectionRef = useRef(null);
   const lastEditorScrollRef = useRef(0);
 
+  // En celular, cuando aparece el teclado, algunos campos cerca del borde
+  // inferior quedan tapados por él. Cuando se enfoca un input/textarea,
+  // esperamos a que el teclado termine de abrirse y lo centramos en pantalla.
+  useEffect(() => {
+    const handleFocusIn = (e) => {
+      const tag = e.target.tagName;
+      if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+      if (window.innerWidth >= 1024) return; // solo en mobile/tablet angosto
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    };
+    document.addEventListener("focusin", handleFocusIn);
+    return () => document.removeEventListener("focusin", handleFocusIn);
+  }, []);
+
   const [previewHeight, setPreviewHeight] = useState(0);
   const [tipsOpen, setTipsOpen] = useState(false);
 
