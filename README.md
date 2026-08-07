@@ -234,3 +234,7 @@ Si preferís que tu clave de Gemini no quede expuesta en el código público del
 6. En `index.html`, pegá esa URL en la constante `PROXY_URL` (cerca del principio del archivo)
 
 Con esto configurado, tu clave real de Gemini nunca viaja al navegador ni queda en ningún archivo público — vive únicamente como Secret dentro de Cloudflare. `HARDCODED_API_KEY` y el panel de Configuración dejan de hacer falta (aunque siguen funcionando como respaldo si en algún momento borrás `PROXY_URL`).
+
+## Vaciar formulario
+
+En el menú **⋯** hay una nueva opción en rojo: "Vaciar formulario". Borra todos los datos cargados en el perfil activo (vuelve a los valores en blanco, incluida foto, plantilla, color y todo lo demás), pidiendo confirmación antes. Si te arrepentís, se puede deshacer con el botón ↶.

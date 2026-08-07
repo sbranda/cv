@@ -935,7 +935,7 @@ function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, exportingDocx }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, exportingDocx }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -981,6 +981,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, exportingDocx }
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
             >
               <HelpCircle size={14} /> Ver tutorial
+            </button>
+            <div className="my-1 border-t border-stone-800" />
+            <button
+              onClick={() => { onClear(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-stone-800 transition"
+            >
+              <Trash2 size={14} /> Vaciar formulario
             </button>
           </div>
         </>
@@ -3135,6 +3142,14 @@ JSON original:
     }
   };
 
+  const clearForm = () => {
+    const ok = window.confirm(
+      "¿Vaciar todo el formulario de este perfil? Se borran todos los datos cargados. Podés deshacerlo con el botón ↶ si te arrepentís."
+    );
+    if (!ok) return;
+    setData({ ...initialState });
+  };
+
   const renameProfile = (id, nombre) => {
     setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, nombre } : p)));
   };
@@ -4041,6 +4056,7 @@ Texto del currículum:
             onTexto={() => setPlainTextOpen(true)}
             onWord={handleExportDocx}
             onTour={() => setTourOpen(true)}
+            onClear={clearForm}
             exportingDocx={exportingDocx}
           />
           <button
