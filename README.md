@@ -425,3 +425,9 @@ Nota técnica: el QR se genera con una librería que corre en tu propio navegado
 Encontré la causa real: no era un problema del QR en sí, sino un bug en el manejo de errores del service worker que armamos antes. Si fallaba la carga de CUALQUIER recurso externo (como la librería que genera el QR), el service worker devolvía por error el contenido de `index.html` disfrazado de ese recurso — rompiendo la carga en silencio, sin ningún mensaje de error visible.
 
 Corregido: ese respaldo con `index.html` ahora solo se usa para abrir la app sin conexión (su propósito original), no para cualquier recurso que falle. También agregué la librería del QR a la lista de precarga (se descarga de entrada, como Word), y ahora cualquier error real queda visible en la consola del navegador en vez de desaparecer sin dejar rastro.
+
+## Medidor de completitud
+
+Arriba de todo en el formulario (antes de "Apariencia") hay una barra nueva que muestra qué tan completo está tu CV, en porcentaje. Se calcula sumando puntos por cada dato clave que tengas cargado (nombre, contacto, foto, resumen con contenido real, al menos una experiencia con descripción, educación, habilidades) — la experiencia y el resumen pesan más que los datos de contacto, ya que son lo que más mira un reclutador.
+
+Debajo de la barra aparece la sugerencia más importante de lo que falta ("Para mejorar: Agregá al menos una experiencia laboral con descripción"), con un contador si hay más de una pendiente. Se actualiza solo a medida que vas completando el formulario.

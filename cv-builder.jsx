@@ -3932,6 +3932,40 @@ JSON original:
     activeProfile.lastEditedAt &&
     Date.now() - activeProfile.lastEditedAt > 180 * 24 * 60 * 60 * 1000;
 
+  const completeness = (() => {
+    const checks = [
+      { done: !!data.nombre?.trim(), weight: 10, tip: "Agregá tu nombre completo" },
+      { done: !!data.puesto?.trim(), weight: 8, tip: "Agregá tu título profesional o puesto" },
+      { done: !!data.email?.trim(), weight: 8, tip: "Agregá tu email de contacto" },
+      { done: !!data.telefono?.trim(), weight: 5, tip: "Agregá tu teléfono" },
+      { done: !!data.ubicacion?.trim(), weight: 5, tip: "Agregá tu ubicación" },
+      { done: !!data.linkedin?.trim(), weight: 5, tip: "Agregá tu LinkedIn o portafolio" },
+      { done: !!data.foto, weight: 5, tip: "Subí una foto de perfil" },
+      {
+        done: !!(data.resumen && data.resumen.trim().length >= 50),
+        weight: 15,
+        tip: "Completá tu resumen profesional (al menos un par de frases)",
+      },
+      {
+        done: data.experiencia.some((e) => e.puesto && e.empresa && e.descripcion?.trim()),
+        weight: 20,
+        tip: "Agregá al menos una experiencia laboral con descripción",
+      },
+      {
+        done: data.educacion.some((e) => e.titulo && e.institucion),
+        weight: 12,
+        tip: "Agregá al menos una formación educativa",
+      },
+      { done: !!data.habilidades?.trim(), weight: 7, tip: "Agregá tus habilidades principales" },
+    ];
+    const percent = Math.round(checks.reduce((sum, c) => sum + (c.done ? c.weight : 0), 0));
+    const missing = checks
+      .filter((c) => !c.done)
+      .sort((a, b) => b.weight - a.weight)
+      .map((c) => c.tip);
+    return { percent, missing };
+  })();
+
   const getShorteningTips = () => {
     const tips = [];
     if (data.resumen && data.resumen.length > 420) {
@@ -5075,6 +5109,27 @@ Máximo 4 resultados.`;
           className="editor-panel no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full"
           style={{ zoom: FONT_SCALES[fontSize] }}
         >
+          <div className="mb-6 p-3 rounded-md bg-stone-800/40 border border-stone-700">
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-[11px] font-mono uppercase tracking-wider text-white">
+                Completitud del CV
+              </p>
+              <span className="text-[11px] font-mono text-white">{completeness.percent}%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-stone-700 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{ width: `${completeness.percent}%`, background: accent }}
+              />
+            </div>
+            {completeness.missing.length > 0 && (
+              <p className="text-[11px] text-white mt-2 leading-relaxed">
+                Para mejorar: {completeness.missing[0]}
+                {completeness.missing.length > 1 && ` (+${completeness.missing.length - 1} más)`}
+              </p>
+            )}
+          </div>
+
           <section className="mb-8">
             <h2 className="font-mono text-[11px] uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Apariencia
