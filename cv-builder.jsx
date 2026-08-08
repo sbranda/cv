@@ -5167,7 +5167,20 @@ Descripción:
             className="w-full flex justify-center"
             style={{ zoom: DENSITY_SCALE[data.densidad] }}
           >
-            <PreviewComponent data={data} accent={accent} />
+            <div className="relative w-full max-w-[600px]">
+              <PreviewComponent data={data} accent={accent} />
+              {pageCount > 1 && (
+                <div
+                  className="absolute left-0 right-0 pointer-events-none no-print"
+                  style={{ top: PAGE_HEIGHT_PX / PRINT_WIDTH_CORRECTION / DENSITY_SCALE[data.densidad] }}
+                >
+                  <div className="border-t-2 border-dashed" style={{ borderColor: "#f59e0b" }} />
+                  <span className="absolute right-1 -top-[9px] bg-amber-500 text-stone-950 text-[9px] font-mono font-medium px-1.5 py-0.5 rounded-sm whitespace-nowrap">
+                    Fin de página 1 (estimado)
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

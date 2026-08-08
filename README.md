@@ -295,3 +295,7 @@ Guardá ese archivo en algún lugar seguro (Google Drive, email a vos mismo, etc
 ## Detector de verbos débiles
 
 En cada experiencia laboral, junto a "Mejorar con IA" hay un nuevo botón: **"🏳 Verbos débiles"**. Analiza la descripción y te marca frases genéricas ("hice", "trabajé en", "fui responsable de", etc.) con 2-3 sugerencias de verbos de acción más fuertes para cada una — a diferencia de "Mejorar con IA", no reescribe nada solo, te muestra las sugerencias para que decidas vos qué incorporar y cómo.
+
+## Línea de salto de página en la vista previa
+
+Cuando tu CV ocupa más de una página, ahora ves una línea punteada naranja con la etiqueta "Fin de página 1 (estimado)" directamente superpuesta en la vista previa, marcando dónde terminaría exactamente la primera hoja — sin tener que abrir el aviso ni los consejos para acortar. Usa el mismo cálculo (calibrado para A4) que ya tenía el aviso, así que ambos coinciden. No aparece al imprimir/exportar, es solo una guía en pantalla.
