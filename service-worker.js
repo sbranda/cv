@@ -1,4 +1,4 @@
-const CACHE_NAME = "cv-builder-v82";
+const CACHE_NAME = "cv-builder-v83";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -34,7 +34,9 @@ self.addEventListener("install", (event) => {
       )
     )
   );
-  self.skipWaiting();
+  // A propósito NO llamamos self.skipWaiting() acá. Dejamos que la versión
+  // nueva quede "esperando" hasta que la persona toque el aviso de "hay una
+  // versión nueva" en la app — así activa cuando ella decide, no en silencio.
 });
 
 self.addEventListener("activate", (event) => {
@@ -44,6 +46,14 @@ self.addEventListener("activate", (event) => {
     )
   );
   self.clients.claim();
+});
+
+// La app le pide al service worker "esperando" que se active recién cuando
+// la persona toca el aviso de actualización (ver index.html).
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 // Cache-first for same-origin and known CDN assets, network-first fallback for everything else
