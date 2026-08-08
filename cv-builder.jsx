@@ -482,19 +482,19 @@ const TOUR_STEPS = [
   },
   {
     title: "28 plantillas para elegir",
-    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar.",
+    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Dentro de la galería podés \"Comparar\" dos plantillas lado a lado antes de decidir.",
   },
   {
     title: "Personalizá el estilo",
-    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓.",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓. El botón ☀️/🌙 del encabezado cambia el editor a modo claro si preferís fondo blanco.",
   },
   {
     title: "Mejorá tu texto con IA",
-    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones de experiencia para que suenen más profesionales.",
+    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones de experiencia. El botón 🏳 \"Verbos débiles\" te marca frases genéricas (como \"hice\" o \"trabajé en\") con sugerencias más fuertes, sin reescribir nada por vos.",
   },
   {
     title: "Organizá varios perfiles",
-    body: "Tocá \"Perfil\" en el encabezado para crear versiones distintas de tu CV (por ejemplo, una por idioma o por tipo de puesto). Los botones ↶ ↷ deshacen o rehacen cualquier cambio.",
+    body: "Tocá \"Perfil\" en el encabezado para crear versiones distintas de tu CV. Los botones ↶ ↷ deshacen o rehacen cualquier cambio, y desde el panel de Perfiles podés descargar una copia de seguridad de todo (o restaurarla) en cualquier momento.",
   },
   {
     title: "Herramientas extra",
@@ -502,7 +502,7 @@ const TOUR_STEPS = [
   },
   {
     title: "Descargá cuando quieras",
-    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano. ¡Listo para empezar!",
+    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano. Si tu CV ocupa más de una página, vas a ver una línea marcando dónde cortaría. ¡Listo para empezar!",
   },
 ];
 

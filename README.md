@@ -313,3 +313,7 @@ El recorte que achica cada plantilla usaba un ancho de recuadro que no coincidí
 Nuevo botón ☀️/🌙 en el encabezado, junto al menú "Más". Cambia el panel del editor (formulario de la izquierda) a fondo blanco con texto oscuro, para quien prefiera trabajar así. La vista previa del CV, los modales y el resto de la app se mantienen igual — es específicamente para el panel de edición. Se guarda tu preferencia, así que la próxima vez que entres va a recordar cómo lo dejaste.
 
 Nota técnica: el modo claro funciona anulando las clases de color oscuro existentes en vez de reescribir cada elemento — cubre los casos más comunes (fondos, textos, bordes, campos de formulario) pero puede haber algún detalle chico sin cubrir perfectamente. Si notás algo que se ve raro en modo claro, contame qué elemento puntual y lo ajusto.
+
+## Tutorial actualizado (de nuevo)
+
+Sigue en 7 pasos, pero ahora menciona: comparar plantillas lado a lado, modo claro del editor, el detector de verbos débiles, la copia de seguridad de perfiles, y la línea de salto de página. Andá a ⋯ → Ver tutorial para verlo actualizado.
