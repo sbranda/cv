@@ -349,3 +349,7 @@ Para el PDF específicamente: como el nombre del archivo lo decide el navegador 
 Cuando actualice la app y vuelvas a abrirla, ahora te va a aparecer un cartel discreto abajo del encabezado: "Hay una versión nueva de HazTuCV disponible — Tocá para actualizar". Al tocarlo, se actualiza y recarga sola. Ya no hace falta que te avise yo cada vez — la app misma te lo va a decir.
 
 Cambio técnico importante: antes, cada actualización se activaba en silencio apenas se detectaba (lo que a veces generaba justamente los problemas de "versión vieja pegada" que tuvimos que depurar antes). Ahora la nueva versión queda esperando tu confirmación explícita antes de activarse — más previsible y menos propenso a esos problemas.
+
+## Sugerencia de plantilla según el puesto
+
+Al abrir la galería de plantillas, ahora hay un campo arriba de todo: "¿No sabés cuál elegir? Contanos a qué te postulás". Escribís el tipo de puesto o rubro (por ejemplo "analista contable en un banco" o "diseñadora gráfica freelance"), tocás "Sugerir", y la IA recomienda una de las 28 plantillas con una breve explicación de por qué — con un botón para aplicarla directo.

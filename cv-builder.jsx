@@ -693,9 +693,48 @@ function CompareTemplatesModal({ open, onClose, data, accent, currentTemplate, o
   );
 }
 
-function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCompare }) {
+function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCompare, apiKey }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  const [jobInput, setJobInput] = useState("");
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestion, setSuggestion] = useState(null);
+  useEffect(() => {
+    if (open) {
+      setSuggestion(null);
+    }
+  }, [open]);
   if (!open) return null;
+
+  const suggestTemplate = async () => {
+    if (!jobInput.trim()) return;
+    setSuggesting(true);
+    try {
+      const list = TEMPLATES
+        .map((t) => `- ${t.id}: "${t.name}" (${CATEGORIES.find((c) => c.id === t.category)?.name || t.category}) — ${t.desc}`)
+        .join("\n");
+      const prompt = `Estas son las 28 plantillas de currículum disponibles en una app:
+${list}
+
+La persona se está por postular a este tipo de puesto/rubro: "${jobInput.trim()}"
+
+Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese puesto/rubro (por ejemplo: plantillas formales para banca/legal/finanzas, creativas para diseño/marketing, técnicas para desarrollo de software, etc.). Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
+{"template": "id_exacto_de_la_lista", "razon": "explicación breve de 1-2 frases de por qué es la mejor opción para ese puesto"}`;
+      const result = await callClaude(prompt, apiKey);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      if (parsed && TEMPLATES.some((t) => t.id === parsed.template)) {
+        setSuggestion(parsed);
+      } else {
+        setSuggestion(null);
+      }
+    } catch (e) {
+      console.error(e);
+      setSuggestion(null);
+    } finally {
+      setSuggesting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
       <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
@@ -718,6 +757,51 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCom
               <X size={20} aria-hidden="true" />
             </button>
           </div>
+        </div>
+        <div className="mb-5 p-3 rounded-md bg-stone-800/40 border border-stone-700">
+          <p className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 mb-2">
+            ¿No sabés cuál elegir? Contanos a qué te postulás
+          </p>
+          <div className="flex gap-2">
+            <input
+              spellCheck="true"
+              value={jobInput}
+              onChange={(e) => setJobInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && suggestTemplate()}
+              placeholder="Ej: analista contable en un banco, diseñadora gráfica freelance..."
+              className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
+            />
+            <button
+              onClick={suggestTemplate}
+              disabled={suggesting || !jobInput.trim()}
+              className="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-md text-stone-950 hover:opacity-90 transition disabled:opacity-40"
+              style={{ background: accent }}
+            >
+              {suggesting ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Sparkles size={14} aria-hidden="true" />}
+              Sugerir
+            </button>
+          </div>
+          {suggestion && (
+            <div className="mt-3 p-2.5 rounded-md bg-stone-950/60 border border-stone-700">
+              <p className="text-[12.5px] text-stone-200">
+                <span className="font-semibold" style={{ color: accent }}>
+                  {TEMPLATES.find((t) => t.id === suggestion.template)?.name}
+                </span>
+                {" — "}
+                <span className="text-stone-400">{suggestion.razon}</span>
+              </p>
+              <button
+                onClick={() => {
+                  onSelect(suggestion.template);
+                  onClose();
+                }}
+                className="mt-2 text-[11px] font-mono uppercase tracking-wider hover:opacity-80 transition"
+                style={{ color: accent }}
+              >
+                Usar esta plantilla
+              </button>
+            </div>
+          )}
         </div>
         {CATEGORIES.map((cat) => {
           const items = TEMPLATES.filter((t) => t.category === cat.id);
