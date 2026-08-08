@@ -39,6 +39,8 @@ import {
   Type,
   Image,
   Star,
+  Clock,
+  WifiOff,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3565,7 +3567,7 @@ export default function CVBuilder() {
     setProfiles((prev) =>
       prev.map((p) =>
         p.id === activeProfile.id
-          ? { ...p, data: typeof updater === "function" ? updater(p.data) : updater }
+          ? { ...p, data: typeof updater === "function" ? updater(p.data) : updater, lastEditedAt: Date.now() }
           : p
       )
     );
@@ -3631,7 +3633,7 @@ export default function CVBuilder() {
 
   const addProfile = () => {
     const id = crypto.randomUUID();
-    setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState } }]);
+    setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState }, lastEditedAt: Date.now() }]);
     setActiveProfileId(id);
   };
 
@@ -3641,7 +3643,7 @@ export default function CVBuilder() {
     const newId = crypto.randomUUID();
     setProfiles((prev) => {
       const idx = prev.findIndex((p) => p.id === id);
-      const copy = { id: newId, nombre: `${source.nombre} (copia)`, data: JSON.parse(JSON.stringify(source.data)) };
+      const copy = { id: newId, nombre: `${source.nombre} (copia)`, data: JSON.parse(JSON.stringify(source.data)), lastEditedAt: Date.now() };
       const next = [...prev];
       next.splice(idx + 1, 0, copy);
       return next;
@@ -3849,6 +3851,11 @@ JSON original:
     correctedHeight > 0 && hasMeaningfulContent
       ? Math.max(1, Math.ceil(correctedHeight / PAGE_HEIGHT_PX))
       : 1;
+
+  const isProfileStale =
+    hasMeaningfulContent &&
+    activeProfile.lastEditedAt &&
+    Date.now() - activeProfile.lastEditedAt > 180 * 24 * 60 * 60 * 1000;
 
   const getShorteningTips = () => {
     const tips = [];
@@ -4128,6 +4135,18 @@ Texto del currículum:
     const onScroll = () => setShowBackToTop(window.scrollY > 600);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const [isOnline, setIsOnline] = useState(() => (typeof navigator !== "undefined" ? navigator.onLine : true));
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
   }, []);
 
   const [tema, setTema] = useState("oscuro");
@@ -4820,7 +4839,14 @@ Máximo 4 resultados.`;
           </div>
           <div>
             <h1 className="font-display text-lg leading-none">HazTuCV</h1>
-            <p className="text-[11px] font-mono text-stone-500 mt-0.5">editor + vista previa en vivo</p>
+            <p className="text-[11px] font-mono text-stone-500 mt-0.5">
+              editor + vista previa en vivo
+              {!isOnline && (
+                <span className="inline-flex items-center gap-1 ml-1.5 text-amber-400">
+                  <WifiOff size={10} aria-hidden="true" /> Sin conexión
+                </span>
+              )}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -4942,6 +4968,15 @@ Máximo 4 resultados.`;
         </button>
       </div>
       </div>
+
+      {isProfileStale && (
+        <div className="no-print bg-sky-500/10 border-b border-sky-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">
+          <p className="text-[12.5px] text-sky-300 flex items-center gap-2">
+            <Clock size={14} className="shrink-0" aria-hidden="true" />
+            Hace más de 6 meses que no editás este perfil — puede valer la pena revisarlo.
+          </p>
+        </div>
+      )}
 
       {pageCount > 1 && (
         <div className="no-print bg-amber-500/10 border-b border-amber-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">

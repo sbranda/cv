@@ -405,3 +405,9 @@ De paso, corregí un bug chiquito que ya existía: el tilde que marca el perfil 
 ## Aviso antes de cambiar a una plantilla que ocuparía más páginas
 
 Ahora, al tocar una plantilla en la galería (o aplicar una sugerencia de la IA), la app la mide en segundo plano antes de aplicarla. Si detecta que pasarías de, por ejemplo, 1 a 2 páginas, te avisa con un mensaje de confirmación antes de aplicarla — podés cancelar y seguir viendo otras opciones, o confirmar si te da igual. Antes te enterabas recién después de haber cambiado, con el aviso amarillo de siempre.
+
+## Recordatorio de CV desactualizado + indicador de sin conexión
+
+**Recordatorio de CV desactualizado**: cada perfil guarda ahora la fecha de la última edición, actualizada automáticamente cada vez que cambiás algo. Si pasan más de 6 meses sin tocar el perfil activo, aparece un aviso discreto (celeste, con ícono de reloj) debajo del encabezado — desaparece solo apenas volvés a editar algo. Los perfiles creados antes de esta actualización no muestran el aviso hasta la próxima vez que los edites (no sabemos cuándo fue su última edición real).
+
+**Indicador de sin conexión**: si perdés la conexión a internet, aparece un texto chico junto al indicador de "Guardado hace X" en el encabezado — "📶 Sin conexión — se sigue guardando". Como la app funciona offline gracias al service worker, tus cambios se siguen guardando en el celular normalmente aunque no tengas internet.

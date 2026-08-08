@@ -125,6 +125,8 @@ const Search = (p) => <Icon {...p}><circle cx="11" cy="11" r="8" /><path d="m21 
 const Type = (p) => <Icon {...p}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>;
 const Image = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></Icon>;
 const Star = (p) => <Icon {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></Icon>;
+const Clock = (p) => <Icon {...p}><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></Icon>;
+const WifiOff = (p) => <Icon {...p}><line x1="2" y1="2" x2="22" y2="22" /><path d="M8.5 16.5a5 5 0 0 1 7 0" /><path d="M2 8.82a15 15 0 0 1 4.17-2.65" /><path d="M10.66 5.05A16 16 0 0 1 22 8.82" /><path d="M16.85 11.25a10 10 0 0 1 2.22 1.68" /><path d="M5 12.86a10 10 0 0 1 5.17-2.69" /><line x1="12" y1="20" x2="12.01" y2="20" /></Icon>;
 const RefreshCw = (p) => <Icon {...p}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
@@ -3813,7 +3815,7 @@ function CVBuilder() {
     setProfiles((prev) =>
       prev.map((p) =>
         p.id === activeProfile.id
-          ? { ...p, data: typeof updater === "function" ? updater(p.data) : updater }
+          ? { ...p, data: typeof updater === "function" ? updater(p.data) : updater, lastEditedAt: Date.now() }
           : p
       )
     );
@@ -3879,7 +3881,7 @@ function CVBuilder() {
 
   const addProfile = () => {
     const id = crypto.randomUUID();
-    setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState } }]);
+    setProfiles((prev) => [...prev, { id, nombre: `Perfil ${prev.length + 1}`, data: { ...initialState }, lastEditedAt: Date.now() }]);
     setActiveProfileId(id);
   };
 
@@ -3889,7 +3891,7 @@ function CVBuilder() {
     const newId = crypto.randomUUID();
     setProfiles((prev) => {
       const idx = prev.findIndex((p) => p.id === id);
-      const copy = { id: newId, nombre: `${source.nombre} (copia)`, data: JSON.parse(JSON.stringify(source.data)) };
+      const copy = { id: newId, nombre: `${source.nombre} (copia)`, data: JSON.parse(JSON.stringify(source.data)), lastEditedAt: Date.now() };
       const next = [...prev];
       next.splice(idx + 1, 0, copy);
       return next;
@@ -4105,6 +4107,11 @@ JSON original:
       ? Math.max(1, Math.ceil(correctedHeight / PAGE_HEIGHT_PX))
       : 1;
 
+  const isProfileStale =
+    hasMeaningfulContent &&
+    activeProfile.lastEditedAt &&
+    Date.now() - activeProfile.lastEditedAt > 180 * 24 * 60 * 60 * 1000;
+
   const getShorteningTips = () => {
     const tips = [];
     if (data.resumen && data.resumen.length > 420) {
@@ -4157,6 +4164,17 @@ JSON original:
   };
 
   const [lastSavedAt, setLastSavedAt] = useState(null);
+  const [isOnline, setIsOnline] = useState(() => (typeof navigator !== "undefined" ? navigator.onLine : true));
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
+  }, []);
   const [, forceTick] = useState(0);
 
   useEffect(() => {
@@ -5171,6 +5189,11 @@ Máximo 4 resultados.`;
                   {formatSavedAgo(lastSavedAt)}
                 </span>
               )}
+              {!isOnline && (
+                <span className="inline-flex items-center gap-1 ml-1.5 text-amber-400">
+                  <WifiOff size={10} aria-hidden="true" /> Sin conexión — se sigue guardando
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -5315,6 +5338,15 @@ Máximo 4 resultados.`;
           >
             Tocá para actualizar
           </button>
+        </div>
+      )}
+
+      {isProfileStale && (
+        <div className="no-print bg-sky-500/10 border-b border-sky-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">
+          <p className="text-[12.5px] text-sky-300 flex items-center gap-2">
+            <Clock size={14} className="shrink-0" aria-hidden="true" />
+            Hace más de 6 meses que no editás este perfil — puede valer la pena revisarlo.
+          </p>
         </div>
       )}
 
