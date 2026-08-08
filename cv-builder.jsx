@@ -295,7 +295,8 @@ const initialState = {
   publicaciones: [emptyPublication()],
   becas: [emptyBeca()],
   logros: [emptyLogro()],
-  seccionesOpcionales: { proyectos: false, publicaciones: false, becas: false, logros: false },
+  informacionAdicional: "",
+  seccionesOpcionales: { proyectos: false, publicaciones: false, becas: false, logros: false, informacionAdicional: false },
   accent: ACCENTS[0].value,
   template: "clasico",
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
@@ -321,6 +322,7 @@ const OPTIONAL_SECTIONS = [
   { id: "publicaciones", name: "Publicaciones", template: "Académico" },
   { id: "becas", name: "Becas y reconocimientos", template: "Académico" },
   { id: "logros", name: "Logros destacados", template: "Ventas/Marketing" },
+  { id: "informacionAdicional", name: "Información adicional", template: "4 plantillas" },
 ];
 
 const DEFAULT_SECTION_ORDER = ["resumen", "experiencia", "educacion", "habilidades"];
@@ -1320,6 +1322,12 @@ function PreviewClasico({ data, accent }) {
         {(data.ordenSecciones || DEFAULT_SECTION_ORDER).map((key) => (
           <React.Fragment key={key}>{sections[key]}</React.Fragment>
         ))}
+        {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+          <div className="mt-6">
+            <SectionLabel accent={accent}>Información adicional</SectionLabel>
+            <p className="text-[12.5px] leading-relaxed text-stone-700 whitespace-pre-line">{data.informacionAdicional}</p>
+          </div>
+        )}
       </div>
       {data.contactoAlPie && (
         <ContactLine
@@ -1445,6 +1453,12 @@ function PreviewMinimalista({ data, accent }) {
         <div className="text-center">
           <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-2">Habilidades</p>
           <p className="text-[12.5px] text-stone-600">{data.habilidades}</p>
+        </div>
+      )}
+      {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+        <div className="text-center mt-6">
+          <p className="text-[11px] uppercase tracking-[0.25em] text-stone-400 mb-2">Información adicional</p>
+          <p className="text-[12.5px] text-stone-600 whitespace-pre-line">{data.informacionAdicional}</p>
         </div>
       )}
       {data.contactoAlPie && (
@@ -1621,6 +1635,12 @@ function PreviewCorporativo({ data, accent }) {
           <p className="text-[12.5px] text-stone-700 break-words">{data.habilidades}</p>
         </div>
       )}
+      {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+        <div>
+          <h3 className={label} style={ruleStyle}>Información adicional</h3>
+          <p className="text-[12.5px] text-stone-700 break-words whitespace-pre-line">{data.informacionAdicional}</p>
+        </div>
+      )}
       {data.contactoAlPie && (
         <p className="text-[11px] mt-8 pt-4 border-t border-stone-300 text-center text-stone-500">
           {[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   |   ")}
@@ -1696,6 +1716,12 @@ function PreviewCompacto({ data, accent }) {
         <div>
           <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
           <SkillChips data={data} accent={accent} />
+        </div>
+      )}
+      {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+        <div className="mt-5">
+          <SectionLabel accent={accent} className="mb-2">Información adicional</SectionLabel>
+          <p className="text-[12px] text-stone-600 whitespace-pre-line">{data.informacionAdicional}</p>
         </div>
       )}
     </div>
@@ -3915,6 +3941,12 @@ Texto del currículum:
       }
     }
 
+    if (data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional) {
+      lines.push("INFORMACIÓN ADICIONAL");
+      lines.push(data.informacionAdicional);
+      lines.push("");
+    }
+
     return lines.join("\n").trim();
   };
 
@@ -4082,6 +4114,11 @@ Texto del currículum:
             children.push(new Paragraph({ children: [new TextRun({ text: parts, size: 22 })], spacing: { before: 60 } }));
           });
         }
+      }
+
+      if (data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional) {
+        children.push(heading("Información adicional"));
+        children.push(new Paragraph({ children: [new TextRun({ text: data.informacionAdicional, size: 22 })] }));
       }
 
       const doc = new Document({ sections: [{ properties: {}, children }] });
@@ -4953,6 +4990,31 @@ Texto del currículum:
                   )}
                 </div>
               ))}
+            </section>
+          )}
+
+          {data.seccionesOpcionales?.informacionAdicional && (
+            <section className="mt-6 mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Información adicional
+                </h2>
+                <button
+                  onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, informacionAdicional: false } })}
+                  className="text-stone-500 hover:text-red-400 transition"
+                  title="Ocultar sección"
+                >
+                  <X size={15} aria-hidden="true" />
+                </button>
+              </div>
+              <Field label="Texto libre">
+                <textarea
+                  className={inputClass + " min-h-[80px] resize-none"}
+                  value={data.informacionAdicional}
+                  onChange={(e) => update({ informacionAdicional: e.target.value })}
+                  placeholder="Cualquier información que quieras agregar — disponibilidad, licencia de conducir, idiomas adicionales, etc."
+                />
+              </Field>
             </section>
           )}
         </div>

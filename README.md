@@ -273,3 +273,9 @@ Empezamos a mejorar la accesibilidad de la app. Lo que ya está hecho:
 - **Enlace "Saltar al contenido principal"**: aparece al navegar con teclado, para no tener que pasar por todos los botones del encabezado cada vez.
 
 **Esto es un primer avance, no una accesibilidad "total" o certificada** — cumplir el estándar completo (WCAG AAA) para todo tipo de discapacidad es un trabajo de fondo constante, no algo que se termina de una vez. Quedan pendientes cosas como: contraste de color verificado en las 28 plantillas, navegación completa por teclado del editor de arrastre de fotos, y pruebas reales con lectores de pantalla (NVDA, JAWS, VoiceOver).
+
+## Nueva sección opcional: Información adicional
+
+Un campo de texto libre, activable como las demás secciones opcionales (Proyectos, Publicaciones, Becas, Logros) desde los chips debajo de Habilidades. Sirve para agregar cualquier cosa que quieras — disponibilidad, licencia de conducir, idiomas adicionales, o cualquier otro dato que prefieras incluir a tu criterio.
+
+Disponible en **4 plantillas**: Clásico, Minimalista, Corporativo y Compacto (las mismas de una columna donde ya funciona bien el resto del contenido). También se incluye en las exportaciones a Word y texto plano (ATS).
