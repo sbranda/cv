@@ -38,6 +38,7 @@ import {
   Search,
   Type,
   Image,
+  Star,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -700,6 +701,10 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCom
   const [jobInput, setJobInput] = useState("");
   const [suggesting, setSuggesting] = useState(false);
   const [suggestion, setSuggestion] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const toggleFavorite = (id) => {
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
+  };
   useEffect(() => {
     if (open) {
       setSuggestion(null);
@@ -735,6 +740,75 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
     } finally {
       setSuggesting(false);
     }
+  };
+
+  const renderCard = (t) => {
+    const ThumbComponent = TEMPLATE_COMPONENTS[t.id];
+    const isFav = favorites.includes(t.id);
+    return (
+      <div
+        key={t.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          onSelect(t.id);
+          onClose();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onSelect(t.id);
+            onClose();
+          }
+        }}
+        aria-label={`Usar plantilla ${t.name}`}
+        className="relative text-left border rounded-md overflow-hidden transition hover:-translate-y-0.5 cursor-pointer"
+        style={{
+          borderColor: current === t.id ? accent : "#3f3a35",
+          background: "#1c1a18",
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFavorite(t.id);
+          }}
+          aria-label={isFav ? `Quitar ${t.name} de favoritas` : `Marcar ${t.name} como favorita`}
+          className="absolute top-1.5 right-1.5 z-10 w-6 h-6 rounded-full flex items-center justify-center bg-stone-950/70 backdrop-blur-sm hover:bg-stone-950 transition"
+        >
+          <Star
+            size={13}
+            aria-hidden="true"
+            className={isFav ? "fill-current" : ""}
+            style={{ color: isFav ? accent : "#78716c" }}
+          />
+        </button>
+        <div className="h-32 flex items-start justify-center bg-stone-950 overflow-hidden">
+          <div
+            className="shrink-0 overflow-hidden pointer-events-none"
+            style={{ width: 160, height: 128 }}
+          >
+            <div style={{ width: 600, transform: "scale(0.2667)", transformOrigin: "top left" }}>
+              {ThumbComponent && <ThumbComponent data={data} accent={accent} />}
+            </div>
+          </div>
+        </div>
+        <div className="px-3 py-2.5 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium">{t.name}</p>
+            <p className="text-[11px] text-stone-500">{t.desc}</p>
+          </div>
+          {current === t.id && (
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: accent }}
+            >
+              <Check size={12} className="text-stone-950" aria-hidden="true" />
+            </span>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -806,6 +880,16 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
             </div>
           )}
         </div>
+        {favorites.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-[11px] font-mono uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+              <span className="w-4 h-px bg-stone-700" /> Favoritas
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              {TEMPLATES.filter((t) => favorites.includes(t.id)).map((t) => renderCard(t))}
+            </div>
+          </div>
+        )}
         {CATEGORIES.map((cat) => {
           const items = TEMPLATES.filter((t) => t.category === cat.id);
           if (items.length === 0) return null;
@@ -815,48 +899,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
                 <span className="w-4 h-px bg-stone-700" /> {cat.name}
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                {items.map((t) => {
-                  const ThumbComponent = TEMPLATE_COMPONENTS[t.id];
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => {
-                        onSelect(t.id);
-                        onClose();
-                      }}
-                      className="text-left border rounded-md overflow-hidden transition hover:-translate-y-0.5"
-                      style={{
-                        borderColor: current === t.id ? accent : "#3f3a35",
-                        background: "#1c1a18",
-                      }}
-                    >
-                      <div className="h-32 flex items-start justify-center bg-stone-950 overflow-hidden">
-                        <div
-                          className="shrink-0 overflow-hidden pointer-events-none"
-                          style={{ width: 160, height: 128 }}
-                        >
-                          <div style={{ width: 600, transform: "scale(0.2667)", transformOrigin: "top left" }}>
-                            {ThumbComponent && <ThumbComponent data={data} accent={accent} />}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="px-3 py-2.5 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium">{t.name}</p>
-                          <p className="text-[11px] text-stone-500">{t.desc}</p>
-                        </div>
-                        {current === t.id && (
-                          <span
-                            className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                            style={{ background: accent }}
-                          >
-                            <Check size={12} className="text-stone-950" aria-hidden="true" />
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
+                {items.map((t) => renderCard(t))}
               </div>
             </div>
           );

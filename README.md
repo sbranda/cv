@@ -395,3 +395,9 @@ Encontré varios íconos decorativos de sesiones anteriores (menú ⋯, botones 
 En el menú ⋯ hay una nueva opción: "Descargar imagen (PNG)". Convierte tu CV en una imagen de alta resolución (fondo blanco, doble resolución para que se vea nítida), lista para compartir directo por WhatsApp, redes sociales, o cualquier lugar donde la otra persona no tenga ganas de abrir un PDF. Usa el mismo nombre de archivo inteligente que PDF/Word/texto plano.
 
 Nota técnica: la primera vez que se usa, carga una librería externa (html2canvas) bajo demanda — puede tardar un segundo extra esa primera vez.
+
+## Plantillas favoritas
+
+En la galería de plantillas, cada tarjeta tiene ahora una estrellita arriba a la derecha — tocala para marcar esa plantilla como favorita. Las que marques aparecen en una sección nueva "Favoritas" arriba de todo en la galería, antes de las categorías, para no tener que recorrer las 28 cada vez. En la PWA, tus favoritas quedan guardadas entre sesiones.
+
+De paso, corregí un bug chiquito que ya existía: el tilde que marca el perfil activo en el panel de Perfiles no estaba tomando el color de acento correctamente (un límite técnico del sistema de íconos que arreglé de raíz).
