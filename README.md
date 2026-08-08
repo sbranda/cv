@@ -337,3 +337,9 @@ Junto al encabezado de "Experiencia" (visible cuando tenés 2 o más experiencia
 Activé el corrector ortográfico nativo del navegador en todos los campos de texto y áreas de texto del editor (35 en total) — el mismo que ya usás en cualquier sitio web, con el subrayado rojo ondulado debajo de las palabras que no reconoce. La app ya estaba configurada en español (`lang="es"`), así que revisa contra el diccionario correcto sin configuración extra de tu parte.
 
 Nota: como el corrector depende del navegador (no de la app), su calidad varía según cuál uses — Chrome, Edge y Safari lo traen activado por defecto en español si tu dispositivo tiene ese idioma configurado.
+
+## Nombre de archivo inteligente
+
+Los tres formatos de descarga (PDF, Word, texto plano) ahora arman el nombre del archivo solos, combinando tu nombre y puesto — por ejemplo "Ana_Torres_Diseñadora_UX". Si el nombre o el puesto están vacíos, usa lo que haya disponible; si no cargaste nada todavía, cae en "CV" como antes.
+
+Para el PDF específicamente: como el nombre del archivo lo decide el navegador en el diálogo de "Guardar como PDF" (no la app), lo logramos cambiando el título de la pestaña justo antes de imprimir — la mayoría de los navegadores usan ese título como nombre sugerido. Se restaura solo después.

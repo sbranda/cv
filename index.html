@@ -1237,7 +1237,7 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
   );
 }
 
-function PlainTextModal({ open, onClose, text, accent }) {
+function PlainTextModal({ open, onClose, text, accent, fileName }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   const handleDownload = () => {
@@ -1245,7 +1245,7 @@ function PlainTextModal({ open, onClose, text, accent }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "CV.txt";
+    a.download = `${fileName || "CV"}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -4353,8 +4353,21 @@ Máximo 4 resultados.`;
     }
   };
 
+  const buildFileName = () => {
+    const combined = [data.nombre, data.puesto].filter(Boolean).join(" ").trim();
+    if (!combined) return "CV";
+    return combined.replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, "_");
+  };
+
   const handlePrint = () => {
+    const previousTitle = document.title;
+    document.title = buildFileName();
     window.print();
+    // Restauramos el título original después de que se cierre el diálogo de
+    // impresión, para no dejar el título de la pestaña cambiado permanentemente.
+    setTimeout(() => {
+      document.title = previousTitle;
+    }, 1000);
   };
 
   const [plainTextOpen, setPlainTextOpen] = useState(false);
@@ -4634,7 +4647,7 @@ Máximo 4 resultados.`;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${(data.nombre || "CV").trim().replace(/\s+/g, "_") || "CV"}.docx`;
+      a.download = `${buildFileName()}.docx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -4789,6 +4802,7 @@ Máximo 4 resultados.`;
         onClose={() => setPlainTextOpen(false)}
         text={buildPlainText()}
         accent={accent}
+        fileName={buildFileName()}
       />
 
       <ShortenTipsModal
