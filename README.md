@@ -369,3 +369,7 @@ Revisé lo agregado desde la pasada anterior (sugerencia de plantilla por IA, de
 ## Tamaño de letra del panel del editor
 
 Nuevo botón con un ícono "A" en el encabezado, junto a ☀️/🌙. Cada toque alterna entre tres tamaños: Pequeño → Normal → Grande → Pequeño... Afecta solo el panel del editor (formulario de la izquierda) — igual que el modo claro, la vista previa del CV no cambia. Se guarda tu preferencia entre sesiones.
+
+## Consejos sobre datos personales sensibles
+
+Debajo de los chips de secciones opcionales (Proyectos, Publicaciones, etc.) hay un nuevo enlace: "¿Incluyo edad, discapacidad, u otros datos personales?". Abre un panel con un resumen breve y neutral sobre 5 temas — edad/fecha de nacimiento, discapacidad, estado civil, nacionalidad, y foto — explicando en qué casos suele convenir incluirlos o no, según el país y el tipo de puesto. No es asesoramiento legal, es información general para que decidas vos con más contexto. Si después de leerlo querés incluir alguno, podés hacerlo con total libertad desde "Información adicional".

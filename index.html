@@ -1418,6 +1418,70 @@ function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   );
 }
 
+const PERSONAL_DATA_TIPS = [
+  {
+    tema: "Edad / fecha de nacimiento",
+    texto:
+      "En España y buena parte de Europa se está dejando de recomendar, porque facilita el descarte automático por edad en el primer filtro. En varios países de Latinoamérica todavía es común incluirla. No es ilegal ni incorrecto de ningún lado — es una decisión de estrategia según el país y el rubro.",
+  },
+  {
+    tema: "Discapacidad",
+    texto:
+      "En la mayoría de los países no es obligatorio declararla, y discriminar por eso en la selección es ilegal. Puede convenir mencionarla si te postulás a un programa de inclusión laboral con cupo específico, o si vas a necesitar algún ajuste desde el primer día. Muchos especialistas recomiendan dejarla fuera del CV y hablarlo recién en la entrevista, para reducir el riesgo de sesgos inconscientes en el filtro inicial.",
+  },
+  {
+    tema: "Estado civil",
+    texto:
+      "Cada vez menos frecuente a nivel internacional — la mayoría de las guías de RRHH actuales lo consideran información irrelevante para el desempeño en el puesto. Sigue siendo común en algunos países de Latinoamérica, pero es opcional en casi todos los casos.",
+  },
+  {
+    tema: "Nacionalidad",
+    texto:
+      "Puede ser relevante si el puesto requiere un permiso de trabajo específico o si te postulás desde el exterior (aclara que no vas a tener trabas migratorias). Si sos del mismo país donde está el puesto, suele ser información redundante.",
+  },
+  {
+    tema: "Foto",
+    texto:
+      "Común y hasta esperada en varios países de Latinoamérica y Europa continental. En cambio, en Estados Unidos, Reino Unido, Canadá y Australia se recomienda explícitamente NO incluirla, ya que puede generar problemas legales para quien contrata (riesgo de sesgo por apariencia, edad o género).",
+  },
+];
+
+function PersonalDataTipsModal({ open, onClose, accent }) {
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-display text-xl">Datos personales: ¿incluir o no?</h2>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Ninguno de estos datos es obligatorio en HazTuCV. Acá tenés un resumen para decidir vos qué
+          conviene según tu país y a qué te postulás — no es un consejo legal, solo información general.
+        </p>
+        <ul className="flex flex-col gap-4">
+          {PERSONAL_DATA_TIPS.map((item, i) => (
+            <li key={i}>
+              <p className="text-[13px] font-semibold mb-1" style={{ color: accent }}>
+                {item.tema}
+              </p>
+              <p className="text-[12.5px] text-stone-300 leading-relaxed">{item.texto}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="text-[11px] text-stone-600 mt-4 pt-3 border-t border-stone-800 leading-relaxed">
+          Si después de leer esto querés incluir alguno de estos datos, podés hacerlo con total libertad
+          desde la sección opcional "Información adicional" del formulario.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, exportingDocx }) {
   const [open, setOpen] = useState(false);
   return (
@@ -3914,6 +3978,7 @@ JSON original:
 
   const [previewHeight, setPreviewHeight] = useState(0);
   const [tipsOpen, setTipsOpen] = useState(false);
+  const [personalTipsOpen, setPersonalTipsOpen] = useState(false);
 
   useEffect(() => {
     const el = previewRef.current;
@@ -4926,6 +4991,12 @@ Máximo 4 resultados.`;
         pageCount={pageCount}
       />
 
+      <PersonalDataTipsModal
+        open={personalTipsOpen}
+        onClose={() => setPersonalTipsOpen(false)}
+        accent={accent}
+      />
+
       <CoverLetterModal
         open={cartaOpen}
         onClose={() => setCartaOpen(false)}
@@ -5641,6 +5712,12 @@ Máximo 4 resultados.`;
                 );
               })}
             </div>
+            <button
+              onClick={() => setPersonalTipsOpen(true)}
+              className="mt-2 text-[10.5px] font-mono uppercase tracking-wider text-stone-500 hover:text-white transition inline-flex items-center gap-1"
+            >
+              <HelpCircle size={11} aria-hidden="true" /> ¿Incluyo edad, discapacidad, u otros datos personales?
+            </button>
           </div>
 
           {data.seccionesOpcionales?.proyectos && (
