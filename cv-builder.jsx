@@ -487,7 +487,7 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 const TOUR_STEPS = [
   {
     title: "¡Bienvenido a HazTuCV!",
-    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha.",
+    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha. Arriba de todo hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar.",
   },
   {
     title: "28 plantillas para elegir",
@@ -495,7 +495,7 @@ const TOUR_STEPS = [
   },
   {
     title: "Personalizá el estilo",
-    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓. Los botones ☀️/🌙 y \"A\" del encabezado cambian el editor a modo claro y ajustan el tamaño de letra de la interfaz, si preferís algo distinto.",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores — el \"+\" guarda tus favoritos para reutilizar), tipografía y densidad de texto en \"Apariencia\" — ahí también reordenás las secciones y podés pedirle a la IA que estime cuánto tarda un reclutador en leer tu CV. Los botones ☀️/🌙 y \"A\" del encabezado ajustan el editor a tu gusto.",
   },
   {
     title: "Mejorá tu texto con IA",
@@ -507,11 +507,11 @@ const TOUR_STEPS = [
   },
   {
     title: "Herramientas extra",
-    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, importación de un CV existente, y la opción de vaciar el formulario si querés empezar de cero.",
+    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, importación de un CV existente, puntos de control con nombre propio para guardar versiones dentro del mismo perfil, y la opción de vaciar el formulario si querés empezar de cero.",
   },
   {
     title: "Descargá cuando quieras",
-    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano, y el archivo se nombra solo con tu nombre y puesto. Si tu CV ocupa más de una página, vas a ver una línea marcando dónde cortaría. ¡Listo para empezar!",
+    body: "PDF, Word, imagen PNG, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano, y el archivo se nombra solo con tu nombre y puesto. Si tu CV ocupa más de una página, vas a ver una línea marcando dónde cortaría. ¡Listo para empezar!",
   },
 ];
 

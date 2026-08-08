@@ -449,3 +449,9 @@ Es un complemento a deshacer/rehacer (que es automático pero temporal) — los 
 ## Estimación de tiempo de lectura
 
 Junto al reordenamiento de secciones (en "Apariencia"), hay un nuevo botón "⏱ Estimar tiempo de lectura". La IA calcula cuánto tardaría alguien en leer tu CV completo, y —más importante— qué es lo primero que vería un reclutador en los famosos 6-7 segundos que le suele dedicar a la primera pasada, con el orden de secciones que tenés actualmente. Si ese primer vistazo no muestra lo más relevante, te da una sugerencia puntual de qué reforzar o reordenar; si ya está bien priorizado, te lo confirma.
+
+## Tutorial actualizado (quinta vez)
+
+Sigue en 7 pasos. Ahora también menciona: el medidor de completitud, la paleta de colores personalizada, la estimación de tiempo de lectura, los puntos de control con nombre propio, y la exportación a PNG. Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+**Recordatorio importante para futuras actualizaciones**: si después de subir `index.html` y `service-worker.js` no aparece el cartel verde de "nueva versión disponible" al abrir la app, puede ser que el navegador tenga atascada una versión vieja del service worker. Solución: cerrar la app por completo (no solo minimizarla) y volver a abrirla; si eso no alcanza, borrar los datos del sitio desde la configuración del navegador y reinstalar (después de respaldar los perfiles con "Descargar copia de seguridad", por las dudas).
