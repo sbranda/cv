@@ -357,3 +357,11 @@ Al abrir la galería de plantillas, ahora hay un campo arriba de todo: "¿No sab
 ## Tutorial actualizado (tercera vez)
 
 Sigue en 7 pasos. Ahora también menciona: sugerencia de plantilla por IA según el puesto, el detector de brechas laborales, y el nombre de archivo inteligente al descargar. Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+## Tercera pasada de accesibilidad
+
+Revisé lo agregado desde la pasada anterior (sugerencia de plantilla por IA, detector de brechas, aviso de nueva versión) y corregí:
+
+- El campo de texto "¿A qué te postulás?" ahora tiene una etiqueta accesible (antes solo tenía el texto de ejemplo que desaparece al escribir, insuficiente para un lector de pantalla).
+- Los íconos decorativos del aviso de "nueva versión disponible" y del aviso de "ocupa N páginas" (este último se nos había pasado en pasadas anteriores) ahora están marcados como puramente visuales.
+- Búsqueda automatizada completa: no queda ningún botón de solo ícono sin etiqueta accesible en toda la app.

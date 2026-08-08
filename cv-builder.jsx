@@ -769,6 +769,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
               onChange={(e) => setJobInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && suggestTemplate()}
               placeholder="Ej: analista contable en un banco, diseñadora gráfica freelance..."
+              aria-label="A qué puesto te postulás"
               className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
             />
             <button
@@ -4751,7 +4752,7 @@ Máximo 4 resultados.`;
       {pageCount > 1 && (
         <div className="no-print bg-amber-500/10 border-b border-amber-500/30 px-6 py-2.5 flex items-center justify-between flex-wrap gap-2">
           <p className="text-[12.5px] text-amber-300 flex items-center gap-2">
-            <AlertTriangle size={14} className="shrink-0" />
+            <AlertTriangle size={14} className="shrink-0" aria-hidden="true" />
             Tu CV ocupa aproximadamente {pageCount} páginas (estimado).
           </p>
           <button
