@@ -478,20 +478,24 @@ const TOUR_STEPS = [
     body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha.",
   },
   {
-    title: "25 plantillas para elegir",
+    title: "28 plantillas para elegir",
     body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar.",
   },
   {
     title: "Personalizá el estilo",
-    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\".",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓.",
   },
   {
     title: "Mejorá tu texto con IA",
     body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones de experiencia para que suenen más profesionales.",
   },
   {
+    title: "Organizá varios perfiles",
+    body: "Tocá \"Perfil\" en el encabezado para crear versiones distintas de tu CV (por ejemplo, una por idioma o por tipo de puesto). Los botones ↶ ↷ deshacen o rehacen cualquier cambio.",
+  },
+  {
     title: "Herramientas extra",
-    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, e importación de un CV existente.",
+    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, importación de un CV existente, y la opción de vaciar el formulario si querés empezar de cero.",
   },
   {
     title: "Descargá cuando quieras",

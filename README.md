@@ -279,3 +279,7 @@ Empezamos a mejorar la accesibilidad de la app. Lo que ya está hecho:
 Un campo de texto libre, activable como las demás secciones opcionales (Proyectos, Publicaciones, Becas, Logros) desde los chips debajo de Habilidades. Sirve para agregar cualquier cosa que quieras — disponibilidad, licencia de conducir, idiomas adicionales, o cualquier otro dato que prefieras incluir a tu criterio.
 
 Disponible en **4 plantillas**: Clásico, Minimalista, Corporativo y Compacto (las mismas de una columna donde ya funciona bien el resto del contenido). También se incluye en las exportaciones a Word y texto plano (ATS).
+
+## Tutorial actualizado
+
+El recorrido guiado (⋯ → Ver tutorial) ahora tiene 7 pasos en vez de 6: corregí "25 plantillas" a "28", y sumé un paso nuevo sobre perfiles múltiples y deshacer/rehacer que antes no estaba cubierto. Como ya lo viste antes, no te va a volver a aparecer solo — si querés verlo actualizado, andá a ⋯ → Ver tutorial.
