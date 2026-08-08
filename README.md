@@ -283,3 +283,11 @@ Disponible en **4 plantillas**: Clásico, Minimalista, Corporativo y Compacto (l
 ## Tutorial actualizado
 
 El recorrido guiado (⋯ → Ver tutorial) ahora tiene 7 pasos en vez de 6: corregí "25 plantillas" a "28", y sumé un paso nuevo sobre perfiles múltiples y deshacer/rehacer que antes no estaba cubierto. Como ya lo viste antes, no te va a volver a aparecer solo — si querés verlo actualizado, andá a ⋯ → Ver tutorial.
+
+## Copia de seguridad de todos los perfiles
+
+En el panel "Perfiles" hay dos botones nuevos, abajo del todo:
+- **"Descargar copia de seguridad"**: baja un archivo `.json` con todos tus perfiles (nombre, contenido, plantilla, color — todo).
+- **"Restaurar desde archivo"**: elegís ese archivo para recuperar todos tus perfiles. Pide confirmación antes, porque **reemplaza** todo lo que tenías cargado en ese momento — conviene descargar una copia de seguridad actual antes de restaurar, por las dudas.
+
+Guardá ese archivo en algún lugar seguro (Google Drive, email a vos mismo, etc.) — es tu única protección real si algún día borrás datos del sitio sin querer, cambiás de celular, o el navegador pierde el `localStorage` por algún motivo.

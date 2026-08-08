@@ -690,7 +690,7 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
   );
 }
 
-function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId }) {
+function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId, onExportBackup, onImportBackup }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
@@ -769,6 +769,27 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
           >
             <Upload size={15} /> Importar desde PDF/Word
           </button>
+          <div className="flex gap-2 mt-1">
+            <button
+              onClick={onExportBackup}
+              className="flex-1 flex items-center justify-center gap-1.5 text-[11px] px-3 py-2 rounded-md text-stone-500 hover:text-white transition"
+            >
+              <Download size={13} /> Descargar copia de seguridad
+            </button>
+            <label className="flex-1 flex items-center justify-center gap-1.5 text-[11px] px-3 py-2 rounded-md text-stone-500 hover:text-white transition cursor-pointer">
+              <input
+                type="file"
+                accept=".json,application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onImportBackup(file);
+                  e.target.value = "";
+                }}
+              />
+              <Upload size={13} /> Restaurar desde archivo
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -3417,6 +3438,48 @@ JSON original:
     setData({ ...initialState });
   };
 
+  const exportBackup = () => {
+    const payload = { profiles, activeProfileId, exportedAt: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const fecha = new Date().toISOString().slice(0, 10);
+    a.download = `haztucv-respaldo-${fecha}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importBackup = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!parsed || !Array.isArray(parsed.profiles) || parsed.profiles.length === 0) {
+          throw new Error("Formato inválido");
+        }
+        const ok = window.confirm(
+          `Este archivo tiene ${parsed.profiles.length} perfil(es). ¿Restaurar y REEMPLAZAR todos tus perfiles actuales con los del archivo? Esta acción no se puede deshacer.`
+        );
+        if (!ok) return;
+        const restored = parsed.profiles.map((p) => ({
+          id: p.id || crypto.randomUUID(),
+          nombre: p.nombre || "Perfil restaurado",
+          data: { ...initialState, ...(p.data || {}) },
+        }));
+        setProfiles(restored);
+        setActiveProfileId(
+          restored.find((p) => p.id === parsed.activeProfileId)?.id || restored[0].id
+        );
+      } catch (e) {
+        alert("No se pudo leer el archivo. Asegurate de elegir un respaldo válido generado por HazTuCV.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const renameProfile = (id, nombre) => {
     setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, nombre } : p)));
   };
@@ -4228,6 +4291,8 @@ Texto del currículum:
           setImportError("");
           setImportOpen(true);
         }}
+        onExportBackup={exportBackup}
+        onImportBackup={importBackup}
       />
 
       <ImportModal
