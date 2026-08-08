@@ -36,6 +36,7 @@ import {
   Sun,
   Moon,
   Search,
+  Type,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3998,6 +3999,11 @@ Texto del currículum:
 
   const [tema, setTema] = useState("oscuro");
 
+  const FONT_SCALES = { pequeño: 0.9, normal: 1, grande: 1.15 };
+  const [fontSize, setFontSize] = useState("normal");
+  const cycleFontSize = () =>
+    setFontSize((f) => (f === "pequeño" ? "normal" : f === "normal" ? "grande" : "pequeño"));
+
   const [tourOpen, setTourOpen] = useState(true);
 
   const addExperience = () => {
@@ -4721,6 +4727,14 @@ Máximo 4 resultados.`;
             {tema === "oscuro" ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
           </button>
           <button
+            onClick={cycleFontSize}
+            title={`Tamaño de letra: ${fontSize} (tocá para cambiar)`}
+            aria-label={`Tamaño de letra: ${fontSize}. Tocá para cambiar`}
+            className="p-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            <Type size={15} aria-hidden="true" />
+          </button>
+          <button
             onClick={handlePrint}
             className="hidden lg:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"
             style={{ background: accent }}
@@ -4766,7 +4780,11 @@ Máximo 4 resultados.`;
 
       <div id="main-content" className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
-        <div ref={editorSectionRef} className="editor-panel no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
+        <div
+          ref={editorSectionRef}
+          className="editor-panel no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full"
+          style={{ zoom: FONT_SCALES[fontSize] }}
+        >
           <section className="mb-8">
             <h2 className="font-mono text-[11px] uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Apariencia

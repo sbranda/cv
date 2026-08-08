@@ -365,3 +365,7 @@ Revisé lo agregado desde la pasada anterior (sugerencia de plantilla por IA, de
 - El campo de texto "¿A qué te postulás?" ahora tiene una etiqueta accesible (antes solo tenía el texto de ejemplo que desaparece al escribir, insuficiente para un lector de pantalla).
 - Los íconos decorativos del aviso de "nueva versión disponible" y del aviso de "ocupa N páginas" (este último se nos había pasado en pasadas anteriores) ahora están marcados como puramente visuales.
 - Búsqueda automatizada completa: no queda ningún botón de solo ícono sin etiqueta accesible en toda la app.
+
+## Tamaño de letra del panel del editor
+
+Nuevo botón con un ícono "A" en el encabezado, junto a ☀️/🌙. Cada toque alterna entre tres tamaños: Pequeño → Normal → Grande → Pequeño... Afecta solo el panel del editor (formulario de la izquierda) — igual que el modo claro, la vista previa del CV no cambia. Se guarda tu preferencia entre sesiones.
