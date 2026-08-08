@@ -1,4 +1,4 @@
-const CACHE_NAME = "cv-builder-v96";
+const CACHE_NAME = "cv-builder-v97";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ const PRECACHE_URLS = [
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js",
   "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js",
+  "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js",
   "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap"
 ];
 
@@ -72,7 +73,15 @@ self.addEventListener("fetch", (event) => {
           }
           return res;
         })
-        .catch(() => caches.match("./index.html"));
+        .catch(() => {
+          // Solo devolvemos index.html como respaldo para NAVEGACIONES de página
+          // (por ejemplo, abrir la app sin conexión). Para cualquier otro recurso
+          // (scripts, imágenes, fuentes) dejamos que la falla se propague tal cual,
+          // así el código que lo pidió (por ejemplo, el generador de QR) se entera
+          // del error real en vez de recibir el HTML de la app disfrazado de script.
+          if (req.mode === "navigate") return caches.match("./index.html");
+          return Promise.reject(new Error("No se pudo obtener el recurso y no hay copia en caché."));
+        });
     })
   );
 });

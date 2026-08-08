@@ -1546,7 +1546,8 @@ function QRCodeImage({ data, size = 56, className = "" }) {
       .then((dataUrl) => {
         if (!cancelled) setUrl(dataUrl);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("No se pudo generar el código QR:", err);
         if (!cancelled) setUrl(null);
       });
     return () => {

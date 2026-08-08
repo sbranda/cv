@@ -419,3 +419,9 @@ En "Datos personales" hay un nuevo checkbox: "Incluir código QR con el enlace d
 Disponible en las mismas 6 plantillas que ya soportan "contacto al pie": Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista.
 
 Nota técnica: el QR se genera con una librería que corre en tu propio navegador (no se manda tu LinkedIn a ningún servicio externo), y funciona incluso sin conexión una vez que se cargó la primera vez.
+
+## Corrección: el código QR no aparecía (bug en el service worker)
+
+Encontré la causa real: no era un problema del QR en sí, sino un bug en el manejo de errores del service worker que armamos antes. Si fallaba la carga de CUALQUIER recurso externo (como la librería que genera el QR), el service worker devolvía por error el contenido de `index.html` disfrazado de ese recurso — rompiendo la carga en silencio, sin ningún mensaje de error visible.
+
+Corregido: ese respaldo con `index.html` ahora solo se usa para abrir la app sin conexión (su propósito original), no para cualquier recurso que falle. También agregué la librería del QR a la lista de precarga (se descarga de entrada, como Word), y ahora cualquier error real queda visible en la consola del navegador en vez de desaparecer sin dejar rastro.
