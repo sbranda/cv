@@ -353,3 +353,7 @@ Cambio técnico importante: antes, cada actualización se activaba en silencio a
 ## Sugerencia de plantilla según el puesto
 
 Al abrir la galería de plantillas, ahora hay un campo arriba de todo: "¿No sabés cuál elegir? Contanos a qué te postulás". Escribís el tipo de puesto o rubro (por ejemplo "analista contable en un banco" o "diseñadora gráfica freelance"), tocás "Sugerir", y la IA recomienda una de las 28 plantillas con una breve explicación de por qué — con un botón para aplicarla directo.
+
+## Tutorial actualizado (tercera vez)
+
+Sigue en 7 pasos. Ahora también menciona: sugerencia de plantilla por IA según el puesto, el detector de brechas laborales, y el nombre de archivo inteligente al descargar. Andá a ⋯ → Ver tutorial para verlo actualizado.

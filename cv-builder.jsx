@@ -483,7 +483,7 @@ const TOUR_STEPS = [
   },
   {
     title: "28 plantillas para elegir",
-    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Dentro de la galería podés \"Comparar\" dos plantillas lado a lado antes de decidir.",
+    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Dentro de la galería podés \"Comparar\" dos plantillas lado a lado, o contarle a la IA a qué puesto te postulás para que te sugiera cuál conviene más.",
   },
   {
     title: "Personalizá el estilo",
@@ -491,7 +491,7 @@ const TOUR_STEPS = [
   },
   {
     title: "Mejorá tu texto con IA",
-    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones de experiencia. El botón 🏳 \"Verbos débiles\" te marca frases genéricas (como \"hice\" o \"trabajé en\") con sugerencias más fuertes, sin reescribir nada por vos.",
+    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones. El botón 🏳 \"Verbos débiles\" te marca frases genéricas con sugerencias más fuertes, y \"Revisar brechas\" te avisa si hay huecos sin explicar entre tus experiencias — ninguno reescribe nada por vos, solo te avisan.",
   },
   {
     title: "Organizá varios perfiles",
@@ -503,7 +503,7 @@ const TOUR_STEPS = [
   },
   {
     title: "Descargá cuando quieras",
-    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano. Si tu CV ocupa más de una página, vas a ver una línea marcando dónde cortaría. ¡Listo para empezar!",
+    body: "PDF, Word, o texto plano para sistemas ATS — el botón \"Descargar PDF\" siempre está a mano, y el archivo se nombra solo con tu nombre y puesto. Si tu CV ocupa más de una página, vas a ver una línea marcando dónde cortaría. ¡Listo para empezar!",
   },
 ];
 
