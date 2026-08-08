@@ -113,6 +113,7 @@ const Undo2 = (p) => <Icon {...p}><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5
 const Redo2 = (p) => <Icon {...p}><path d="m15 14 5-5-5-5" /><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" /></Icon>;
 const MoreHorizontal = (p) => <Icon {...p}><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></Icon>;
 const ChevronDown = (p) => <Icon {...p}><path d="m6 9 6 6 6-6" /></Icon>;
+const ChevronUp = (p) => <Icon {...p}><path d="m18 15-6-6-6 6" /></Icon>;
 const ChevronRight = (p) => <Icon {...p}><path d="m9 18 6-6-6-6" /></Icon>;
 const Camera = (p) => <Icon {...p}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z" /><circle cx="12" cy="13" r="3" /></Icon>;
 const ArrowUp = (p) => <Icon {...p}><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></Icon>;
@@ -553,7 +554,7 @@ const TOUR_STEPS = [
 
 function OnboardingTour({ open, onClose, accent }) {
   const [step, setStep] = useState(0);
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   useEffect(() => {
     if (open) setStep(0);
   }, [open]);
@@ -563,7 +564,7 @@ function OnboardingTour({ open, onClose, accent }) {
   const isLast = step === total - 1;
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-sm p-6">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-sm p-6">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <div className="flex gap-1.5">
@@ -606,10 +607,20 @@ function OnboardingTour({ open, onClose, accent }) {
   );
 }
 
-function useSwipeToDismiss(onClose) {
+function useSwipeToDismiss(onClose, open) {
   const [dragY, setDragY] = useState(0);
   const draggingRef = useRef(false);
   const startYRef = useRef(0);
+
+  // Cerrar con la tecla Escape, para quienes no usan mouse/dedo.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose, open]);
 
   const onPointerDown = (e) => {
     draggingRef.current = true;
@@ -633,12 +644,14 @@ function useSwipeToDismiss(onClose) {
       transform: dragY ? `translateY(${dragY}px)` : undefined,
       transition: draggingRef.current ? "none" : "transform 0.25s ease",
     },
+    dialogProps: { role: "dialog", "aria-modal": "true" },
     handle: (
       <div
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={finish}
         onPointerCancel={finish}
+        aria-hidden="true"
         className="sm:hidden flex justify-center pt-2 pb-3 -mt-6 -mx-6 mb-1 cursor-grab active:cursor-grabbing"
         style={{ touchAction: "none" }}
       >
@@ -651,15 +664,15 @@ function useSwipeToDismiss(onClose) {
 function SettingsModal({ open, onClose, apiKey, onSave }) {
   const [value, setValue] = useState(apiKey);
   useEffect(() => setValue(apiKey), [apiKey, open]);
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Configuración de IA</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition"><X size={20} /></button>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition"><X size={20} aria-hidden="true" /></button>
         </div>
         <p className="text-[12.5px] text-stone-400 leading-relaxed mb-3">
           Para usar "Mejorar con IA" fuera del chat de Claude, necesitás tu propia clave de API de Google AI (Gemini).
@@ -739,11 +752,20 @@ function SectionOrderList({ order, accent, onReorder }) {
     setOverIndex(null);
   };
 
+  const moveByKeyboard = (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= order.length) return;
+    const newOrder = [...order];
+    [newOrder[index], newOrder[target]] = [newOrder[target], newOrder[index]];
+    onReorder(newOrder);
+  };
+
   return (
-    <div>
+    <div role="list" aria-label="Orden de las secciones del CV">
       {order.map((key, i) => (
         <div
           key={key}
+          role="listitem"
           ref={(el) => (itemRefs.current[i] = el)}
           className="flex items-center gap-2 px-3 py-2 rounded-md border mb-1.5 bg-stone-800/40 transition"
           style={{
@@ -756,12 +778,31 @@ function SectionOrderList({ order, accent, onReorder }) {
             onPointerMove={handlePointerMove}
             onPointerUp={finishDrag}
             onPointerCancel={finishDrag}
+            aria-label={`Arrastrar para reordenar "${SECTION_LABELS[key] || key}"`}
             className="cursor-grab active:cursor-grabbing text-stone-500 shrink-0"
             style={{ touchAction: "none" }}
           >
-            <GripVertical size={15} />
+            <GripVertical size={15} aria-hidden="true" />
           </button>
-          <span className="text-[12.5px] text-stone-300">{SECTION_LABELS[key] || key}</span>
+          <span className="text-[12.5px] text-stone-300 flex-1">{SECTION_LABELS[key] || key}</span>
+          <div className="flex items-center gap-0.5 shrink-0">
+            <button
+              onClick={() => moveByKeyboard(i, -1)}
+              disabled={i === 0}
+              aria-label={`Subir "${SECTION_LABELS[key] || key}"`}
+              className="p-1 rounded text-stone-500 hover:text-white hover:bg-stone-700 transition disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-stone-500"
+            >
+              <ChevronUp size={14} aria-hidden="true" />
+            </button>
+            <button
+              onClick={() => moveByKeyboard(i, 1)}
+              disabled={i === order.length - 1}
+              aria-label={`Bajar "${SECTION_LABELS[key] || key}"`}
+              className="p-1 rounded text-stone-500 hover:text-white hover:bg-stone-700 transition disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-stone-500"
+            >
+              <ChevronDown size={14} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       ))}
     </div>
@@ -786,11 +827,11 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 
 // ---- Mini thumbnail mockups for the gallery ----
 function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-2xl p-6 max-h-[85vh] overflow-y-auto">
         {handle}
         <div className="flex items-center justify-between mb-5">
           <div>
@@ -799,8 +840,8 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
               Elige un diseño. Tu contenido y color de acento se mantienen.
             </p>
           </div>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         {CATEGORIES.map((cat) => {
@@ -864,16 +905,16 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
 }
 
 function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, onAdd, onDuplicate, onRemove, onRename, onImportClick, onTranslate, translatingId }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Mis perfiles</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
@@ -949,17 +990,17 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
 }
 
 function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenerate, generating }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   const carta = data.carta;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Carta de presentación</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
@@ -1044,16 +1085,16 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
 }
 
 function ImportModal({ open, onClose, onImport, importing, error }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Importar CV</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12.5px] text-stone-400 leading-relaxed mb-3">
@@ -1081,7 +1122,7 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
 }
 
 function PlainTextModal({ open, onClose, text, accent }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   const handleDownload = () => {
     const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
@@ -1096,12 +1137,12 @@ function PlainTextModal({ open, onClose, text, accent }) {
   };
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col">
         {handle}
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-xl">Texto plano para ATS</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12px] text-stone-500 mb-3 leading-relaxed">
@@ -1135,16 +1176,16 @@ function PlainTextModal({ open, onClose, text, accent }) {
 }
 
 function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         {handle}
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-display text-xl">Cómo acortar tu CV</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
@@ -1180,9 +1221,12 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, export
       <button
         onClick={() => setOpen((o) => !o)}
         title="Más herramientas"
+        aria-label="Más herramientas"
+        aria-haspopup="true"
+        aria-expanded={open}
         className="p-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
       >
-        <MoreHorizontal size={15} />
+        <MoreHorizontal size={15} aria-hidden="true" />
       </button>
       {open && (
         <>
@@ -1235,17 +1279,17 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, export
 }
 
 function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, analyzing }) {
-  const { cardStyle, handle } = useSwipeToDismiss(onClose);
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   const resultado = data.comparacion.resultado;
   return (
     <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
-      <div style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
         {handle}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Comparar con un puesto</h2>
-          <button onClick={onClose} className="text-stone-500 hover:text-white transition">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
         <p className="text-[12px] text-stone-500 mb-3 leading-relaxed">
@@ -1333,7 +1377,7 @@ function Avatar({ data, accent, size = 64, shape = "circle", ring = false, class
   return (
     <img
       src={data.foto}
-      alt=""
+      alt={data.nombre ? `Foto de perfil de ${data.nombre}` : "Foto de perfil"}
       className={"shrink-0 object-cover " + className}
       style={{
         width: finalSize,
@@ -4340,6 +4384,12 @@ Texto del currículum:
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-stone-950 focus:px-4 focus:py-2 focus:rounded-md focus:text-sm focus:font-medium no-print"
+      >
+        Saltar al contenido principal
+      </a>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700&display=swap');
         .font-display { font-family: ${TYPO_PRESETS[data.tipografia].display} !important; }
@@ -4361,6 +4411,22 @@ Texto del currículum:
           .print-page { box-shadow: none !important; margin: 0 !important; width: 100% !important; min-height: 0 !important; }
           html, body { background: white !important; min-height: 0 !important; height: auto !important; }
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+        }
+        /* Para personas sensibles al movimiento (mareos, migrañas, trastornos
+           vestibulares): si el sistema operativo tiene "reducir movimiento"
+           activado, quitamos animaciones y transiciones no esenciales. */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+            scroll-behavior: auto !important;
+          }
+        }
+        /* Foco visible y consistente para navegación por teclado, en toda la app. */
+        button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+          outline: 2px solid ${accent};
+          outline-offset: 2px;
         }
       `}</style>
 
@@ -4475,17 +4541,19 @@ Texto del currículum:
               onClick={undo}
               disabled={!canUndo}
               title="Deshacer"
+              aria-label="Deshacer"
               className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
             >
-              <Undo2 size={15} />
+              <Undo2 size={15} aria-hidden="true" />
             </button>
             <button
               onClick={redo}
               disabled={!canRedo}
               title="Rehacer"
+              aria-label="Rehacer"
               className="p-1.5 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition disabled:opacity-30 disabled:hover:bg-transparent"
             >
-              <Redo2 size={15} />
+              <Redo2 size={15} aria-hidden="true" />
             </button>
           </div>
           <button
@@ -4592,7 +4660,7 @@ Texto del currículum:
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+      <div id="main-content" className="grid grid-cols-1 lg:grid-cols-2">
         {/* Editor */}
         <div ref={editorSectionRef} className="editor-panel no-print px-6 py-8 max-w-xl mx-auto lg:mx-0 lg:pl-10 w-full">
           <section className="mb-8">
@@ -5203,10 +5271,11 @@ Texto del currículum:
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           title="Volver arriba"
+          aria-label="Volver arriba"
           className="lg:hidden no-print fixed right-4 bottom-24 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition hover:opacity-90"
           style={{ background: accent }}
         >
-          <ArrowUp size={18} className="text-stone-950" />
+          <ArrowUp size={18} className="text-stone-950" aria-hidden="true" />
         </button>
       )}
 

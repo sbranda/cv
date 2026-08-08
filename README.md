@@ -259,3 +259,17 @@ Ya son 28 plantillas en total. Nota: la plantilla de referencia que compartiste 
 ## Corrección: nombre pegado al margen en "Bandera Central"
 
 Un margen negativo mal aplicado empujaba el nombre hacia arriba en vez de hacer que la foto se sobrepusiera al borde de la franja (que era la intención original). Se corrigió: en esta plantilla la foto queda completa dentro de la franja de color, sin sobreponerse — el efecto de sobreposición se mantiene solo en "Bandera" (la versión con foto a la izquierda).
+
+## Primera pasada de accesibilidad
+
+Empezamos a mejorar la accesibilidad de la app. Lo que ya está hecho:
+
+- **Reordenar secciones sin arrastre**: además de arrastrar, ahora hay botones ↑↓ para mover cada sección — funciona con teclado o cualquier dispositivo señalador, no solo con gestos táctiles/mouse.
+- **Cerrar modales con Escape**: los 9 paneles (Perfiles, Plantillas, Carta, Comparar, Configuración, Texto ATS, Consejos, Importar, Tutorial) se cierran con la tecla Escape, además del botón X o deslizando.
+- **Etiquetas para lectores de pantalla**: botones de solo ícono (cerrar, deshacer/rehacer, menú "Más", volver arriba) ahora tienen `aria-label` describiendo su función.
+- **Foto de perfil con texto alternativo**: describe "Foto de perfil de [nombre]" en vez de quedar vacía.
+- **Reducir movimiento**: si tenés esa opción activada en tu celular/computadora (para mareos, migrañas, o sensibilidad al movimiento), la app desactiva sus animaciones automáticamente.
+- **Foco visible al navegar con teclado**: un contorno de color claro marca en qué botón/campo estás parado al usar Tab.
+- **Enlace "Saltar al contenido principal"**: aparece al navegar con teclado, para no tener que pasar por todos los botones del encabezado cada vez.
+
+**Esto es un primer avance, no una accesibilidad "total" o certificada** — cumplir el estándar completo (WCAG AAA) para todo tipo de discapacidad es un trabajo de fondo constante, no algo que se termina de una vez. Quedan pendientes cosas como: contraste de color verificado en las 28 plantillas, navegación completa por teclado del editor de arrastre de fotos, y pruebas reales con lectores de pantalla (NVDA, JAWS, VoiceOver).
