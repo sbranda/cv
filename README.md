@@ -317,3 +317,13 @@ Nota técnica: el modo claro funciona anulando las clases de color oscuro existe
 ## Tutorial actualizado (de nuevo)
 
 Sigue en 7 pasos, pero ahora menciona: comparar plantillas lado a lado, modo claro del editor, el detector de verbos débiles, la copia de seguridad de perfiles, y la línea de salto de página. Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+## Segunda pasada de accesibilidad
+
+Revisé todo lo agregado desde la primera pasada (modo claro, comparar plantillas, verbos débiles, copia de seguridad, línea de salto de página, información adicional) y completé lo que faltaba:
+
+- **11 botones de solo ícono** que tenían `title` (tooltip visual) pero no `aria-label` (lo que necesita un lector de pantalla): agregar experiencia/educación/proyecto/publicación/beca/logro, y ocultar cada una de las 5 secciones opcionales.
+- **Línea de salto de página**: marcada como puramente decorativa para lectores de pantalla (`aria-hidden`), ya que el aviso de "ocupa N páginas" ya da esa misma información de forma accesible.
+- Hice una búsqueda automatizada por todo el archivo para confirmar que no queda ningún botón de solo ícono sin etiqueta accesible.
+
+Sigue siendo un trabajo en progreso, no una certificación completa — pero cada pasada cubre más terreno real.

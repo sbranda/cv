@@ -4871,8 +4871,9 @@ Descripción:
                 onClick={addExperience}
                 className="text-stone-400 hover:text-white transition"
                 title="Agregar experiencia"
+                aria-label="Agregar experiencia"
               >
-                <Plus size={16} />
+                <Plus size={16} aria-hidden="true" />
               </button>
             </div>
             {data.experiencia.map((exp) => {
@@ -5006,8 +5007,9 @@ Descripción:
                 onClick={addEducation}
                 className="text-stone-400 hover:text-white transition"
                 title="Agregar educación"
+                aria-label="Agregar educación"
               >
-                <Plus size={16} />
+                <Plus size={16} aria-hidden="true" />
               </button>
             </div>
             {data.educacion.map((edu) => (
@@ -5102,15 +5104,16 @@ Descripción:
                   <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto">
-                    <Plus size={16} />
+                  <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto" aria-label="Agregar proyecto">
+                    <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, proyectos: false } })}
                     className="text-stone-500 hover:text-red-400 transition"
                     title="Ocultar sección"
+                    aria-label="Ocultar sección"
                   >
-                    <X size={15} />
+                    <X size={15} aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -5149,15 +5152,16 @@ Descripción:
                   <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación">
-                    <Plus size={16} />
+                  <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación" aria-label="Agregar publicación">
+                    <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, publicaciones: false } })}
                     className="text-stone-500 hover:text-red-400 transition"
                     title="Ocultar sección"
+                    aria-label="Ocultar sección"
                   >
-                    <X size={15} />
+                    <X size={15} aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -5193,15 +5197,16 @@ Descripción:
                   <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca">
-                    <Plus size={16} />
+                  <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca" aria-label="Agregar beca">
+                    <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, becas: false } })}
                     className="text-stone-500 hover:text-red-400 transition"
                     title="Ocultar sección"
+                    aria-label="Ocultar sección"
                   >
-                    <X size={15} />
+                    <X size={15} aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -5237,15 +5242,16 @@ Descripción:
                   <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro">
-                    <Plus size={16} />
+                  <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro" aria-label="Agregar logro">
+                    <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, logros: false } })}
                     className="text-stone-500 hover:text-red-400 transition"
                     title="Ocultar sección"
+                    aria-label="Ocultar sección"
                   >
-                    <X size={15} />
+                    <X size={15} aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -5279,6 +5285,7 @@ Descripción:
                   onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, informacionAdicional: false } })}
                   className="text-stone-500 hover:text-red-400 transition"
                   title="Ocultar sección"
+                  aria-label="Ocultar sección"
                 >
                   <X size={15} aria-hidden="true" />
                 </button>
@@ -5308,6 +5315,7 @@ Descripción:
                 <div
                   className="absolute left-0 right-0 pointer-events-none no-print"
                   style={{ top: PAGE_HEIGHT_PX / PRINT_WIDTH_CORRECTION / DENSITY_SCALE[data.densidad] }}
+                  aria-hidden="true"
                 >
                   <div className="border-t-2 border-dashed" style={{ borderColor: "#f59e0b" }} />
                   <span className="absolute right-1 -top-[9px] bg-amber-500 text-stone-950 text-[9px] font-mono font-medium px-1.5 py-0.5 rounded-sm whitespace-nowrap">
