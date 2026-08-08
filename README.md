@@ -373,3 +373,9 @@ Nuevo botón con un ícono "A" en el encabezado, junto a ☀️/🌙. Cada toque
 ## Consejos sobre datos personales sensibles
 
 Debajo de los chips de secciones opcionales (Proyectos, Publicaciones, etc.) hay un nuevo enlace: "¿Incluyo edad, discapacidad, u otros datos personales?". Abre un panel con un resumen breve y neutral sobre 5 temas — edad/fecha de nacimiento, discapacidad, estado civil, nacionalidad, y foto — explicando en qué casos suele convenir incluirlos o no, según el país y el tipo de puesto. No es asesoramiento legal, es información general para que decidas vos con más contexto. Si después de leerlo querés incluir alguno, podés hacerlo con total libertad desde "Información adicional".
+
+## Todo el texto del editor en blanco
+
+Cambié los 41+ textos grises del panel del editor (etiquetas, chips, textos de ayuda, texto tipeado en los campos) a blanco. La única excepción a propósito: el texto de ejemplo (placeholder) de los campos vacíos se mantiene gris — si también fuera blanco, sería indistinguible de contenido real ya cargado.
+
+Nota: en modo claro (☀️), este blanco se sigue convirtiendo automáticamente a texto oscuro gracias a la regla que ya tenía armada, así que ese modo sigue funcionando bien sin tocar nada más.

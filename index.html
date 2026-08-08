@@ -796,7 +796,7 @@ function SectionOrderList({ order, accent, onReorder }) {
           >
             <GripVertical size={15} aria-hidden="true" />
           </button>
-          <span className="text-[12.5px] text-stone-300 flex-1">{SECTION_LABELS[key] || key}</span>
+          <span className="text-[12.5px] text-white flex-1">{SECTION_LABELS[key] || key}</span>
           <div className="flex items-center gap-0.5 shrink-0">
             <button
               onClick={() => moveByKeyboard(i, -1)}
@@ -822,7 +822,7 @@ function SectionOrderList({ order, accent, onReorder }) {
 }
 
 const inputClass =
-  "w-full bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:border-transparent transition";
+  "w-full bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:border-transparent transition";
 
 function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
   return (
@@ -5253,7 +5253,7 @@ Máximo 4 resultados.`;
               <button
                 onClick={() => update({ ordenSecciones: [...DEFAULT_SECTION_ORDER] })}
                 disabled={JSON.stringify(data.ordenSecciones) === JSON.stringify(DEFAULT_SECTION_ORDER)}
-                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition mt-2 disabled:opacity-30 disabled:cursor-default disabled:hover:text-white"
+                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition mt-2 disabled:opacity-30 disabled:cursor-default disabled:hover:text-white"
               >
                 ↺ Restablecer orden
               </button>
@@ -5279,12 +5279,12 @@ Máximo 4 resultados.`;
               </div>
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-white transition cursor-pointer inline-flex items-center gap-1.5">
                     <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                     <Upload size={12} />
                     {data.foto ? "Cambiar foto" : "Subir foto"}
                   </label>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-stone-300 transition cursor-pointer inline-flex items-center gap-1.5">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-white transition cursor-pointer inline-flex items-center gap-1.5">
                     <input
                       type="file"
                       accept="image/*"
@@ -5419,7 +5419,7 @@ Máximo 4 resultados.`;
                     key={opt.id}
                     onClick={() => adjustResumenLength(opt)}
                     disabled={!data.resumen.trim() || loading}
-                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-stone-300 hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
+                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-white hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
                   >
                     {loading && <Loader2 size={10} className="animate-spin" />}
                     {opt.label}
@@ -5441,7 +5441,7 @@ Máximo 4 resultados.`;
                     disabled={gapCheckLoading}
                     title="Revisar brechas laborales"
                     aria-label="Revisar brechas laborales"
-                    className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                    className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
                   >
                     {gapCheckLoading ? (
                       <Loader2 size={11} className="animate-spin" aria-hidden="true" />
@@ -5453,7 +5453,7 @@ Máximo 4 resultados.`;
                 )}
                 <button
                   onClick={addExperience}
-                  className="text-stone-400 hover:text-white transition"
+                  className="text-white hover:text-white transition"
                   title="Agregar experiencia"
                   aria-label="Agregar experiencia"
                 >
@@ -5470,7 +5470,7 @@ Máximo 4 resultados.`;
                     </p>
                     <button
                       onClick={() => setGapResults(null)}
-                      className="text-stone-600 hover:text-white transition"
+                      className="text-white hover:text-white transition"
                       aria-label="Cerrar sugerencias de brechas"
                     >
                       <X size={12} aria-hidden="true" />
@@ -5478,17 +5478,17 @@ Máximo 4 resultados.`;
                   </div>
                   <ul className="flex flex-col gap-1.5">
                     {gapResults.map((g, i) => (
-                      <li key={i} className="text-[11.5px] text-stone-300">
-                        <span className="text-stone-400">{g.entre}:</span> {g.detalle}
+                      <li key={i} className="text-[11.5px] text-white">
+                        <span className="text-white">{g.entre}:</span> {g.detalle}
                       </li>
                     ))}
                   </ul>
-                  <p className="text-[10px] text-stone-600 mt-2 leading-relaxed">
+                  <p className="text-[10px] text-white mt-2 leading-relaxed">
                     Solo vos sabés si conviene aclararlo (estudios, viaje, cuidado familiar, etc.) — es una sugerencia, no una obligación.
                   </p>
                 </div>
               ) : (
-                <p className="mb-3 text-[11px] text-stone-500">
+                <p className="mb-3 text-[11px] text-white">
                   No encontramos brechas claras de 6 meses o más entre tus experiencias. ✓
                 </p>
               )
@@ -5499,22 +5499,22 @@ Máximo 4 resultados.`;
               return (
                 <div key={exp.id} id={`entry-${exp.id}`} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
                   <div className="flex items-center gap-2">
-                    <GripVertical size={14} className="text-stone-700 shrink-0" />
+                    <GripVertical size={14} className="text-white shrink-0" />
                     <button
                       onClick={() => toggleExpCollapse(exp.id)}
                       className="flex-1 flex items-center justify-between gap-2 text-left py-1 min-w-0"
                     >
                       <span className="text-[12.5px] text-white truncate">{summary}</span>
                       {isCollapsed ? (
-                        <ChevronRight size={14} className="text-stone-500 shrink-0" />
+                        <ChevronRight size={14} className="text-white shrink-0" />
                       ) : (
-                        <ChevronDown size={14} className="text-stone-500 shrink-0" />
+                        <ChevronDown size={14} className="text-white shrink-0" />
                       )}
                     </button>
                     {data.experiencia.length > 1 && (
                       <button
                         onClick={() => removeExperience(exp.id)}
-                        className="text-stone-600 hover:text-red-400 transition shrink-0"
+                        className="text-white hover:text-red-400 transition shrink-0"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -5556,7 +5556,7 @@ Máximo 4 resultados.`;
                           <button
                             onClick={() => checkWeakVerbs(exp)}
                             disabled={weakVerbsId === exp.id || !exp.descripcion.trim()}
-                            className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                            className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
                           >
                             {weakVerbsId === exp.id ? (
                               <Loader2 size={11} className="animate-spin" aria-hidden="true" />
@@ -5581,12 +5581,12 @@ Máximo 4 resultados.`;
                         weakVerbsResults[exp.id].length > 0 ? (
                           <div className="mt-2 p-2.5 rounded-md bg-stone-800/50 border border-stone-700">
                             <div className="flex items-center justify-between mb-1.5">
-                              <p className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400">
+                              <p className="text-[10.5px] font-mono uppercase tracking-wider text-white">
                                 💡 Verbos que podrías fortalecer
                               </p>
                               <button
                                 onClick={() => setWeakVerbsResults((prev) => { const next = { ...prev }; delete next[exp.id]; return next; })}
-                                className="text-stone-600 hover:text-white transition"
+                                className="text-white hover:text-white transition"
                                 aria-label="Cerrar sugerencias"
                               >
                                 <X size={12} aria-hidden="true" />
@@ -5594,7 +5594,7 @@ Máximo 4 resultados.`;
                             </div>
                             <ul className="flex flex-col gap-1">
                               {weakVerbsResults[exp.id].map((v, i) => (
-                                <li key={i} className="text-[11.5px] text-stone-300">
+                                <li key={i} className="text-[11.5px] text-white">
                                   <span className="text-red-400">"{v.debil}"</span>
                                   {" → "}
                                   <span className="text-emerald-400">{(v.sugerencias || []).join(", ")}</span>
@@ -5603,7 +5603,7 @@ Máximo 4 resultados.`;
                             </ul>
                           </div>
                         ) : (
-                          <p className="mt-2 text-[11px] text-stone-500">
+                          <p className="mt-2 text-[11px] text-white">
                             No encontramos verbos débiles obvios en esta descripción. ✓
                           </p>
                         )
@@ -5622,7 +5622,7 @@ Máximo 4 resultados.`;
               </h2>
               <button
                 onClick={addEducation}
-                className="text-stone-400 hover:text-white transition"
+                className="text-white hover:text-white transition"
                 title="Agregar educación"
                 aria-label="Agregar educación"
               >
@@ -5662,7 +5662,7 @@ Máximo 4 resultados.`;
                 {data.educacion.length > 1 && (
                   <button
                     onClick={() => removeEducation(edu.id)}
-                    className="text-stone-600 hover:text-red-400 transition mt-6"
+                    className="text-white hover:text-red-400 transition mt-6"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -5707,14 +5707,14 @@ Máximo 4 resultados.`;
                     }}
                   >
                     {activa ? <Check size={11} /> : <Plus size={11} />}
-                    {s.name} <span className="text-stone-600">· {s.template}</span>
+                    {s.name} <span className="text-white">· {s.template}</span>
                   </button>
                 );
               })}
             </div>
             <button
               onClick={() => setPersonalTipsOpen(true)}
-              className="mt-2 text-[10.5px] font-mono uppercase tracking-wider text-stone-500 hover:text-white transition inline-flex items-center gap-1"
+              className="mt-2 text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition inline-flex items-center gap-1"
             >
               <HelpCircle size={11} aria-hidden="true" /> ¿Incluyo edad, discapacidad, u otros datos personales?
             </button>
@@ -5724,15 +5724,15 @@ Máximo 4 resultados.`;
             <section className="mt-6 mb-8">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-stone-600 normal-case">· Desarrollador</span>
+                  <span className="w-4 h-px bg-stone-700" /> Proyectos <span className="text-white normal-case">· Desarrollador</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={proyectosH.add} className="text-stone-400 hover:text-white transition" title="Agregar proyecto" aria-label="Agregar proyecto">
+                  <button onClick={proyectosH.add} className="text-white hover:text-white transition" title="Agregar proyecto" aria-label="Agregar proyecto">
                     <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, proyectos: false } })}
-                    className="text-stone-500 hover:text-red-400 transition"
+                    className="text-white hover:text-red-400 transition"
                     title="Ocultar sección"
                     aria-label="Ocultar sección"
                   >
@@ -5759,7 +5759,7 @@ Máximo 4 resultados.`;
                     </Field>
                   </div>
                   {data.proyectos.length > 1 && (
-                    <button onClick={() => proyectosH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-2.5">
+                    <button onClick={() => proyectosH.remove(p.id)} className="text-white hover:text-red-400 transition mt-2.5">
                       <Trash2 size={14} />
                     </button>
                   )}
@@ -5772,15 +5772,15 @@ Máximo 4 resultados.`;
             <section className="mb-8">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-stone-600 normal-case">· Académico</span>
+                  <span className="w-4 h-px bg-stone-700" /> Publicaciones <span className="text-white normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={publicacionesH.add} className="text-stone-400 hover:text-white transition" title="Agregar publicación" aria-label="Agregar publicación">
+                  <button onClick={publicacionesH.add} className="text-white hover:text-white transition" title="Agregar publicación" aria-label="Agregar publicación">
                     <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, publicaciones: false } })}
-                    className="text-stone-500 hover:text-red-400 transition"
+                    className="text-white hover:text-red-400 transition"
                     title="Ocultar sección"
                     aria-label="Ocultar sección"
                   >
@@ -5804,7 +5804,7 @@ Máximo 4 resultados.`;
                     </div>
                   </div>
                   {data.publicaciones.length > 1 && (
-                    <button onClick={() => publicacionesH.remove(p.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <button onClick={() => publicacionesH.remove(p.id)} className="text-white hover:text-red-400 transition mt-6">
                       <Trash2 size={14} />
                     </button>
                   )}
@@ -5817,15 +5817,15 @@ Máximo 4 resultados.`;
             <section className="mb-8">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-stone-600 normal-case">· Académico</span>
+                  <span className="w-4 h-px bg-stone-700" /> Becas y reconocimientos <span className="text-white normal-case">· Académico</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={becasH.add} className="text-stone-400 hover:text-white transition" title="Agregar beca" aria-label="Agregar beca">
+                  <button onClick={becasH.add} className="text-white hover:text-white transition" title="Agregar beca" aria-label="Agregar beca">
                     <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, becas: false } })}
-                    className="text-stone-500 hover:text-red-400 transition"
+                    className="text-white hover:text-red-400 transition"
                     title="Ocultar sección"
                     aria-label="Ocultar sección"
                   >
@@ -5849,7 +5849,7 @@ Máximo 4 resultados.`;
                     </div>
                   </div>
                   {data.becas.length > 1 && (
-                    <button onClick={() => becasH.remove(b.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <button onClick={() => becasH.remove(b.id)} className="text-white hover:text-red-400 transition mt-6">
                       <Trash2 size={14} />
                     </button>
                   )}
@@ -5862,15 +5862,15 @@ Máximo 4 resultados.`;
             <section>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-stone-600 normal-case">· Ventas / Marketing</span>
+                  <span className="w-4 h-px bg-stone-700" /> Logros destacados <span className="text-white normal-case">· Ventas / Marketing</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <button onClick={logrosH.add} className="text-stone-400 hover:text-white transition" title="Agregar logro" aria-label="Agregar logro">
+                  <button onClick={logrosH.add} className="text-white hover:text-white transition" title="Agregar logro" aria-label="Agregar logro">
                     <Plus size={16} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, logros: false } })}
-                    className="text-stone-500 hover:text-red-400 transition"
+                    className="text-white hover:text-red-400 transition"
                     title="Ocultar sección"
                     aria-label="Ocultar sección"
                   >
@@ -5889,7 +5889,7 @@ Máximo 4 resultados.`;
                     </Field>
                   </div>
                   {data.logros.length > 1 && (
-                    <button onClick={() => logrosH.remove(l.id)} className="text-stone-600 hover:text-red-400 transition mt-6">
+                    <button onClick={() => logrosH.remove(l.id)} className="text-white hover:text-red-400 transition mt-6">
                       <Trash2 size={14} />
                     </button>
                   )}
@@ -5906,7 +5906,7 @@ Máximo 4 resultados.`;
                 </h2>
                 <button
                   onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, informacionAdicional: false } })}
-                  className="text-stone-500 hover:text-red-400 transition"
+                  className="text-white hover:text-red-400 transition"
                   title="Ocultar sección"
                   aria-label="Ocultar sección"
                 >
