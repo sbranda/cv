@@ -291,3 +291,7 @@ En el panel "Perfiles" hay dos botones nuevos, abajo del todo:
 - **"Restaurar desde archivo"**: elegís ese archivo para recuperar todos tus perfiles. Pide confirmación antes, porque **reemplaza** todo lo que tenías cargado en ese momento — conviene descargar una copia de seguridad actual antes de restaurar, por las dudas.
 
 Guardá ese archivo en algún lugar seguro (Google Drive, email a vos mismo, etc.) — es tu única protección real si algún día borrás datos del sitio sin querer, cambiás de celular, o el navegador pierde el `localStorage` por algún motivo.
+
+## Detector de verbos débiles
+
+En cada experiencia laboral, junto a "Mejorar con IA" hay un nuevo botón: **"🏳 Verbos débiles"**. Analiza la descripción y te marca frases genéricas ("hice", "trabajé en", "fui responsable de", etc.) con 2-3 sugerencias de verbos de acción más fuertes para cada una — a diferencia de "Mejorar con IA", no reescribe nada solo, te muestra las sugerencias para que decidas vos qué incorporar y cómo.

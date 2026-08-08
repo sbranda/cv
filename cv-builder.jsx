@@ -32,6 +32,7 @@ import {
   Camera,
   ArrowUp,
   HelpCircle,
+  Flag,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3897,6 +3898,32 @@ Texto del currículum:
     }
   };
 
+  const [weakVerbsId, setWeakVerbsId] = useState(null);
+  const [weakVerbsResults, setWeakVerbsResults] = useState({});
+
+  const checkWeakVerbs = async (exp) => {
+    if (!exp.descripcion.trim()) return;
+    setWeakVerbsId(exp.id);
+    try {
+      const prompt = `Analizá esta descripción de un puesto de trabajo (para un currículum en español) y detectá verbos o frases débiles/genéricas (como "hice", "trabajé en", "fui responsable de", "ayudé con", "estuve a cargo de", "participé en"). Devolvé SOLO un array JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
+[{"debil": "frase encontrada tal cual aparece en el texto", "sugerencias": ["verbo de acción 1", "verbo de acción 2", "verbo de acción 3"]}]
+Si no encontrás ninguna frase débil, devolvé un array vacío: []
+Máximo 5 resultados, solo los casos más claros.
+
+Descripción:
+"""${exp.descripcion}"""`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setWeakVerbsResults((prev) => ({ ...prev, [exp.id]: Array.isArray(parsed) ? parsed : [] }));
+    } catch (e) {
+      console.error(e);
+      setWeakVerbsResults((prev) => ({ ...prev, [exp.id]: [] }));
+    } finally {
+      setWeakVerbsId(null);
+    }
+  };
+
   const improveSkills = async () => {
     if (!data.habilidades.trim()) return;
     setLoadingField("habilidades");
@@ -4772,10 +4799,24 @@ Texto del currículum:
                         <span className="block text-[11px] font-mono uppercase tracking-wider text-white">
                           Descripción
                         </span>
-                        <AIButton
-                          onClick={() => improveExperience(exp)}
-                          loading={loadingField === exp.id}
-                        />
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => checkWeakVerbs(exp)}
+                            disabled={weakVerbsId === exp.id || !exp.descripcion.trim()}
+                            className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                          >
+                            {weakVerbsId === exp.id ? (
+                              <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                            ) : (
+                              <Flag size={11} aria-hidden="true" />
+                            )}
+                            Verbos débiles
+                          </button>
+                          <AIButton
+                            onClick={() => improveExperience(exp)}
+                            loading={loadingField === exp.id}
+                          />
+                        </div>
                       </div>
                       <textarea
                         className={inputClass + " min-h-[80px] resize-none"}
@@ -4783,6 +4824,37 @@ Texto del currículum:
                         onChange={(e) => updateExperience(exp.id, { descripcion: e.target.value })}
                         placeholder="Responsabilidades y logros principales..."
                       />
+                      {weakVerbsResults[exp.id] && (
+                        weakVerbsResults[exp.id].length > 0 ? (
+                          <div className="mt-2 p-2.5 rounded-md bg-stone-800/50 border border-stone-700">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <p className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400">
+                                💡 Verbos que podrías fortalecer
+                              </p>
+                              <button
+                                onClick={() => setWeakVerbsResults((prev) => { const next = { ...prev }; delete next[exp.id]; return next; })}
+                                className="text-stone-600 hover:text-white transition"
+                                aria-label="Cerrar sugerencias"
+                              >
+                                <X size={12} aria-hidden="true" />
+                              </button>
+                            </div>
+                            <ul className="flex flex-col gap-1">
+                              {weakVerbsResults[exp.id].map((v, i) => (
+                                <li key={i} className="text-[11.5px] text-stone-300">
+                                  <span className="text-red-400">"{v.debil}"</span>
+                                  {" → "}
+                                  <span className="text-emerald-400">{(v.sugerencias || []).join(", ")}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <p className="mt-2 text-[11px] text-stone-500">
+                            No encontramos verbos débiles obvios en esta descripción. ✓
+                          </p>
+                        )
+                      )}
                     </div>
                   )}
                 </div>
