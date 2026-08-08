@@ -327,3 +327,7 @@ Revisé todo lo agregado desde la primera pasada (modo claro, comparar plantilla
 - Hice una búsqueda automatizada por todo el archivo para confirmar que no queda ningún botón de solo ícono sin etiqueta accesible.
 
 Sigue siendo un trabajo en progreso, no una certificación completa — pero cada pasada cubre más terreno real.
+
+## Detector de brechas laborales
+
+Junto al encabezado de "Experiencia" (visible cuando tenés 2 o más experiencias cargadas) hay un nuevo botón "🔍 Revisar brechas". Analiza los períodos de tus trabajos y te avisa si hay huecos de 6 meses o más sin explicar entre uno y el siguiente. No juzga ni completa nada por vos — solo te avisa para que decidas si conviene aclararlo (estudios, viaje, cuidado familiar, etc.) en el resumen o en alguna experiencia.

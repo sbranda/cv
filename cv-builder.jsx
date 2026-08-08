@@ -35,6 +35,7 @@ import {
   Flag,
   Sun,
   Moon,
+  Search,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -4014,6 +4015,38 @@ Descripción:
     }
   };
 
+  const [gapCheckLoading, setGapCheckLoading] = useState(false);
+  const [gapResults, setGapResults] = useState(null);
+
+  const checkCareerGaps = async () => {
+    const items = data.experiencia.filter((e) => e.puesto || e.empresa);
+    if (items.length < 2) return;
+    setGapCheckLoading(true);
+    try {
+      const list = items
+        .map((e) => `- ${e.puesto || "(sin puesto)"} en ${e.empresa || "(sin empresa)"}: ${e.periodo || "(sin período especificado)"}`)
+        .join("\n");
+      const prompt = `Analizá esta lista de experiencias laborales (en el orden en que las escribió la persona, no necesariamente cronológico) y detectá si hay brechas de tiempo significativas (6 meses o más) sin explicar entre un trabajo y el siguiente. Los períodos están en texto libre, interpretalos con criterio.
+
+Experiencias:
+${list}
+
+Devolvé SOLO un array JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
+[{"entre": "descripción breve de entre qué dos trabajos", "detalle": "explicación breve de la brecha, con la duración aproximada"}]
+Si no encontrás ninguna brecha clara de 6 meses o más, devolvé un array vacío: []
+Máximo 4 resultados.`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setGapResults(Array.isArray(parsed) ? parsed : []);
+    } catch (e) {
+      console.error(e);
+      setGapResults([]);
+    } finally {
+      setGapCheckLoading(false);
+    }
+  };
+
   const improveSkills = async () => {
     if (!data.habilidades.trim()) return;
     setLoadingField("habilidades");
@@ -4867,15 +4900,65 @@ Descripción:
               <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> Experiencia
               </h2>
-              <button
-                onClick={addExperience}
-                className="text-stone-400 hover:text-white transition"
-                title="Agregar experiencia"
-                aria-label="Agregar experiencia"
-              >
-                <Plus size={16} aria-hidden="true" />
-              </button>
+              <div className="flex items-center gap-3">
+                {data.experiencia.filter((e) => e.puesto || e.empresa).length >= 2 && (
+                  <button
+                    onClick={checkCareerGaps}
+                    disabled={gapCheckLoading}
+                    title="Revisar brechas laborales"
+                    aria-label="Revisar brechas laborales"
+                    className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                  >
+                    {gapCheckLoading ? (
+                      <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Search size={11} aria-hidden="true" />
+                    )}
+                    Revisar brechas
+                  </button>
+                )}
+                <button
+                  onClick={addExperience}
+                  className="text-stone-400 hover:text-white transition"
+                  title="Agregar experiencia"
+                  aria-label="Agregar experiencia"
+                >
+                  <Plus size={16} aria-hidden="true" />
+                </button>
+              </div>
             </div>
+            {gapResults !== null && (
+              gapResults.length > 0 ? (
+                <div className="mb-3 p-2.5 rounded-md bg-stone-800/50 border border-amber-500/30">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <p className="text-[10.5px] font-mono uppercase tracking-wider text-amber-400">
+                      ⏱ Brechas detectadas
+                    </p>
+                    <button
+                      onClick={() => setGapResults(null)}
+                      className="text-stone-600 hover:text-white transition"
+                      aria-label="Cerrar sugerencias de brechas"
+                    >
+                      <X size={12} aria-hidden="true" />
+                    </button>
+                  </div>
+                  <ul className="flex flex-col gap-1.5">
+                    {gapResults.map((g, i) => (
+                      <li key={i} className="text-[11.5px] text-stone-300">
+                        <span className="text-stone-400">{g.entre}:</span> {g.detalle}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-[10px] text-stone-600 mt-2 leading-relaxed">
+                    Solo vos sabés si conviene aclararlo (estudios, viaje, cuidado familiar, etc.) — es una sugerencia, no una obligación.
+                  </p>
+                </div>
+              ) : (
+                <p className="mb-3 text-[11px] text-stone-500">
+                  No encontramos brechas claras de 6 meses o más entre tus experiencias. ✓
+                </p>
+              )
+            )}
             {data.experiencia.map((exp) => {
               const isCollapsed = collapsedExp.has(exp.id);
               const summary = [exp.puesto, exp.empresa].filter(Boolean).join(" · ") || "Nueva experiencia";
