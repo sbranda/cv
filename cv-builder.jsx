@@ -807,7 +807,7 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
               }}
             >
               <button onClick={() => { onSelect(p.id); onClose(); }} className="flex-1 text-left min-w-0">
-                <input
+                <input spellCheck="true"
                   value={p.nombre}
                   onChange={(e) => onRename(p.id, e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -904,7 +904,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
         </p>
         <div className="grid grid-cols-2 gap-x-3">
           <Field label="Empresa">
-            <input
+            <input spellCheck="true"
               className={inputClass}
               value={carta.empresa}
               onChange={(e) => onUpdateField({ empresa: e.target.value })}
@@ -912,7 +912,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
             />
           </Field>
           <Field label="Puesto al que aplicás">
-            <input
+            <input spellCheck="true"
               className={inputClass}
               value={carta.puestoAplicado}
               onChange={(e) => onUpdateField({ puestoAplicado: e.target.value })}
@@ -939,7 +939,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
           </div>
         </Field>
         <Field label="Detalles adicionales (opcional)">
-          <textarea
+          <textarea spellCheck="true"
             className={inputClass + " min-h-[60px] resize-none"}
             value={carta.detalles}
             onChange={(e) => onUpdateField({ detalles: e.target.value })}
@@ -968,7 +968,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
                 <Copy size={11} /> Copiar
               </button>
             </div>
-            <textarea
+            <textarea spellCheck="true"
               className={inputClass + " min-h-[300px] text-[13px] leading-relaxed"}
               value={carta.texto}
               onChange={(e) => onUpdateField({ texto: e.target.value })}
@@ -1045,7 +1045,7 @@ function PlainTextModal({ open, onClose, text, accent }) {
           Sin negritas, viñetas ni formato — pensado para pegar directo en los formularios de texto de
           sistemas de postulación (ATS) que no aceptan archivos con diseño.
         </p>
-        <textarea
+        <textarea spellCheck="true"
           readOnly
           value={text}
           onClick={(e) => e.target.select()}
@@ -1193,7 +1193,7 @@ function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, ana
           activo, y cuáles te conviene agregar.
         </p>
         <Field label="Descripción del puesto">
-          <textarea
+          <textarea spellCheck="true"
             className={inputClass + " min-h-[140px] resize-none"}
             value={data.comparacion.descripcion}
             onChange={(e) => onUpdateField({ descripcion: e.target.value })}
@@ -4796,7 +4796,7 @@ Máximo 4 resultados.`;
             )}
             <div className="grid grid-cols-2 gap-x-3">
               <Field label="Nombre completo">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.nombre}
                   onChange={(e) => update({ nombre: e.target.value })}
@@ -4804,7 +4804,7 @@ Máximo 4 resultados.`;
                 />
               </Field>
               <Field label="Título profesional">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.puesto}
                   onChange={(e) => update({ puesto: e.target.value })}
@@ -4812,7 +4812,7 @@ Máximo 4 resultados.`;
                 />
               </Field>
               <Field label="Email">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.email}
                   onChange={(e) => update({ email: e.target.value })}
@@ -4820,7 +4820,7 @@ Máximo 4 resultados.`;
                 />
               </Field>
               <Field label="Teléfono">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.telefono}
                   onChange={(e) => update({ telefono: e.target.value })}
@@ -4828,7 +4828,7 @@ Máximo 4 resultados.`;
                 />
               </Field>
               <Field label="Ubicación">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.ubicacion}
                   onChange={(e) => update({ ubicacion: e.target.value })}
@@ -4836,7 +4836,7 @@ Máximo 4 resultados.`;
                 />
               </Field>
               <Field label="LinkedIn / portafolio">
-                <input
+                <input spellCheck="true"
                   className={inputClass}
                   value={data.linkedin}
                   onChange={(e) => update({ linkedin: e.target.value })}
@@ -4868,7 +4868,7 @@ Máximo 4 resultados.`;
               </h2>
               <AIButton onClick={improveSummary} loading={loadingField === "resumen"} />
             </div>
-            <textarea
+            <textarea spellCheck="true"
               className={inputClass + " min-h-[90px] resize-none"}
               value={data.resumen}
               onChange={(e) => update({ resumen: e.target.value })}
@@ -4990,7 +4990,7 @@ Máximo 4 resultados.`;
                     <div className="pl-6 mt-2">
                       <div className="grid grid-cols-2 gap-x-3">
                         <Field label="Puesto">
-                          <input
+                          <input spellCheck="true"
                             className={inputClass}
                             value={exp.puesto}
                             onChange={(e) => updateExperience(exp.id, { puesto: e.target.value })}
@@ -4998,7 +4998,7 @@ Máximo 4 resultados.`;
                           />
                         </Field>
                         <Field label="Empresa">
-                          <input
+                          <input spellCheck="true"
                             className={inputClass}
                             value={exp.empresa}
                             onChange={(e) => updateExperience(exp.id, { empresa: e.target.value })}
@@ -5007,7 +5007,7 @@ Máximo 4 resultados.`;
                         </Field>
                       </div>
                       <Field label="Periodo">
-                        <input
+                        <input spellCheck="true"
                           className={inputClass}
                           value={exp.periodo}
                           onChange={(e) => updateExperience(exp.id, { periodo: e.target.value })}
@@ -5037,7 +5037,7 @@ Máximo 4 resultados.`;
                           />
                         </div>
                       </div>
-                      <textarea
+                      <textarea spellCheck="true"
                         className={inputClass + " min-h-[80px] resize-none"}
                         value={exp.descripcion}
                         onChange={(e) => updateExperience(exp.id, { descripcion: e.target.value })}
@@ -5099,7 +5099,7 @@ Máximo 4 resultados.`;
               <div key={edu.id} id={`entry-${edu.id}`} className="mb-4 flex items-start gap-2">
                 <div className="flex-1">
                   <Field label="Título / carrera">
-                    <input
+                    <input spellCheck="true"
                       className={inputClass}
                       value={edu.titulo}
                       onChange={(e) => updateEducation(edu.id, { titulo: e.target.value })}
@@ -5108,7 +5108,7 @@ Máximo 4 resultados.`;
                   </Field>
                   <div className="grid grid-cols-2 gap-x-3">
                     <Field label="Institución">
-                      <input
+                      <input spellCheck="true"
                         className={inputClass}
                         value={edu.institucion}
                         onChange={(e) => updateEducation(edu.id, { institucion: e.target.value })}
@@ -5116,7 +5116,7 @@ Máximo 4 resultados.`;
                       />
                     </Field>
                     <Field label="Periodo">
-                      <input
+                      <input spellCheck="true"
                         className={inputClass}
                         value={edu.periodo}
                         onChange={(e) => updateEducation(edu.id, { periodo: e.target.value })}
@@ -5144,7 +5144,7 @@ Máximo 4 resultados.`;
               </h2>
               <AIButton onClick={improveSkills} loading={loadingField === "habilidades"} />
             </div>
-            <textarea
+            <textarea spellCheck="true"
               className={inputClass + " min-h-[60px] resize-none"}
               value={data.habilidades}
               onChange={(e) => update({ habilidades: e.target.value })}
@@ -5205,17 +5205,17 @@ Máximo 4 resultados.`;
                   <div className="flex-1">
                     <div className="grid grid-cols-2 gap-x-3">
                       <Field label="Nombre del proyecto">
-                        <input className={inputClass} value={p.nombre} onChange={(e) => proyectosH.update(p.id, { nombre: e.target.value })} placeholder="App de finanzas personales" />
+                        <input spellCheck="true" className={inputClass} value={p.nombre} onChange={(e) => proyectosH.update(p.id, { nombre: e.target.value })} placeholder="App de finanzas personales" />
                       </Field>
                       <Field label="Link (opcional)">
-                        <input className={inputClass} value={p.link} onChange={(e) => proyectosH.update(p.id, { link: e.target.value })} placeholder="github.com/ana/finanzas" />
+                        <input spellCheck="true" className={inputClass} value={p.link} onChange={(e) => proyectosH.update(p.id, { link: e.target.value })} placeholder="github.com/ana/finanzas" />
                       </Field>
                     </div>
                     <Field label="Stack / tecnologías">
-                      <input className={inputClass} value={p.stack} onChange={(e) => proyectosH.update(p.id, { stack: e.target.value })} placeholder="React, Node.js, PostgreSQL" />
+                      <input spellCheck="true" className={inputClass} value={p.stack} onChange={(e) => proyectosH.update(p.id, { stack: e.target.value })} placeholder="React, Node.js, PostgreSQL" />
                     </Field>
                     <Field label="Descripción">
-                      <textarea className={inputClass + " min-h-[60px] resize-none"} value={p.descripcion} onChange={(e) => proyectosH.update(p.id, { descripcion: e.target.value })} placeholder="Qué hace el proyecto y qué lograste con él..." />
+                      <textarea spellCheck="true" className={inputClass + " min-h-[60px] resize-none"} value={p.descripcion} onChange={(e) => proyectosH.update(p.id, { descripcion: e.target.value })} placeholder="Qué hace el proyecto y qué lograste con él..." />
                     </Field>
                   </div>
                   {data.proyectos.length > 1 && (
@@ -5252,14 +5252,14 @@ Máximo 4 resultados.`;
                 <div key={p.id} className="mb-3 flex items-start gap-2">
                   <div className="flex-1">
                     <Field label="Título">
-                      <input className={inputClass} value={p.titulo} onChange={(e) => publicacionesH.update(p.id, { titulo: e.target.value })} placeholder="Título del artículo o paper" />
+                      <input spellCheck="true" className={inputClass} value={p.titulo} onChange={(e) => publicacionesH.update(p.id, { titulo: e.target.value })} placeholder="Título del artículo o paper" />
                     </Field>
                     <div className="grid grid-cols-2 gap-x-3">
                       <Field label="Revista / conferencia">
-                        <input className={inputClass} value={p.revista} onChange={(e) => publicacionesH.update(p.id, { revista: e.target.value })} placeholder="Revista Latinoamericana de..." />
+                        <input spellCheck="true" className={inputClass} value={p.revista} onChange={(e) => publicacionesH.update(p.id, { revista: e.target.value })} placeholder="Revista Latinoamericana de..." />
                       </Field>
                       <Field label="Año">
-                        <input className={inputClass} value={p.anio} onChange={(e) => publicacionesH.update(p.id, { anio: e.target.value })} placeholder="2023" />
+                        <input spellCheck="true" className={inputClass} value={p.anio} onChange={(e) => publicacionesH.update(p.id, { anio: e.target.value })} placeholder="2023" />
                       </Field>
                     </div>
                   </div>
@@ -5297,14 +5297,14 @@ Máximo 4 resultados.`;
                 <div key={b.id} className="mb-3 flex items-start gap-2">
                   <div className="flex-1">
                     <Field label="Nombre">
-                      <input className={inputClass} value={b.nombre} onChange={(e) => becasH.update(b.id, { nombre: e.target.value })} placeholder="Beca de excelencia académica" />
+                      <input spellCheck="true" className={inputClass} value={b.nombre} onChange={(e) => becasH.update(b.id, { nombre: e.target.value })} placeholder="Beca de excelencia académica" />
                     </Field>
                     <div className="grid grid-cols-2 gap-x-3">
                       <Field label="Entidad">
-                        <input className={inputClass} value={b.entidad} onChange={(e) => becasH.update(b.id, { entidad: e.target.value })} placeholder="CONACYT" />
+                        <input spellCheck="true" className={inputClass} value={b.entidad} onChange={(e) => becasH.update(b.id, { entidad: e.target.value })} placeholder="CONACYT" />
                       </Field>
                       <Field label="Año">
-                        <input className={inputClass} value={b.anio} onChange={(e) => becasH.update(b.id, { anio: e.target.value })} placeholder="2021" />
+                        <input spellCheck="true" className={inputClass} value={b.anio} onChange={(e) => becasH.update(b.id, { anio: e.target.value })} placeholder="2021" />
                       </Field>
                     </div>
                   </div>
@@ -5342,10 +5342,10 @@ Máximo 4 resultados.`;
                 <div key={l.id} className="mb-3 flex items-start gap-2">
                   <div className="flex-1 grid grid-cols-[100px_1fr] gap-x-3">
                     <Field label="Métrica">
-                      <input className={inputClass} value={l.metrica} onChange={(e) => logrosH.update(l.id, { metrica: e.target.value })} placeholder="+45%" />
+                      <input spellCheck="true" className={inputClass} value={l.metrica} onChange={(e) => logrosH.update(l.id, { metrica: e.target.value })} placeholder="+45%" />
                     </Field>
                     <Field label="Descripción">
-                      <input className={inputClass} value={l.descripcion} onChange={(e) => logrosH.update(l.id, { descripcion: e.target.value })} placeholder="Crecimiento en ventas Q3" />
+                      <input spellCheck="true" className={inputClass} value={l.descripcion} onChange={(e) => logrosH.update(l.id, { descripcion: e.target.value })} placeholder="Crecimiento en ventas Q3" />
                     </Field>
                   </div>
                   {data.logros.length > 1 && (
@@ -5374,7 +5374,7 @@ Máximo 4 resultados.`;
                 </button>
               </div>
               <Field label="Texto libre">
-                <textarea
+                <textarea spellCheck="true"
                   className={inputClass + " min-h-[80px] resize-none"}
                   value={data.informacionAdicional}
                   onChange={(e) => update({ informacionAdicional: e.target.value })}

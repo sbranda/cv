@@ -331,3 +331,9 @@ Sigue siendo un trabajo en progreso, no una certificación completa — pero cad
 ## Detector de brechas laborales
 
 Junto al encabezado de "Experiencia" (visible cuando tenés 2 o más experiencias cargadas) hay un nuevo botón "🔍 Revisar brechas". Analiza los períodos de tus trabajos y te avisa si hay huecos de 6 meses o más sin explicar entre uno y el siguiente. No juzga ni completa nada por vos — solo te avisa para que decidas si conviene aclararlo (estudios, viaje, cuidado familiar, etc.) en el resumen o en alguna experiencia.
+
+## Corrector ortográfico en los campos de texto
+
+Activé el corrector ortográfico nativo del navegador en todos los campos de texto y áreas de texto del editor (35 en total) — el mismo que ya usás en cualquier sitio web, con el subrayado rojo ondulado debajo de las palabras que no reconoce. La app ya estaba configurada en español (`lang="es"`), así que revisa contra el diccionario correcto sin configuración extra de tu parte.
+
+Nota: como el corrector depende del navegador (no de la app), su calidad varía según cuál uses — Chrome, Edge y Safari lo traen activado por defecto en español si tu dispositivo tiene ese idioma configurado.
