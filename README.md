@@ -299,3 +299,7 @@ En cada experiencia laboral, junto a "Mejorar con IA" hay un nuevo botón: **"�
 ## Línea de salto de página en la vista previa
 
 Cuando tu CV ocupa más de una página, ahora ves una línea punteada naranja con la etiqueta "Fin de página 1 (estimado)" directamente superpuesta en la vista previa, marcando dónde terminaría exactamente la primera hoja — sin tener que abrir el aviso ni los consejos para acortar. Usa el mismo cálculo (calibrado para A4) que ya tenía el aviso, así que ambos coinciden. No aparece al imprimir/exportar, es solo una guía en pantalla.
+
+## Comparar plantillas lado a lado
+
+Dentro de la galería de plantillas hay un nuevo botón "Comparar" (junto al título). Abre un panel con dos selectores — elegís cualquiera de las 28 plantillas en cada uno, y las ves renderizadas con tu contenido real, una al lado de la otra (apiladas en celular, lado a lado en pantallas más grandes). Cada una tiene su botón "Usar esta plantilla" para aplicarla directo, sin tener que volver a la galería.

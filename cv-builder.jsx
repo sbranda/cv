@@ -613,7 +613,82 @@ function useSwipeToDismiss(onClose, open) {
   };
 }
 
-function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
+function CompareTemplatesModal({ open, onClose, data, accent, currentTemplate, onSelect }) {
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  const otherDefault = TEMPLATES.find((t) => t.id !== currentTemplate)?.id || currentTemplate;
+  const [templateA, setTemplateA] = useState(currentTemplate);
+  const [templateB, setTemplateB] = useState(otherDefault);
+  useEffect(() => {
+    if (open) {
+      setTemplateA(currentTemplate);
+      setTemplateB(TEMPLATES.find((t) => t.id !== currentTemplate)?.id || currentTemplate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+  if (!open) return null;
+  const CompA = TEMPLATE_COMPONENTS[templateA];
+  const CompB = TEMPLATE_COMPONENTS[templateB];
+  const columns = [
+    { id: "A", template: templateA, setTemplate: setTemplateA, Comp: CompA },
+    { id: "B", template: templateB, setTemplate: setTemplateB, Comp: CompB },
+  ];
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
+        {handle}
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="font-display text-xl">Comparar plantillas</h2>
+            <p className="text-[12px] text-stone-500 mt-0.5">
+              Elegí dos diseños y miralos lado a lado con tu contenido real.
+            </p>
+          </div>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {columns.map((col) => (
+            <div key={col.id}>
+              <select
+                value={col.template}
+                onChange={(e) => col.setTemplate(e.target.value)}
+                className="w-full bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-stone-100 mb-3 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                style={{ borderColor: "#44403c" }}
+              >
+                {CATEGORIES.map((cat) => (
+                  <optgroup key={cat.id} label={cat.name}>
+                    {TEMPLATES.filter((t) => t.category === cat.id).map((t) => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <div
+                className="border rounded-md overflow-hidden bg-stone-950 flex justify-center"
+                style={{ borderColor: col.template === currentTemplate ? accent : "#3f3a35", height: 480 }}
+              >
+                <div style={{ width: 600, transform: "scale(0.42)", transformOrigin: "top center" }}>
+                  {col.Comp && <col.Comp data={data} accent={accent} />}
+                </div>
+              </div>
+              <button
+                onClick={() => { onSelect(col.template); onClose(); }}
+                disabled={col.template === currentTemplate}
+                className="w-full mt-3 text-sm font-semibold px-4 py-2.5 rounded-md text-stone-950 hover:opacity-90 transition disabled:opacity-40 disabled:cursor-default"
+                style={{ background: accent }}
+              >
+                {col.template === currentTemplate ? "Ya es tu plantilla actual" : "Usar esta plantilla"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCompare }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
   return (
@@ -627,9 +702,17 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect }) {
               Elige un diseño. Tu contenido y color de acento se mantienen.
             </p>
           </div>
-          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
-            <X size={20} aria-hidden="true" />
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={onCompare}
+              className="text-[11px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition whitespace-nowrap"
+            >
+              Comparar
+            </button>
+            <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
         </div>
         {CATEGORIES.map((cat) => {
           const items = TEMPLATES.filter((t) => t.category === cat.id);
@@ -3487,6 +3570,7 @@ JSON original:
 
   const [loadingField, setLoadingField] = useState(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
   const [cartaOpen, setCartaOpen] = useState(false);
   const [cartaGenerating, setCartaGenerating] = useState(false);
   const previewRef = useRef(null);
@@ -4297,6 +4381,19 @@ Descripción:
         current={data.template}
         accent={accent}
         data={data}
+        onSelect={(id) => update({ template: id })}
+        onCompare={() => {
+          setGalleryOpen(false);
+          setCompareOpen(true);
+        }}
+      />
+
+      <CompareTemplatesModal
+        open={compareOpen}
+        onClose={() => setCompareOpen(false)}
+        data={data}
+        accent={accent}
+        currentTemplate={data.template}
         onSelect={(id) => update({ template: id })}
       />
 
