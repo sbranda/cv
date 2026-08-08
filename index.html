@@ -885,11 +885,13 @@ function CompareTemplatesModal({ open, onClose, data, accent, currentTemplate, o
                 ))}
               </select>
               <div
-                className="border rounded-md overflow-hidden bg-stone-950 flex justify-center"
-                style={{ borderColor: col.template === currentTemplate ? accent : "#3f3a35", height: 480 }}
+                className="border rounded-md overflow-hidden bg-stone-950 flex justify-center items-start py-3"
+                style={{ borderColor: col.template === currentTemplate ? accent : "#3f3a35" }}
               >
-                <div style={{ width: 600, transform: "scale(0.42)", transformOrigin: "top center" }}>
-                  {col.Comp && <col.Comp data={data} accent={accent} />}
+                <div className="overflow-hidden shrink-0" style={{ width: 300, height: 480 }}>
+                  <div style={{ width: 600, transform: "scale(0.5)", transformOrigin: "top left" }}>
+                    {col.Comp && <col.Comp data={data} accent={accent} />}
+                  </div>
                 </div>
               </div>
               <button

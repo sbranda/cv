@@ -303,3 +303,7 @@ Cuando tu CV ocupa más de una página, ahora ves una línea punteada naranja co
 ## Comparar plantillas lado a lado
 
 Dentro de la galería de plantillas hay un nuevo botón "Comparar" (junto al título). Abre un panel con dos selectores — elegís cualquiera de las 28 plantillas en cada uno, y las ves renderizadas con tu contenido real, una al lado de la otra (apiladas en celular, lado a lado en pantallas más grandes). Cada una tiene su botón "Usar esta plantilla" para aplicarla directo, sin tener que volver a la galería.
+
+## Corrección: previsualizaciones angostas en "Comparar plantillas"
+
+El recorte que achica cada plantilla usaba un ancho de recuadro que no coincidía con el ancho real después de escalarla, así que se veía cortada/angosta. Corregido usando la misma técnica que ya funcionaba bien en las miniaturas de la galería — ahora se ve la plantilla completa, más ancha y clara.
