@@ -466,7 +466,7 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
       disabled={loading}
       className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wide text-stone-300 hover:text-white disabled:opacity-50 transition mb-1"
     >
-      {loading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+      {loading ? <Loader2 size={12} className="animate-spin" aria-hidden="true" /> : <Sparkles size={12} aria-hidden="true" />}
       {loading ? "Puliendo…" : label}
     </button>
   );
@@ -849,7 +849,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
                             className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                             style={{ background: accent }}
                           >
-                            <Check size={12} className="text-stone-950" />
+                            <Check size={12} className="text-stone-950" aria-hidden="true" />
                           </span>
                         )}
                       </div>
@@ -903,21 +903,21 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
                   {p.data.nombre || "Sin nombre"} · {p.data.puesto || "Sin título"}
                 </p>
               </button>
-              {p.id === activeId && <Check size={14} style={{ color: accent }} className="shrink-0" />}
+              {p.id === activeId && <Check size={14} style={{ color: accent }} className="shrink-0" aria-hidden="true" />}
               <button
                 onClick={() => onTranslate(p.id)}
                 title="Traducir a inglés (crea un perfil nuevo)"
                 disabled={translatingId === p.id}
                 className="text-stone-500 hover:text-white transition shrink-0 disabled:opacity-40"
               >
-                {translatingId === p.id ? <Loader2 size={14} className="animate-spin" /> : <Languages size={14} />}
+                {translatingId === p.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Languages size={14} aria-hidden="true" />}
               </button>
               <button
                 onClick={() => onDuplicate(p.id)}
                 title="Duplicar perfil"
                 className="text-stone-500 hover:text-white transition shrink-0"
               >
-                <Copy size={14} />
+                <Copy size={14} aria-hidden="true" />
               </button>
               {profiles.length > 1 && (
                 <button
@@ -925,7 +925,7 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
                   title="Eliminar perfil"
                   className="text-stone-500 hover:text-red-400 transition shrink-0"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={14} aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -936,20 +936,20 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
             onClick={onAdd}
             className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
           >
-            <Plus size={15} /> Nuevo perfil en blanco
+            <Plus size={15} aria-hidden="true" /> Nuevo perfil en blanco
           </button>
           <button
             onClick={onImportClick}
             className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2.5 rounded-md border border-dashed border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition"
           >
-            <Upload size={15} /> Importar desde PDF/Word
+            <Upload size={15} aria-hidden="true" /> Importar desde PDF/Word
           </button>
           <div className="flex gap-2 mt-1">
             <button
               onClick={onExportBackup}
               className="flex-1 flex items-center justify-center gap-1.5 text-[11px] px-3 py-2 rounded-md text-stone-500 hover:text-white transition"
             >
-              <Download size={13} /> Descargar copia de seguridad
+              <Download size={13} aria-hidden="true" /> Descargar copia de seguridad
             </button>
             <label className="flex-1 flex items-center justify-center gap-1.5 text-[11px] px-3 py-2 rounded-md text-stone-500 hover:text-white transition cursor-pointer">
               <input
@@ -962,7 +962,7 @@ function ProfilesModal({ open, onClose, profiles, activeId, accent, onSelect, on
                   e.target.value = "";
                 }}
               />
-              <Upload size={13} /> Restaurar desde archivo
+              <Upload size={13} aria-hidden="true" /> Restaurar desde archivo
             </label>
           </div>
         </div>
@@ -1038,7 +1038,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
           className="w-full mt-2 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90 disabled:opacity-50"
           style={{ background: accent }}
         >
-          {generating ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+          {generating ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : <Sparkles size={15} aria-hidden="true" />}
           {generating ? "Generando…" : carta.texto ? "Regenerar" : "Generar carta"}
         </button>
         {carta.texto && (
@@ -1051,7 +1051,7 @@ function CoverLetterModal({ open, onClose, data, accent, onUpdateField, onGenera
                 onClick={() => navigator.clipboard?.writeText(carta.texto)}
                 className="text-[11px] font-mono uppercase tracking-wide text-stone-400 hover:text-white transition inline-flex items-center gap-1"
               >
-                <Copy size={11} /> Copiar
+                <Copy size={11} aria-hidden="true" /> Copiar
               </button>
             </div>
             <textarea spellCheck="true"
@@ -1089,9 +1089,9 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
         <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-stone-700 rounded-lg py-8 cursor-pointer hover:border-stone-500 transition">
           <input type="file" accept=".pdf,.docx" className="hidden" onChange={onImport} disabled={importing} />
           {importing ? (
-            <Loader2 size={22} className="text-stone-400 animate-spin" />
+            <Loader2 size={22} className="text-stone-400 animate-spin" aria-hidden="true" />
           ) : (
-            <Upload size={22} className="text-stone-500" />
+            <Upload size={22} className="text-stone-500" aria-hidden="true" />
           )}
           <span className="text-[12px] text-stone-400">
             {importing ? "Analizando el archivo…" : "Tocá para elegir un archivo (.pdf o .docx)"}
@@ -1143,13 +1143,13 @@ function PlainTextModal({ open, onClose, text, accent, fileName }) {
             className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90"
             style={{ background: accent }}
           >
-            <Copy size={15} /> Copiar todo
+            <Copy size={15} aria-hidden="true" /> Copiar todo
           </button>
           <button
             onClick={handleDownload}
             className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
           >
-            <FileDown size={15} /> Descargar .txt
+            <FileDown size={15} aria-hidden="true" /> Descargar .txt
           </button>
         </div>
       </div>
@@ -1282,40 +1282,40 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, export
               onClick={() => { onCarta(); setOpen(false); }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
             >
-              <FileText size={14} /> Carta de presentación
+              <FileText size={14} aria-hidden="true" /> Carta de presentación
             </button>
             <button
               onClick={() => { onCompare(); setOpen(false); }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
             >
-              <Target size={14} /> Comparar con puesto
+              <Target size={14} aria-hidden="true" /> Comparar con puesto
             </button>
             <button
               onClick={() => { onTexto(); setOpen(false); }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
             >
-              <AlignLeft size={14} /> Texto plano (ATS)
+              <AlignLeft size={14} aria-hidden="true" /> Texto plano (ATS)
             </button>
             <button
               onClick={() => { onWord(); setOpen(false); }}
               disabled={exportingDocx}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
             >
-              {exportingDocx ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />} Exportar Word
+              {exportingDocx ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <FileDown size={14} aria-hidden="true" />} Exportar Word
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
               onClick={() => { onTour(); setOpen(false); }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
             >
-              <HelpCircle size={14} /> Ver tutorial
+              <HelpCircle size={14} aria-hidden="true" /> Ver tutorial
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
               onClick={() => { onClear(); setOpen(false); }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-stone-800 transition"
             >
-              <Trash2 size={14} /> Vaciar formulario
+              <Trash2 size={14} aria-hidden="true" /> Vaciar formulario
             </button>
           </div>
         </>
@@ -1356,7 +1356,7 @@ function MatchModal({ open, onClose, data, accent, onUpdateField, onAnalyze, ana
           className="w-full mt-1 inline-flex items-center justify-center gap-2 text-sm font-medium px-4 py-2.5 rounded-md text-stone-950 transition hover:opacity-90 disabled:opacity-50"
           style={{ background: accent }}
         >
-          {analyzing ? <Loader2 size={15} className="animate-spin" /> : <Target size={15} />}
+          {analyzing ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : <Target size={15} aria-hidden="true" />}
           {analyzing ? "Analizando…" : resultado ? "Analizar de nuevo" : "Analizar"}
         </button>
 
@@ -1439,22 +1439,22 @@ function ContactLine({ data, className, iconSize = 11 }) {
     <div className={className}>
       {data.email && (
         <span className="flex items-center gap-1 min-w-0 break-all">
-          <Mail size={iconSize} className="shrink-0" /> {data.email}
+          <Mail size={iconSize} className="shrink-0" aria-hidden="true" /> {data.email}
         </span>
       )}
       {data.telefono && (
         <span className="flex items-center gap-1 min-w-0 break-words">
-          <Phone size={iconSize} className="shrink-0" /> {data.telefono}
+          <Phone size={iconSize} className="shrink-0" aria-hidden="true" /> {data.telefono}
         </span>
       )}
       {data.ubicacion && (
         <span className="flex items-center gap-1 min-w-0 break-words">
-          <MapPin size={iconSize} className="shrink-0" /> {data.ubicacion}
+          <MapPin size={iconSize} className="shrink-0" aria-hidden="true" /> {data.ubicacion}
         </span>
       )}
       {data.linkedin && (
         <span className="flex items-center gap-1 min-w-0 break-all">
-          <Linkedin size={iconSize} className="shrink-0" /> {data.linkedin}
+          <Linkedin size={iconSize} className="shrink-0" aria-hidden="true" /> {data.linkedin}
         </span>
       )}
     </div>
@@ -1597,8 +1597,7 @@ function PreviewClasico({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
-          iconSize={10}
-        />
+          iconSize={10} />
       )}
     </div>
   );
@@ -1686,8 +1685,7 @@ function PreviewMinimalista({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
-            iconSize={10}
-          />
+            iconSize={10} />
         )}
       </div>
       {data.resumen && (
@@ -1729,8 +1727,7 @@ function PreviewMinimalista({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
-          iconSize={10}
-        />
+          iconSize={10} />
       )}
     </div>
   );
@@ -1754,8 +1751,7 @@ function PreviewEjecutivo({ data, accent }) {
         {!data.contactoAlPie && (
           <ContactLine
             data={data}
-            className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600"
-          />
+            className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
         )}
       </div>
       <div className="h-[2px] mb-6" style={{ background: accent, opacity: 0.5 }} />
@@ -1813,8 +1809,7 @@ function PreviewEjecutivo({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-8 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
-          iconSize={10}
-        />
+          iconSize={10} />
       )}
     </div>
   );
@@ -2006,8 +2001,7 @@ function PreviewCreativo({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11.5px] text-white/85"
-            iconSize={10}
-          />
+            iconSize={10} />
         </div>
         <Avatar data={data} accent="white" size={80} ring />
       </div>
@@ -2455,8 +2449,7 @@ function PreviewBlueprint({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10.5px] text-stone-600"
-            iconSize={10}
-          />
+            iconSize={10} />
         </div>
         <Avatar data={data} accent={accent} size={70} shape="square" />
       </div>
@@ -2603,8 +2596,7 @@ function PreviewNocturno({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11.5px] text-stone-500"
-            iconSize={10}
-          />
+            iconSize={10} />
         </div>
         <Avatar data={data} accent={accent} size={80} ring />
       </div>
@@ -2703,8 +2695,7 @@ function PreviewRevista({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-7 text-[11px] text-stone-500"
-          iconSize={10}
-        />
+          iconSize={10} />
       )}
       {data.resumen && (
         <p className="text-[13px] leading-relaxed text-stone-700 mb-7">
@@ -2754,8 +2745,7 @@ function PreviewRevista({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] text-stone-500"
-            iconSize={10}
-          />
+            iconSize={10} />
           <p className="text-center text-[10px] text-stone-300 mt-3 tracking-widest">— 01 —</p>
         </div>
       ) : (
@@ -2782,8 +2772,7 @@ function PreviewContorno({ data, accent }) {
               <ContactLine
                 data={data}
                 className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
-                iconSize={10}
-              />
+                iconSize={10} />
             )}
           </div>
           <div className="px-4">
@@ -2820,8 +2809,7 @@ function PreviewContorno({ data, accent }) {
               <ContactLine
                 data={data}
                 className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-6 pt-4 border-t border-stone-200 text-[11px] text-stone-500"
-                iconSize={10}
-              />
+                iconSize={10} />
             )}
           </div>
         </div>
@@ -2845,8 +2833,7 @@ function PreviewDinamico({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11.5px] text-white/85"
-            iconSize={10}
-          />
+            iconSize={10} />
         </div>
         <Avatar data={data} accent="white" size={80} ring />
       </div>
@@ -2903,8 +2890,7 @@ function PreviewTarjetas({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2 text-[11px] text-stone-600"
-          iconSize={10}
-        />
+          iconSize={10} />
       </div>
       {data.resumen && (
         <div className={cardBase} style={{ transform: "rotate(-1deg)" }}>
@@ -3005,8 +2991,7 @@ function PreviewPrensa({ data, accent }) {
       <ContactLine
         data={data}
         className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-6 text-[11px] text-stone-500"
-        iconSize={10}
-      />
+        iconSize={10} />
       {data.resumen && (
         <p className="text-[12.5px] leading-relaxed text-stone-700 mb-6 text-center italic max-w-[440px] mx-auto">
           {data.resumen}
@@ -3239,8 +3224,7 @@ function PreviewRetrato({ data, accent }) {
         <ContactLine
           data={data}
           className="flex flex-col items-center gap-1.5 text-[9.5px] text-stone-500 text-center"
-          iconSize={9}
-        />
+          iconSize={9} />
         {data.habilidades && (
           <div className="w-full mt-2">
             <p className="text-[9px] uppercase tracking-widest text-stone-400 mb-1.5 text-center">Habilidades</p>
@@ -4741,13 +4725,13 @@ Máximo 4 resultados.`;
             onClick={() => setProfilesOpen(true)}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
           >
-            <Users size={15} /> {activeProfile.nombre}
+            <Users size={15} aria-hidden="true" /> {activeProfile.nombre}
           </button>
           <button
             onClick={() => setGalleryOpen(true)}
             className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
           >
-            <LayoutTemplate size={15} /> {currentTemplateName}
+            <LayoutTemplate size={15} aria-hidden="true" /> {currentTemplateName}
           </button>
           <div className="flex items-center gap-1.5">
             {ACCENTS.map((a) => (
@@ -4810,7 +4794,7 @@ Máximo 4 resultados.`;
             className="hidden lg:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"
             style={{ background: accent }}
           >
-            <Download size={15} /> Descargar PDF
+            <Download size={15} aria-hidden="true" /> Descargar PDF
           </button>
         </div>
       </header>
@@ -4935,7 +4919,7 @@ Máximo 4 resultados.`;
                 <div className="flex items-center gap-3 flex-wrap">
                   <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-white transition cursor-pointer inline-flex items-center gap-1.5">
                     <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-                    <Upload size={12} />
+                    <Upload size={12} aria-hidden="true" />
                     {data.foto ? "Cambiar foto" : "Subir foto"}
                   </label>
                   <label className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-white transition cursor-pointer inline-flex items-center gap-1.5">
@@ -4946,7 +4930,7 @@ Máximo 4 resultados.`;
                       className="hidden"
                       onChange={handlePhotoChange}
                     />
-                    <Camera size={12} />
+                    <Camera size={12} aria-hidden="true" />
                     Tomar foto
                   </label>
                 </div>
@@ -5075,7 +5059,7 @@ Máximo 4 resultados.`;
                     disabled={!data.resumen.trim() || loading}
                     className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-white hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
                   >
-                    {loading && <Loader2 size={10} className="animate-spin" />}
+                    {loading && <Loader2 size={10} className="animate-spin" aria-hidden="true" />}
                     {opt.label}
                   </button>
                 );
@@ -5153,16 +5137,16 @@ Máximo 4 resultados.`;
               return (
                 <div key={exp.id} id={`entry-${exp.id}`} className="mb-5 pb-5 border-b border-stone-800 last:border-0">
                   <div className="flex items-center gap-2">
-                    <GripVertical size={14} className="text-white shrink-0" />
+                    <GripVertical size={14} className="text-white shrink-0" aria-hidden="true" />
                     <button
                       onClick={() => toggleExpCollapse(exp.id)}
                       className="flex-1 flex items-center justify-between gap-2 text-left py-1 min-w-0"
                     >
                       <span className="text-[12.5px] text-white truncate">{summary}</span>
                       {isCollapsed ? (
-                        <ChevronRight size={14} className="text-white shrink-0" />
+                        <ChevronRight size={14} className="text-white shrink-0" aria-hidden="true" />
                       ) : (
-                        <ChevronDown size={14} className="text-white shrink-0" />
+                        <ChevronDown size={14} className="text-white shrink-0" aria-hidden="true" />
                       )}
                     </button>
                     {data.experiencia.length > 1 && (
@@ -5170,7 +5154,7 @@ Máximo 4 resultados.`;
                         onClick={() => removeExperience(exp.id)}
                         className="text-white hover:text-red-400 transition shrink-0"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={14} aria-hidden="true" />
                       </button>
                     )}
                   </div>
@@ -5318,7 +5302,7 @@ Máximo 4 resultados.`;
                     onClick={() => removeEducation(edu.id)}
                     className="text-white hover:text-red-400 transition mt-6"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={14} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -5360,7 +5344,7 @@ Máximo 4 resultados.`;
                       color: activa ? accent : "#a8a29e",
                     }}
                   >
-                    {activa ? <Check size={11} /> : <Plus size={11} />}
+                    {activa ? <Check size={11} aria-hidden="true" /> : <Plus size={11} aria-hidden="true" />}
                     {s.name} <span className="text-white">· {s.template}</span>
                   </button>
                 );
@@ -5414,7 +5398,7 @@ Máximo 4 resultados.`;
                   </div>
                   {data.proyectos.length > 1 && (
                     <button onClick={() => proyectosH.remove(p.id)} className="text-white hover:text-red-400 transition mt-2.5">
-                      <Trash2 size={14} />
+                      <Trash2 size={14} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -5459,7 +5443,7 @@ Máximo 4 resultados.`;
                   </div>
                   {data.publicaciones.length > 1 && (
                     <button onClick={() => publicacionesH.remove(p.id)} className="text-white hover:text-red-400 transition mt-6">
-                      <Trash2 size={14} />
+                      <Trash2 size={14} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -5504,7 +5488,7 @@ Máximo 4 resultados.`;
                   </div>
                   {data.becas.length > 1 && (
                     <button onClick={() => becasH.remove(b.id)} className="text-white hover:text-red-400 transition mt-6">
-                      <Trash2 size={14} />
+                      <Trash2 size={14} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -5544,7 +5528,7 @@ Máximo 4 resultados.`;
                   </div>
                   {data.logros.length > 1 && (
                     <button onClick={() => logrosH.remove(l.id)} className="text-white hover:text-red-400 transition mt-6">
-                      <Trash2 size={14} />
+                      <Trash2 size={14} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -5627,7 +5611,7 @@ Máximo 4 resultados.`;
           className="w-full inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-md text-stone-950 transition hover:opacity-90"
           style={{ background: accent }}
         >
-          <Download size={16} /> Descargar PDF
+          <Download size={16} aria-hidden="true" /> Descargar PDF
         </button>
       </div>
     </div>

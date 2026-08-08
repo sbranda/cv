@@ -383,3 +383,9 @@ Nota: en modo claro (☀️), este blanco se sigue convirtiendo automáticamente
 ## Tutorial actualizado (cuarta vez)
 
 Sigue en 7 pasos. Ahora también menciona: el botón de tamaño de letra de la interfaz, y la guía sobre datos personales sensibles (edad, discapacidad, etc.). Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+## Cuarta pasada de accesibilidad (con una corrección propia en el camino)
+
+Encontré varios íconos decorativos de sesiones anteriores (menú ⋯, botones de agregar/borrar en Perfiles, etc.) sin marcar como puramente visuales — corregidos.
+
+**Nota de transparencia**: en el primer intento de corregirlos en bloque, cometí un error — el reemplazo automático también afectó por accidente a los componentes que arman el contenido real del CV (foto, experiencia, educación, habilidades) en las 28 plantillas, marcándolos como invisibles para lectores de pantalla. Esto era un problema serio: hubiera ocultado el currículum completo de las herramientas de accesibilidad, el efecto exactamente contrario al buscado. Lo detecté antes de entregarte los archivos, lo revertí, y lo corregí de nuevo de forma más precisa (limitado únicamente a los íconos reales, no a los componentes de contenido). Verificado con una revisión manual del código además de las pruebas automáticas.
