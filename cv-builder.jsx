@@ -311,6 +311,7 @@ const initialState = {
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
   comparacion: { descripcion: "", resultado: null },
   contactoAlPie: false,
+  mostrarQR: false,
 };
 
 const TONOS = [
@@ -1520,6 +1521,51 @@ function Avatar({ data, accent, size = 64, shape = "circle", ring = false, class
   );
 }
 
+function ensureQRCodeLib() {
+  if (window.QRCode) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("No se pudo cargar el generador de QR."));
+    document.head.appendChild(script);
+  });
+}
+
+function QRCodeImage({ data, size = 56, className = "" }) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!data.mostrarQR || !data.linkedin) {
+      setUrl(null);
+      return;
+    }
+    const target = /^https?:\/\//i.test(data.linkedin) ? data.linkedin : `https://${data.linkedin}`;
+    ensureQRCodeLib()
+      .then(() => window.QRCode.toDataURL(target, { margin: 1, width: 256 }))
+      .then((dataUrl) => {
+        if (!cancelled) setUrl(dataUrl);
+      })
+      .catch(() => {
+        if (!cancelled) setUrl(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [data.mostrarQR, data.linkedin]);
+
+  if (!url) return null;
+  return (
+    <img
+      src={url}
+      alt="Código QR con enlace a LinkedIn/portafolio"
+      width={size}
+      height={size}
+      className={"shrink-0 " + className}
+    />
+  );
+}
+
 function ContactLine({ data, className, iconSize = 11 }) {
   return (
     <div className={className}>
@@ -1666,7 +1712,10 @@ function PreviewClasico({ data, accent }) {
             <ContactLine data={data} className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
           )}
         </div>
-        <Avatar data={data} accent={accent} size={80} />
+        <div className="flex items-start gap-3 shrink-0">
+          <Avatar data={data} accent={accent} size={80} />
+          <QRCodeImage data={data} size={64} />
+        </div>
       </div>
       <div className="flex-1">
         {(data.ordenSecciones || DEFAULT_SECTION_ORDER).map((key) => (
@@ -1773,6 +1822,11 @@ function PreviewMinimalista({ data, accent }) {
             className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
             iconSize={10} />
         )}
+        {data.mostrarQR && data.linkedin && (
+          <div className="flex justify-center mt-3">
+            <QRCodeImage data={data} size={56} />
+          </div>
+        )}
       </div>
       {data.resumen && (
         <div className="mb-7 text-center max-w-[440px] mx-auto">
@@ -1838,6 +1892,11 @@ function PreviewEjecutivo({ data, accent }) {
           <ContactLine
             data={data}
             className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[12px] text-stone-600" />
+        )}
+        {data.mostrarQR && data.linkedin && (
+          <div className="flex justify-center mt-3">
+            <QRCodeImage data={data} size={56} />
+          </div>
         )}
       </div>
       <div className="h-[2px] mb-6" style={{ background: accent, opacity: 0.5 }} />
@@ -1919,6 +1978,11 @@ function PreviewCorporativo({ data, accent }) {
           <p className="text-[11px] mt-2 text-stone-500">
             {[data.email, data.telefono, data.ubicacion, data.linkedin].filter(Boolean).join("   |   ")}
           </p>
+        )}
+        {data.mostrarQR && data.linkedin && (
+          <div className="flex justify-center mt-3">
+            <QRCodeImage data={data} size={56} />
+          </div>
         )}
       </div>
       {data.resumen && (
@@ -2783,6 +2847,11 @@ function PreviewRevista({ data, accent }) {
           className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-7 text-[11px] text-stone-500"
           iconSize={10} />
       )}
+      {data.mostrarQR && data.linkedin && (
+        <div className="flex justify-center mb-7 -mt-4">
+          <QRCodeImage data={data} size={56} />
+        </div>
+      )}
       {data.resumen && (
         <p className="text-[13px] leading-relaxed text-stone-700 mb-7">
           <span className="font-display float-left text-[52px] leading-[0.8] pr-2 pt-1" style={{ color: accent }}>
@@ -2859,6 +2928,11 @@ function PreviewContorno({ data, accent }) {
                 data={data}
                 className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-stone-500"
                 iconSize={10} />
+            )}
+            {data.mostrarQR && data.linkedin && (
+              <div className="flex justify-center mt-3">
+                <QRCodeImage data={data} size={56} />
+              </div>
             )}
           </div>
           <div className="px-4">
@@ -5190,6 +5264,21 @@ Máximo 4 resultados.`;
             </label>
             <p className="text-[10px] text-white mt-1 leading-relaxed">
               Solo aplica a Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista.
+            </p>
+            <label className="flex items-center gap-2 cursor-pointer mt-2">
+              <input
+                type="checkbox"
+                checked={data.mostrarQR}
+                onChange={(e) => update({ mostrarQR: e.target.checked })}
+                className="w-3.5 h-3.5 accent-current"
+                style={{ color: accent }}
+              />
+              <span className="text-[11px] text-white">
+                Incluir código QR con el enlace de LinkedIn/portafolio
+              </span>
+            </label>
+            <p className="text-[10px] text-white mt-1 leading-relaxed">
+              Usa el campo "LinkedIn / Portafolio" de arriba. Útil para CV impresos.
             </p>
           </section>
 

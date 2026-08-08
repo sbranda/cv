@@ -411,3 +411,11 @@ Ahora, al tocar una plantilla en la galería (o aplicar una sugerencia de la IA)
 **Recordatorio de CV desactualizado**: cada perfil guarda ahora la fecha de la última edición, actualizada automáticamente cada vez que cambiás algo. Si pasan más de 6 meses sin tocar el perfil activo, aparece un aviso discreto (celeste, con ícono de reloj) debajo del encabezado — desaparece solo apenas volvés a editar algo. Los perfiles creados antes de esta actualización no muestran el aviso hasta la próxima vez que los edites (no sabemos cuándo fue su última edición real).
 
 **Indicador de sin conexión**: si perdés la conexión a internet, aparece un texto chico junto al indicador de "Guardado hace X" en el encabezado — "📶 Sin conexión — se sigue guardando". Como la app funciona offline gracias al service worker, tus cambios se siguen guardando en el celular normalmente aunque no tengas internet.
+
+## Código QR con enlace a LinkedIn/portafolio
+
+En "Datos personales" hay un nuevo checkbox: "Incluir código QR con el enlace de LinkedIn/portafolio" — usa el valor que ya cargaste en el campo LinkedIn/Portafolio. Al activarlo, aparece un código QR chico cerca del encabezado, útil para currículums impresos: quien lo reciba lo escanea con la cámara del celular y entra directo a tu perfil, sin tener que tipear nada.
+
+Disponible en las mismas 6 plantillas que ya soportan "contacto al pie": Clásico, Minimalista, Corporativo, Ejecutivo, Contorno y Revista.
+
+Nota técnica: el QR se genera con una librería que corre en tu propio navegador (no se manda tu LinkedIn a ningún servicio externo), y funciona incluso sin conexión una vez que se cargó la primera vez.
