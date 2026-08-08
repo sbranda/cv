@@ -455,3 +455,11 @@ Junto al reordenamiento de secciones (en "Apariencia"), hay un nuevo botón "⏱
 Sigue en 7 pasos. Ahora también menciona: el medidor de completitud, la paleta de colores personalizada, la estimación de tiempo de lectura, los puntos de control con nombre propio, y la exportación a PNG. Andá a ⋯ → Ver tutorial para verlo actualizado.
 
 **Recordatorio importante para futuras actualizaciones**: si después de subir `index.html` y `service-worker.js` no aparece el cartel verde de "nueva versión disponible" al abrir la app, puede ser que el navegador tenga atascada una versión vieja del service worker. Solución: cerrar la app por completo (no solo minimizarla) y volver a abrirla; si eso no alcanza, borrar los datos del sitio desde la configuración del navegador y reinstalar (después de respaldar los perfiles con "Descargar copia de seguridad", por las dudas).
+
+## Quinta pasada de accesibilidad
+
+Revisé lo agregado desde la pasada anterior (paleta de colores personalizada, medidor de completitud, puntos de control, estimación de lectura) y corregí:
+
+- La **barra de completitud** ahora tiene los atributos correctos de "barra de progreso" (`role="progressbar"` con su valor actual) — antes era solo un div visual sin significado para un lector de pantalla.
+- Los **puntos de color** (los 4 predefinidos, el selector libre, y los que guardás en tu paleta personal) ahora tienen `aria-label` describiendo cada uno — antes solo tenían el tooltip visual (`title`), insuficiente para un lector de pantalla.
+- Búsqueda automatizada completa: no queda ningún botón de solo ícono sin etiqueta, ni ícono decorativo sin marcar como tal.

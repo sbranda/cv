@@ -5198,6 +5198,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                 key={a.value}
                 onClick={() => update({ accent: a.value })}
                 title={a.name}
+                aria-label={`Color de acento: ${a.name}`}
                 className="w-5 h-5 rounded-full border-2 transition"
                 style={{
                   background: a.value,
@@ -5219,6 +5220,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                 type="color"
                 value={data.accent}
                 onChange={(e) => update({ accent: e.target.value })}
+                aria-label="Elegir un color de acento personalizado"
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
             </label>
@@ -5240,6 +5242,11 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                       else update({ accent: c });
                     }}
                     title={data.accent === c ? "Tocá de nuevo para quitarlo de tu paleta" : "Tu color guardado"}
+                    aria-label={
+                      data.accent === c
+                        ? `Color guardado ${c}, tocá de nuevo para quitarlo de tu paleta`
+                        : `Usar color guardado ${c}`
+                    }
                     className="w-5 h-5 rounded-full border-2 transition"
                     style={{ background: c, borderColor: data.accent === c ? "white" : "transparent" }}
                   />
@@ -5342,7 +5349,14 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
               </p>
               <span className="text-[11px] font-mono text-white">{completeness.percent}%</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-stone-700 overflow-hidden">
+            <div
+              className="w-full h-1.5 rounded-full bg-stone-700 overflow-hidden"
+              role="progressbar"
+              aria-label="Completitud del CV"
+              aria-valuenow={completeness.percent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div
                 className="h-full rounded-full transition-all"
                 style={{ width: `${completeness.percent}%`, background: accent }}
