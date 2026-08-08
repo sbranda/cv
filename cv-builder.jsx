@@ -37,6 +37,7 @@ import {
   Moon,
   Search,
   Type,
+  Image,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -1260,7 +1261,7 @@ function PersonalDataTipsModal({ open, onClose, accent }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, exportingDocx }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onTour, onClear, exportingDocx, exportingPng }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -1302,6 +1303,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onTour, onClear, export
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
             >
               {exportingDocx ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <FileDown size={14} aria-hidden="true" />} Exportar Word
+            </button>
+            <button
+              onClick={() => { onPng(); setOpen(false); }}
+              disabled={exportingPng}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
+            >
+              {exportingPng ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Image size={14} aria-hidden="true" />} Descargar imagen (PNG)
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
@@ -4321,6 +4329,44 @@ Máximo 4 resultados.`;
   };
 
   const [exportingDocx, setExportingDocx] = useState(false);
+  const [exportingPng, setExportingPng] = useState(false);
+
+  const ensureHtml2Canvas = () => {
+    if (window.html2canvas) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("No se pudo cargar el generador de imágenes."));
+      document.head.appendChild(script);
+    });
+  };
+
+  const handleExportPng = async () => {
+    setExportingPng(true);
+    try {
+      await ensureHtml2Canvas();
+      const node = previewRef.current?.querySelector(".print-page");
+      if (!node) throw new Error("No se encontró la vista previa del CV.");
+      const canvas = await window.html2canvas(node, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
+      const url = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${buildFileName()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo generar la imagen: " + e.message);
+    } finally {
+      setExportingPng(false);
+    }
+  };
 
   const ensureDocxLib = () => {
     if (window.docx) return Promise.resolve();
@@ -4769,9 +4815,11 @@ Máximo 4 resultados.`;
             onCompare={() => setMatchOpen(true)}
             onTexto={() => setPlainTextOpen(true)}
             onWord={handleExportDocx}
+            onPng={handleExportPng}
             onTour={() => setTourOpen(true)}
             onClear={clearForm}
             exportingDocx={exportingDocx}
+            exportingPng={exportingPng}
           />
           <button
             onClick={() => setTema((t) => (t === "oscuro" ? "claro" : "oscuro"))}

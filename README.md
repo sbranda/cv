@@ -389,3 +389,9 @@ Sigue en 7 pasos. Ahora también menciona: el botón de tamaño de letra de la i
 Encontré varios íconos decorativos de sesiones anteriores (menú ⋯, botones de agregar/borrar en Perfiles, etc.) sin marcar como puramente visuales — corregidos.
 
 **Nota de transparencia**: en el primer intento de corregirlos en bloque, cometí un error — el reemplazo automático también afectó por accidente a los componentes que arman el contenido real del CV (foto, experiencia, educación, habilidades) en las 28 plantillas, marcándolos como invisibles para lectores de pantalla. Esto era un problema serio: hubiera ocultado el currículum completo de las herramientas de accesibilidad, el efecto exactamente contrario al buscado. Lo detecté antes de entregarte los archivos, lo revertí, y lo corregí de nuevo de forma más precisa (limitado únicamente a los íconos reales, no a los componentes de contenido). Verificado con una revisión manual del código además de las pruebas automáticas.
+
+## Exportar como imagen (PNG)
+
+En el menú ⋯ hay una nueva opción: "Descargar imagen (PNG)". Convierte tu CV en una imagen de alta resolución (fondo blanco, doble resolución para que se vea nítida), lista para compartir directo por WhatsApp, redes sociales, o cualquier lugar donde la otra persona no tenga ganas de abrir un PDF. Usa el mismo nombre de archivo inteligente que PDF/Word/texto plano.
+
+Nota técnica: la primera vez que se usa, carga una librería externa (html2canvas) bajo demanda — puede tardar un segundo extra esa primera vez.
