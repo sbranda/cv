@@ -33,6 +33,8 @@ import {
   ArrowUp,
   HelpCircle,
   Flag,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -3908,6 +3910,8 @@ Texto del currículum:
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [tema, setTema] = useState("oscuro");
+
   const [tourOpen, setTourOpen] = useState(true);
 
   const addExperience = () => {
@@ -4324,7 +4328,7 @@ Descripción:
   const currentTemplateName = TEMPLATES.find((t) => t.id === data.template)?.name;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white">
+    <div className={(tema === "claro" ? "light-mode " : "") + "min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white"}>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-stone-950 focus:px-4 focus:py-2 focus:rounded-md focus:text-sm focus:font-medium no-print"
@@ -4373,6 +4377,30 @@ Descripción:
           outline: 2px solid ${accent};
           outline-offset: 2px;
         }
+        /* Modo claro del editor. En vez de reescribir cada elemento uno por uno,
+           anulamos las clases de color oscuro de Tailwind ya existentes dentro
+           del panel del editor, usando selectores de atributo (coinciden con la
+           clase exacta, no con substrings, para no afectar estados :hover). */
+        .light-mode .editor-panel { background: #ffffff; }
+        .light-mode .editor-panel [class~="text-white"],
+        .light-mode .editor-panel [class~="text-stone-100"] { color: #1c1917 !important; }
+        .light-mode .editor-panel [class~="text-stone-200"],
+        .light-mode .editor-panel [class~="text-stone-300"] { color: #292524 !important; }
+        .light-mode .editor-panel [class~="text-stone-400"] { color: #57534e !important; }
+        .light-mode .editor-panel [class~="text-stone-500"],
+        .light-mode .editor-panel [class~="text-stone-700"] { color: #78716c !important; }
+        .light-mode .editor-panel [class~="text-stone-600"] { color: #a8a29e !important; }
+        .light-mode .editor-panel [class~="bg-stone-700"] { background-color: #e7e5e4 !important; }
+        .light-mode .editor-panel [class~="bg-stone-800"],
+        .light-mode .editor-panel [class~="bg-stone-800/40"],
+        .light-mode .editor-panel [class~="bg-stone-800/50"],
+        .light-mode .editor-panel [class~="bg-stone-800/60"] { background-color: #f5f5f4 !important; }
+        .light-mode .editor-panel [class~="border-stone-700"] { border-color: #d6d3d1 !important; }
+        .light-mode .editor-panel [class~="border-stone-800"] { border-color: #e7e5e4 !important; }
+        .light-mode .editor-panel [class~="placeholder-stone-500"]::placeholder { color: #a8a29e !important; }
+        .light-mode .editor-panel [class~="hover:text-white"]:hover { color: #1c1917 !important; }
+        .light-mode .editor-panel [class~="hover:text-stone-300"]:hover { color: #44403c !important; }
+        .light-mode .editor-panel [class~="hover:border-stone-500"]:hover { border-color: #a8a29e !important; }
       `}</style>
 
       <OnboardingTour open={tourOpen} onClose={() => setTourOpen(false)} accent={accent} />
@@ -4552,6 +4580,14 @@ Descripción:
             onClear={clearForm}
             exportingDocx={exportingDocx}
           />
+          <button
+            onClick={() => setTema((t) => (t === "oscuro" ? "claro" : "oscuro"))}
+            title={tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            aria-label={tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            className="p-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            {tema === "oscuro" ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
+          </button>
           <button
             onClick={handlePrint}
             className="hidden lg:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"

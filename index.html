@@ -119,6 +119,8 @@ const Camera = (p) => <Icon {...p}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2
 const ArrowUp = (p) => <Icon {...p}><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></Icon>;
 const HelpCircle = (p) => <Icon {...p}><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></Icon>;
 const Flag = (p) => <Icon {...p}><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" /><line x1="4" y1="22" x2="4" y2="15" /></Icon>;
+const Sun = (p) => <Icon {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></Icon>;
+const Moon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
 const STORAGE_KEY = "cv-builder-profiles-v3";
@@ -4162,6 +4164,19 @@ Texto del currículum:
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [tema, setTema] = useState(() => {
+    try {
+      return localStorage.getItem("cv-builder-tema") || "oscuro";
+    } catch (e) {
+      return "oscuro";
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("cv-builder-tema", tema);
+    } catch (e) {}
+  }, [tema]);
+
   const [tourOpen, setTourOpen] = useState(() => {
     try {
       return !localStorage.getItem("cv-builder-tour-seen");
@@ -4603,7 +4618,7 @@ Descripción:
   const currentTemplateName = TEMPLATES.find((t) => t.id === data.template)?.name;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white">
+    <div className={(tema === "claro" ? "light-mode " : "") + "min-h-screen bg-stone-950 text-stone-100 font-sans pb-20 lg:pb-0 print:min-h-0 print:pb-0 print:bg-white"}>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-stone-950 focus:px-4 focus:py-2 focus:rounded-md focus:text-sm focus:font-medium no-print"
@@ -4648,6 +4663,30 @@ Descripción:
           outline: 2px solid ${accent};
           outline-offset: 2px;
         }
+        /* Modo claro del editor. En vez de reescribir cada elemento uno por uno,
+           anulamos las clases de color oscuro de Tailwind ya existentes dentro
+           del panel del editor, usando selectores de atributo (coinciden con la
+           clase exacta, no con substrings, para no afectar estados :hover). */
+        .light-mode .editor-panel { background: #ffffff; }
+        .light-mode .editor-panel [class~="text-white"],
+        .light-mode .editor-panel [class~="text-stone-100"] { color: #1c1917 !important; }
+        .light-mode .editor-panel [class~="text-stone-200"],
+        .light-mode .editor-panel [class~="text-stone-300"] { color: #292524 !important; }
+        .light-mode .editor-panel [class~="text-stone-400"] { color: #57534e !important; }
+        .light-mode .editor-panel [class~="text-stone-500"],
+        .light-mode .editor-panel [class~="text-stone-700"] { color: #78716c !important; }
+        .light-mode .editor-panel [class~="text-stone-600"] { color: #a8a29e !important; }
+        .light-mode .editor-panel [class~="bg-stone-700"] { background-color: #e7e5e4 !important; }
+        .light-mode .editor-panel [class~="bg-stone-800"],
+        .light-mode .editor-panel [class~="bg-stone-800/40"],
+        .light-mode .editor-panel [class~="bg-stone-800/50"],
+        .light-mode .editor-panel [class~="bg-stone-800/60"] { background-color: #f5f5f4 !important; }
+        .light-mode .editor-panel [class~="border-stone-700"] { border-color: #d6d3d1 !important; }
+        .light-mode .editor-panel [class~="border-stone-800"] { border-color: #e7e5e4 !important; }
+        .light-mode .editor-panel [class~="placeholder-stone-500"]::placeholder { color: #a8a29e !important; }
+        .light-mode .editor-panel [class~="hover:text-white"]:hover { color: #1c1917 !important; }
+        .light-mode .editor-panel [class~="hover:text-stone-300"]:hover { color: #44403c !important; }
+        .light-mode .editor-panel [class~="hover:border-stone-500"]:hover { border-color: #a8a29e !important; }
       `}</style>
 
       <OnboardingTour open={tourOpen} onClose={closeTour} accent={accent} />
@@ -4851,6 +4890,14 @@ Descripción:
             onClear={clearForm}
             exportingDocx={exportingDocx}
           />
+          <button
+            onClick={() => setTema((t) => (t === "oscuro" ? "claro" : "oscuro"))}
+            title={tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            aria-label={tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            className="p-2.5 rounded-md border border-stone-700 text-stone-200 hover:border-stone-500 transition"
+          >
+            {tema === "oscuro" ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
+          </button>
           <button
             onClick={handlePrint}
             className="hidden lg:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md text-stone-950 transition hover:opacity-90"

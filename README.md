@@ -307,3 +307,9 @@ Dentro de la galería de plantillas hay un nuevo botón "Comparar" (junto al tí
 ## Corrección: previsualizaciones angostas en "Comparar plantillas"
 
 El recorte que achica cada plantilla usaba un ancho de recuadro que no coincidía con el ancho real después de escalarla, así que se veía cortada/angosta. Corregido usando la misma técnica que ya funcionaba bien en las miniaturas de la galería — ahora se ve la plantilla completa, más ancha y clara.
+
+## Modo claro para el editor
+
+Nuevo botón ☀️/🌙 en el encabezado, junto al menú "Más". Cambia el panel del editor (formulario de la izquierda) a fondo blanco con texto oscuro, para quien prefiera trabajar así. La vista previa del CV, los modales y el resto de la app se mantienen igual — es específicamente para el panel de edición. Se guarda tu preferencia, así que la próxima vez que entres va a recordar cómo lo dejaste.
+
+Nota técnica: el modo claro funciona anulando las clases de color oscuro existentes en vez de reescribir cada elemento — cubre los casos más comunes (fondos, textos, bordes, campos de formulario) pero puede haber algún detalle chico sin cubrir perfectamente. Si notás algo que se ve raro en modo claro, contame qué elemento puntual y lo ajusto.
