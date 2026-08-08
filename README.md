@@ -401,3 +401,7 @@ Nota técnica: la primera vez que se usa, carga una librería externa (html2canv
 En la galería de plantillas, cada tarjeta tiene ahora una estrellita arriba a la derecha — tocala para marcar esa plantilla como favorita. Las que marques aparecen en una sección nueva "Favoritas" arriba de todo en la galería, antes de las categorías, para no tener que recorrer las 28 cada vez. En la PWA, tus favoritas quedan guardadas entre sesiones.
 
 De paso, corregí un bug chiquito que ya existía: el tilde que marca el perfil activo en el panel de Perfiles no estaba tomando el color de acento correctamente (un límite técnico del sistema de íconos que arreglé de raíz).
+
+## Aviso antes de cambiar a una plantilla que ocuparía más páginas
+
+Ahora, al tocar una plantilla en la galería (o aplicar una sugerencia de la IA), la app la mide en segundo plano antes de aplicarla. Si detecta que pasarías de, por ejemplo, 1 a 2 páginas, te avisa con un mensaje de confirmación antes de aplicarla — podés cancelar y seguir viendo otras opciones, o confirmar si te da igual. Antes te enterabas recién después de haber cambiado, con el aviso amarillo de siempre.

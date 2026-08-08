@@ -917,7 +917,7 @@ function CompareTemplatesModal({ open, onClose, data, accent, currentTemplate, o
   );
 }
 
-function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCompare, apiKey, onMissingApiKey }) {
+function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCompare, apiKey, onMissingApiKey, currentPageCount }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   const [jobInput, setJobInput] = useState("");
   const [suggesting, setSuggesting] = useState(false);
@@ -942,6 +942,37 @@ function TemplateGallery({ open, onClose, current, accent, data, onSelect, onCom
       setSuggestion(null);
     }
   }, [open]);
+
+  // Antes de aplicar una plantilla, la medimos en un contenedor oculto para
+  // avisar si haría que el CV pase a ocupar más páginas de las que ocupa hoy.
+  const [pendingTemplate, setPendingTemplate] = useState(null);
+  const measureRef = useRef(null);
+  useEffect(() => {
+    if (!pendingTemplate) return;
+    const raf = requestAnimationFrame(() => {
+      const node = measureRef.current?.querySelector(".print-page");
+      let estimatedPages = 1;
+      if (node) {
+        const height = node.getBoundingClientRect().height;
+        const corrected = height * 0.755;
+        estimatedPages = Math.max(1, Math.ceil(corrected / 1123));
+      }
+      const templateId = pendingTemplate;
+      setPendingTemplate(null);
+      if (currentPageCount && estimatedPages > currentPageCount) {
+        const ok = window.confirm(
+          `Con esta plantilla tu CV pasaría de ${currentPageCount} a ${estimatedPages} página(s) aproximadamente (estimado). ¿Querés aplicarla igual?`
+        );
+        if (!ok) return;
+      }
+      onSelect(templateId);
+      onClose();
+    });
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingTemplate]);
+  const PendingComponent = pendingTemplate ? TEMPLATE_COMPONENTS[pendingTemplate] : null;
+
   if (!open) return null;
 
   const suggestTemplate = async () => {
@@ -983,15 +1014,11 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
         key={t.id}
         role="button"
         tabIndex={0}
-        onClick={() => {
-          onSelect(t.id);
-          onClose();
-        }}
+        onClick={() => setPendingTemplate(t.id)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            onSelect(t.id);
-            onClose();
+            setPendingTemplate(t.id);
           }
         }}
         aria-label={`Usar plantilla ${t.name}`}
@@ -1101,10 +1128,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
                 <span className="text-stone-400">{suggestion.razon}</span>
               </p>
               <button
-                onClick={() => {
-                  onSelect(suggestion.template);
-                  onClose();
-                }}
+                onClick={() => setPendingTemplate(suggestion.template)}
                 className="mt-2 text-[11px] font-mono uppercase tracking-wider hover:opacity-80 transition"
                 style={{ color: accent }}
               >
@@ -1138,6 +1162,15 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
           );
         })}
       </div>
+      {pendingTemplate && (
+        <div
+          ref={measureRef}
+          aria-hidden="true"
+          style={{ position: "fixed", top: -99999, left: -99999, width: 600, pointerEvents: "none" }}
+        >
+          {PendingComponent && <PendingComponent data={data} accent={accent} />}
+        </div>
+      )}
     </div>
   );
 }
@@ -5027,6 +5060,7 @@ Máximo 4 resultados.`;
         }}
         apiKey={apiKey}
         onMissingApiKey={() => setSettingsOpen(true)}
+        currentPageCount={pageCount}
       />
 
       <CompareTemplatesModal
