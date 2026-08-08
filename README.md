@@ -445,3 +445,7 @@ En el menú ⋯ hay una nueva opción: "Puntos de control". Le ponés un nombre 
 Es un complemento a deshacer/rehacer (que es automático pero temporal) — los puntos de control son manuales, con nombre, y quedan guardados junto con el perfil de forma permanente.
 
 ¡Llegamos a la versión 100 del service worker! 🎉
+
+## Estimación de tiempo de lectura
+
+Junto al reordenamiento de secciones (en "Apariencia"), hay un nuevo botón "⏱ Estimar tiempo de lectura". La IA calcula cuánto tardaría alguien en leer tu CV completo, y —más importante— qué es lo primero que vería un reclutador en los famosos 6-7 segundos que le suele dedicar a la primera pasada, con el orden de secciones que tenés actualmente. Si ese primer vistazo no muestra lo más relevante, te da una sugerencia puntual de qué reforzar o reordenar; si ya está bien priorizado, te lo confirma.

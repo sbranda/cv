@@ -4540,6 +4540,56 @@ Máximo 4 resultados.`;
     }
   };
 
+  const [readingTimeLoading, setReadingTimeLoading] = useState(false);
+  const [readingTimeResult, setReadingTimeResult] = useState(null);
+
+  const estimateReadingTime = async () => {
+    if (!hasMeaningfulContent) return;
+    setReadingTimeLoading(true);
+    try {
+      const orderedSections = (data.ordenSecciones || DEFAULT_SECTION_ORDER)
+        .map((key) => {
+          if (key === "resumen" && data.resumen) return `RESUMEN: ${data.resumen}`;
+          if (key === "experiencia" && data.experiencia.some((e) => e.puesto || e.empresa)) {
+            return "EXPERIENCIA: " + data.experiencia
+              .filter((e) => e.puesto || e.empresa)
+              .map((e) => `${e.puesto} en ${e.empresa} — ${e.descripcion || ""}`)
+              .join(" | ");
+          }
+          if (key === "educacion" && data.educacion.some((e) => e.titulo)) {
+            return "EDUCACIÓN: " + data.educacion.filter((e) => e.titulo).map((e) => e.titulo).join(", ");
+          }
+          if (key === "habilidades" && data.habilidades) return `HABILIDADES: ${data.habilidades}`;
+          return null;
+        })
+        .filter(Boolean)
+        .join("\n\n");
+
+      const prompt = `Un reclutador suele dedicar solo 6 a 7 segundos a la primera pasada de un CV antes de decidir si sigue leyendo. Este es un CV con sus secciones en el orden actual en que aparecen (de arriba hacia abajo):
+
+Encabezado: ${data.nombre || "(sin nombre)"} — ${data.puesto || "(sin puesto)"}
+
+${orderedSections}
+
+Analizá:
+1. Cuánto tardaría alguien en LEER el CV completo a un ritmo normal (no skim), en segundos, según la cantidad de texto.
+2. Qué es lo primero que un reclutador vería en esos 6-7 segundos iniciales con el orden actual (encabezado + lo que sigue).
+3. Si ese primer vistazo no muestra lo más relevante para causar una buena impresión, una sugerencia puntual y breve de qué reordenar o reforzar. Si ya está bien priorizado, decilo también.
+
+Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
+{"segundosLectura": <número entero>, "primerVistazo": "descripción breve de qué ve el reclutador en los primeros 6-7 segundos", "sugerencia": "sugerencia puntual, o un mensaje breve confirmando que ya está bien priorizado"}`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setReadingTimeResult(parsed);
+    } catch (e) {
+      console.error(e);
+      setReadingTimeResult(null);
+    } finally {
+      setReadingTimeLoading(false);
+    }
+  };
+
   const improveSkills = async () => {
     if (!data.habilidades.trim()) return;
     setLoadingField("habilidades");
@@ -5364,6 +5414,38 @@ Máximo 4 resultados.`;
                 Ventas/Marketing, Simetría, Prensa y Panel — su diseño en columnas o su secuencia
                 académica/de métricas depende de un orden fijo.
               </p>
+              <button
+                onClick={estimateReadingTime}
+                disabled={readingTimeLoading || !hasMeaningfulContent}
+                className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1 mt-3"
+              >
+                {readingTimeLoading ? (
+                  <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <Clock size={11} aria-hidden="true" />
+                )}
+                Estimar tiempo de lectura
+              </button>
+              {readingTimeResult && (
+                <div className="mt-2 p-2.5 rounded-md bg-stone-800/50 border border-stone-700">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <p className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400">
+                      ⏱ {readingTimeResult.segundosLectura}s de lectura completa
+                    </p>
+                    <button
+                      onClick={() => setReadingTimeResult(null)}
+                      className="text-stone-600 hover:text-white transition"
+                      aria-label="Cerrar estimación de lectura"
+                    >
+                      <X size={12} aria-hidden="true" />
+                    </button>
+                  </div>
+                  <p className="text-[11.5px] text-stone-300 mb-1.5">
+                    <span className="text-stone-400">Primeros 6-7 segundos:</span> {readingTimeResult.primerVistazo}
+                  </p>
+                  <p className="text-[11.5px] text-emerald-400">{readingTimeResult.sugerencia}</p>
+                </div>
+              )}
             </Field>
           </section>
 
