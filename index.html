@@ -4551,6 +4551,25 @@ Texto del currículum:
     } catch (e) {}
   }, [tema]);
 
+  const [customColors, setCustomColors] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("cv-builder-custom-colors") || "[]");
+    } catch (e) {
+      return [];
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("cv-builder-custom-colors", JSON.stringify(customColors));
+    } catch (e) {}
+  }, [customColors]);
+  const saveCustomColor = (color) => {
+    setCustomColors((prev) => (prev.includes(color) ? prev : [...prev, color].slice(-8)));
+  };
+  const removeCustomColor = (color) => {
+    setCustomColors((prev) => prev.filter((c) => c !== color));
+  };
+
   const FONT_SCALES = { pequeño: 0.9, normal: 1, grande: 1.15 };
   const [fontSize, setFontSize] = useState(() => {
     try {
@@ -5369,6 +5388,30 @@ Máximo 4 resultados.`;
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
             </label>
+            <button
+              onClick={() => saveCustomColor(data.accent)}
+              title="Guardar este color en tu paleta"
+              aria-label="Guardar este color en tu paleta"
+              className="w-5 h-5 rounded-full border-2 border-dashed border-stone-600 hover:border-stone-400 flex items-center justify-center text-stone-400 hover:text-white transition shrink-0"
+            >
+              <Plus size={11} aria-hidden="true" />
+            </button>
+            {customColors.length > 0 && (
+              <div className="flex items-center gap-1.5 pl-1.5 ml-0.5 border-l border-stone-700">
+                {customColors.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => {
+                      if (data.accent === c) removeCustomColor(c);
+                      else update({ accent: c });
+                    }}
+                    title={data.accent === c ? "Tocá de nuevo para quitarlo de tu paleta" : "Tu color guardado"}
+                    className="w-5 h-5 rounded-full border-2 transition"
+                    style={{ background: c, borderColor: data.accent === c ? "white" : "transparent" }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <MoreMenu
             onCarta={() => setCartaOpen(true)}

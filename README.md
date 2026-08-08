@@ -431,3 +431,9 @@ Corregido: ese respaldo con `index.html` ahora solo se usa para abrir la app sin
 Arriba de todo en el formulario (antes de "Apariencia") hay una barra nueva que muestra qué tan completo está tu CV, en porcentaje. Se calcula sumando puntos por cada dato clave que tengas cargado (nombre, contacto, foto, resumen con contenido real, al menos una experiencia con descripción, educación, habilidades) — la experiencia y el resumen pesan más que los datos de contacto, ya que son lo que más mira un reclutador.
 
 Debajo de la barra aparece la sugerencia más importante de lo que falta ("Para mejorar: Agregá al menos una experiencia laboral con descripción"), con un contador si hay más de una pendiente. Se actualiza solo a medida que vas completando el formulario.
+
+## Paleta de colores personalizada
+
+Junto a los 4 colores predefinidos y la rueda de colores libre, ahora hay un círculo punteado con un "+" — tocalo para guardar el color que tengas elegido en ese momento en tu paleta personal. Los colores guardados aparecen como puntos extra al lado, separados por una línea, listos para reutilizar sin tener que volver a elegir el tono con la rueda cada vez.
+
+Para quitar un color guardado: tocalo mientras ya está seleccionado (el que tiene el borde blanco) — un segundo toque lo saca de la paleta. Guarda hasta 8 colores, y en la PWA quedan guardados entre sesiones.
