@@ -379,3 +379,7 @@ Debajo de los chips de secciones opcionales (Proyectos, Publicaciones, etc.) hay
 Cambié los 41+ textos grises del panel del editor (etiquetas, chips, textos de ayuda, texto tipeado en los campos) a blanco. La única excepción a propósito: el texto de ejemplo (placeholder) de los campos vacíos se mantiene gris — si también fuera blanco, sería indistinguible de contenido real ya cargado.
 
 Nota: en modo claro (☀️), este blanco se sigue convirtiendo automáticamente a texto oscuro gracias a la regla que ya tenía armada, así que ese modo sigue funcionando bien sin tocar nada más.
+
+## Tutorial actualizado (cuarta vez)
+
+Sigue en 7 pasos. Ahora también menciona: el botón de tamaño de letra de la interfaz, y la guía sobre datos personales sensibles (edad, discapacidad, etc.). Andá a ⋯ → Ver tutorial para verlo actualizado.

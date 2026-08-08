@@ -488,11 +488,11 @@ const TOUR_STEPS = [
   },
   {
     title: "Personalizá el estilo",
-    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓. El botón ☀️/🌙 del encabezado cambia el editor a modo claro si preferís fondo blanco.",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores), tipografía y densidad de texto en la sección \"Apariencia\" — ahí también podés reordenar las secciones del CV arrastrándolas o con las flechas ↑↓. Los botones ☀️/🌙 y \"A\" del encabezado cambian el editor a modo claro y ajustan el tamaño de letra de la interfaz, si preferís algo distinto.",
   },
   {
     title: "Mejorá tu texto con IA",
-    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones. El botón 🏳 \"Verbos débiles\" te marca frases genéricas con sugerencias más fuertes, y \"Revisar brechas\" te avisa si hay huecos sin explicar entre tus experiencias — ninguno reescribe nada por vos, solo te avisan.",
+    body: "El botón ✨ \"Mejorar con IA\" reescribe tu resumen y descripciones. El botón 🏳 \"Verbos débiles\" te marca frases genéricas con sugerencias más fuertes, y \"Revisar brechas\" te avisa si hay huecos sin explicar entre tus experiencias — ninguno reescribe nada por vos, solo te avisan. Más abajo también hay una guía sobre si conviene incluir edad, discapacidad u otros datos personales.",
   },
   {
     title: "Organizá varios perfiles",
