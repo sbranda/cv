@@ -437,3 +437,11 @@ Debajo de la barra aparece la sugerencia más importante de lo que falta ("Para 
 Junto a los 4 colores predefinidos y la rueda de colores libre, ahora hay un círculo punteado con un "+" — tocalo para guardar el color que tengas elegido en ese momento en tu paleta personal. Los colores guardados aparecen como puntos extra al lado, separados por una línea, listos para reutilizar sin tener que volver a elegir el tono con la rueda cada vez.
 
 Para quitar un color guardado: tocalo mientras ya está seleccionado (el que tiene el borde blanco) — un segundo toque lo saca de la paleta. Guarda hasta 8 colores, y en la PWA quedan guardados entre sesiones.
+
+## Puntos de control (historial con nombre)
+
+En el menú ⋯ hay una nueva opción: "Puntos de control". Le ponés un nombre propio (por ejemplo "Versión para bancos") y guarda una foto completa del estado actual del perfil — sin crear un perfil nuevo ni duplicar nada. Podés guardar tantos puntos como quieras, y después restaurar cualquiera (con confirmación previa, y siempre podés deshacerlo con ↶ si te arrepentís) o eliminarlo.
+
+Es un complemento a deshacer/rehacer (que es automático pero temporal) — los puntos de control son manuales, con nombre, y quedan guardados junto con el perfil de forma permanente.
+
+¡Llegamos a la versión 100 del service worker! 🎉

@@ -127,6 +127,8 @@ const Image = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2
 const Star = (p) => <Icon {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></Icon>;
 const Clock = (p) => <Icon {...p}><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></Icon>;
 const WifiOff = (p) => <Icon {...p}><line x1="2" y1="2" x2="22" y2="22" /><path d="M8.5 16.5a5 5 0 0 1 7 0" /><path d="M2 8.82a15 15 0 0 1 4.17-2.65" /><path d="M10.66 5.05A16 16 0 0 1 22 8.82" /><path d="M16.85 11.25a10 10 0 0 1 2.22 1.68" /><path d="M5 12.86a10 10 0 0 1 5.17-2.69" /><line x1="12" y1="20" x2="12.01" y2="20" /></Icon>;
+const Save = (p) => <Icon {...p}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></Icon>;
+const RotateCcw = (p) => <Icon {...p}><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" /><path d="M3 3v5h5" /></Icon>;
 const RefreshCw = (p) => <Icon {...p}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></Icon>;
 
 /* ---------- persistence (localStorage works here, unlike the in-chat artifact preview) ---------- */
@@ -1470,6 +1472,97 @@ function PlainTextModal({ open, onClose, text, accent, fileName }) {
   );
 }
 
+function CheckpointsModal({ open, onClose, checkpoints, accent, onSave, onRestore, onDelete }) {
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  const [nameInput, setNameInput] = useState("");
+  if (!open) return null;
+  const doSave = () => {
+    if (!nameInput.trim()) return;
+    onSave(nameInput.trim());
+    setNameInput("");
+  };
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-display text-xl">Puntos de control</h2>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Guardá una foto del estado actual de este perfil con un nombre propio (por ejemplo "Versión para
+          bancos"), para volver a ella más adelante sin duplicar todo el perfil.
+        </p>
+        <div className="flex gap-2 mb-4">
+          <input
+            spellCheck="true"
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && doSave()}
+            placeholder="Ej: Versión para bancos"
+            aria-label="Nombre del punto de control"
+            className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
+          />
+          <button
+            onClick={doSave}
+            disabled={!nameInput.trim()}
+            className="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-md text-stone-950 hover:opacity-90 transition disabled:opacity-40"
+            style={{ background: accent }}
+          >
+            <Save size={14} aria-hidden="true" /> Guardar
+          </button>
+        </div>
+        {(!checkpoints || checkpoints.length === 0) ? (
+          <p className="text-[13px] text-stone-500">
+            Todavía no guardaste ningún punto de control para este perfil.
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {checkpoints.slice().reverse().map((cp) => (
+              <li
+                key={cp.id}
+                className="flex items-center justify-between gap-2 p-2.5 rounded-md bg-stone-800/40 border border-stone-700"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">{cp.nombre}</p>
+                  <p className="text-[11px] text-stone-500">
+                    {new Date(cp.createdAt).toLocaleString("es-AR", {
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => onRestore(cp.id)}
+                    title="Restaurar"
+                    aria-label={`Restaurar ${cp.nombre}`}
+                    className="p-1.5 rounded text-stone-400 hover:text-white hover:bg-stone-700 transition"
+                  >
+                    <RotateCcw size={14} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(cp.id)}
+                    title="Eliminar"
+                    aria-label={`Eliminar ${cp.nombre}`}
+                    className="p-1.5 rounded text-stone-400 hover:text-red-400 hover:bg-stone-700 transition"
+                  >
+                    <Trash2 size={14} aria-hidden="true" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
@@ -1573,7 +1666,7 @@ function PersonalDataTipsModal({ open, onClose, accent }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onTour, onClear, exportingDocx, exportingPng }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, onTour, onClear, exportingDocx, exportingPng }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -1622,6 +1715,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onTour, onClear,
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
             >
               {exportingPng ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Image size={14} aria-hidden="true" />} Descargar imagen (PNG)
+            </button>
+            <div className="my-1 border-t border-stone-800" />
+            <button
+              onClick={() => { onCheckpoints(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <Save size={14} aria-hidden="true" /> Puntos de control
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
@@ -4062,6 +4162,39 @@ JSON original:
     setData({ ...initialState });
   };
 
+  const [checkpointsOpen, setCheckpointsOpen] = useState(false);
+  const saveCheckpoint = (nombre) => {
+    const checkpoint = {
+      id: crypto.randomUUID(),
+      nombre,
+      data: JSON.parse(JSON.stringify(data)),
+      createdAt: Date.now(),
+    };
+    setProfiles((prev) =>
+      prev.map((p) =>
+        p.id === activeProfile.id ? { ...p, checkpoints: [...(p.checkpoints || []), checkpoint] } : p
+      )
+    );
+  };
+  const restoreCheckpoint = (id) => {
+    const cp = (activeProfile.checkpoints || []).find((c) => c.id === id);
+    if (!cp) return;
+    const ok = window.confirm(
+      `¿Restaurar "${cp.nombre}"? Esto reemplaza el contenido actual del perfil por el de ese punto de control. Podés deshacerlo con ↶ si te arrepentís.`
+    );
+    if (!ok) return;
+    setData(JSON.parse(JSON.stringify(cp.data)));
+  };
+  const deleteCheckpoint = (id) => {
+    setProfiles((prev) =>
+      prev.map((p) =>
+        p.id === activeProfile.id
+          ? { ...p, checkpoints: (p.checkpoints || []).filter((c) => c.id !== id) }
+          : p
+      )
+    );
+  };
+
   const exportBackup = () => {
     const payload = { profiles, activeProfileId, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -5262,6 +5395,16 @@ Máximo 4 resultados.`;
         pageCount={pageCount}
       />
 
+      <CheckpointsModal
+        open={checkpointsOpen}
+        onClose={() => setCheckpointsOpen(false)}
+        checkpoints={activeProfile.checkpoints}
+        accent={accent}
+        onSave={saveCheckpoint}
+        onRestore={restoreCheckpoint}
+        onDelete={deleteCheckpoint}
+      />
+
       <PersonalDataTipsModal
         open={personalTipsOpen}
         onClose={() => setPersonalTipsOpen(false)}
@@ -5419,6 +5562,7 @@ Máximo 4 resultados.`;
             onTexto={() => setPlainTextOpen(true)}
             onWord={handleExportDocx}
             onPng={handleExportPng}
+            onCheckpoints={() => setCheckpointsOpen(true)}
             onTour={() => setTourOpen(true)}
             onClear={clearForm}
             exportingDocx={exportingDocx}

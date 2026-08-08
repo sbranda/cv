@@ -41,6 +41,8 @@ import {
   Star,
   Clock,
   WifiOff,
+  Save,
+  RotateCcw,
 } from "lucide-react";
 
 const ACCENTS = [
@@ -1237,6 +1239,97 @@ function PlainTextModal({ open, onClose, text, accent, fileName }) {
   );
 }
 
+function CheckpointsModal({ open, onClose, checkpoints, accent, onSave, onRestore, onDelete }) {
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  const [nameInput, setNameInput] = useState("");
+  if (!open) return null;
+  const doSave = () => {
+    if (!nameInput.trim()) return;
+    onSave(nameInput.trim());
+    setNameInput("");
+  };
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-display text-xl">Puntos de control</h2>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
+          Guardá una foto del estado actual de este perfil con un nombre propio (por ejemplo "Versión para
+          bancos"), para volver a ella más adelante sin duplicar todo el perfil.
+        </p>
+        <div className="flex gap-2 mb-4">
+          <input
+            spellCheck="true"
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && doSave()}
+            placeholder="Ej: Versión para bancos"
+            aria-label="Nombre del punto de control"
+            className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
+          />
+          <button
+            onClick={doSave}
+            disabled={!nameInput.trim()}
+            className="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-md text-stone-950 hover:opacity-90 transition disabled:opacity-40"
+            style={{ background: accent }}
+          >
+            <Save size={14} aria-hidden="true" /> Guardar
+          </button>
+        </div>
+        {(!checkpoints || checkpoints.length === 0) ? (
+          <p className="text-[13px] text-stone-500">
+            Todavía no guardaste ningún punto de control para este perfil.
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {checkpoints.slice().reverse().map((cp) => (
+              <li
+                key={cp.id}
+                className="flex items-center justify-between gap-2 p-2.5 rounded-md bg-stone-800/40 border border-stone-700"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">{cp.nombre}</p>
+                  <p className="text-[11px] text-stone-500">
+                    {new Date(cp.createdAt).toLocaleString("es-AR", {
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => onRestore(cp.id)}
+                    title="Restaurar"
+                    aria-label={`Restaurar ${cp.nombre}`}
+                    className="p-1.5 rounded text-stone-400 hover:text-white hover:bg-stone-700 transition"
+                  >
+                    <RotateCcw size={14} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(cp.id)}
+                    title="Eliminar"
+                    aria-label={`Eliminar ${cp.nombre}`}
+                    className="p-1.5 rounded text-stone-400 hover:text-red-400 hover:bg-stone-700 transition"
+                  >
+                    <Trash2 size={14} aria-hidden="true" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ShortenTipsModal({ open, onClose, tips, accent, pageCount }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
@@ -1340,7 +1433,7 @@ function PersonalDataTipsModal({ open, onClose, accent }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onTour, onClear, exportingDocx, exportingPng }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, onTour, onClear, exportingDocx, exportingPng }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -1389,6 +1482,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onTour, onClear,
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
             >
               {exportingPng ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Image size={14} aria-hidden="true" />} Descargar imagen (PNG)
+            </button>
+            <div className="my-1 border-t border-stone-800" />
+            <button
+              onClick={() => { onCheckpoints(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+            >
+              <Save size={14} aria-hidden="true" /> Puntos de control
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
@@ -3822,6 +3922,39 @@ JSON original:
     setData({ ...initialState });
   };
 
+  const [checkpointsOpen, setCheckpointsOpen] = useState(false);
+  const saveCheckpoint = (nombre) => {
+    const checkpoint = {
+      id: crypto.randomUUID(),
+      nombre,
+      data: JSON.parse(JSON.stringify(data)),
+      createdAt: Date.now(),
+    };
+    setProfiles((prev) =>
+      prev.map((p) =>
+        p.id === activeProfile.id ? { ...p, checkpoints: [...(p.checkpoints || []), checkpoint] } : p
+      )
+    );
+  };
+  const restoreCheckpoint = (id) => {
+    const cp = (activeProfile.checkpoints || []).find((c) => c.id === id);
+    if (!cp) return;
+    const ok = window.confirm(
+      `¿Restaurar "${cp.nombre}"? Esto reemplaza el contenido actual del perfil por el de ese punto de control. Podés deshacerlo con ↶ si te arrepentís.`
+    );
+    if (!ok) return;
+    setData(JSON.parse(JSON.stringify(cp.data)));
+  };
+  const deleteCheckpoint = (id) => {
+    setProfiles((prev) =>
+      prev.map((p) =>
+        p.id === activeProfile.id
+          ? { ...p, checkpoints: (p.checkpoints || []).filter((c) => c.id !== id) }
+          : p
+      )
+    );
+  };
+
   const exportBackup = () => {
     const payload = { profiles, activeProfileId, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -4918,6 +5051,16 @@ Máximo 4 resultados.`;
         pageCount={pageCount}
       />
 
+      <CheckpointsModal
+        open={checkpointsOpen}
+        onClose={() => setCheckpointsOpen(false)}
+        checkpoints={activeProfile.checkpoints}
+        accent={accent}
+        onSave={saveCheckpoint}
+        onRestore={restoreCheckpoint}
+        onDelete={deleteCheckpoint}
+      />
+
       <PersonalDataTipsModal
         open={personalTipsOpen}
         onClose={() => setPersonalTipsOpen(false)}
@@ -5060,6 +5203,7 @@ Máximo 4 resultados.`;
             onTexto={() => setPlainTextOpen(true)}
             onWord={handleExportDocx}
             onPng={handleExportPng}
+            onCheckpoints={() => setCheckpointsOpen(true)}
             onTour={() => setTourOpen(true)}
             onClear={clearForm}
             exportingDocx={exportingDocx}
