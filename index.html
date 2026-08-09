@@ -193,13 +193,14 @@ const TYPO_PRESETS = {
   elegante: { name: "Elegante", display: "'Playfair Display', serif", body: "'Lato', sans-serif" },
 };
 
-const DENSITY_SCALE = { textoCompacto: 0.8, compacta: 0.9, normal: 1, amplia: 1.1 };
-const DENSITY_OPTIONS = [
-  { id: "textoCompacto", name: "Muy compacta" },
-  { id: "compacta", name: "Compacta" },
-  { id: "normal", name: "Normal" },
-  { id: "amplia", name: "Amplia" },
-];
+// DENSITY_LEGACY_SCALE queda solo para convertir perfiles guardados con el
+// sistema viejo de 4 botones fijos (textoCompacto/compacta/normal/amplia) al
+// nuevo control deslizante, que guarda un número (70-130) directamente.
+const DENSITY_LEGACY_SCALE = { textoCompacto: 80, compacta: 90, normal: 100, amplia: 110 };
+const getDensityValue = (densidad) => {
+  if (typeof densidad === "number") return densidad;
+  return DENSITY_LEGACY_SCALE[densidad] ?? 100;
+};
 
 const CATEGORIES = [
   { id: "formal", name: "Formal" },
@@ -495,7 +496,7 @@ const initialState = {
   foto: null,
   fotoEscala: 1,
   tipografia: "clasica",
-  densidad: "normal",
+  densidad: 100,
   ordenSecciones: ["resumen", "experiencia", "educacion", "habilidades"],
   experiencia: [emptyExperience()],
   educacion: [emptyEducation()],
@@ -5191,8 +5192,8 @@ JSON original:
     if (habilidadesCount > 14) {
       tips.push(`Tenés ${habilidadesCount} habilidades listadas — priorizá 8 a 10, las más relacionadas con el puesto.`);
     }
-    if (data.densidad === "amplia") {
-      tips.push(`Cambiá el tamaño de texto a "Compacta" en Apariencia para ganar espacio sin borrar contenido.`);
+    if (getDensityValue(data.densidad) > 105) {
+      tips.push(`Bajá la densidad de texto en Apariencia (tenés ${getDensityValue(data.densidad)}%) para ganar espacio sin borrar contenido.`);
     }
     if (data.fotoEscala > 1.15) {
       tips.push(`Achicá un poco el tamaño de la foto en el editor.`);
@@ -6608,21 +6609,32 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
               </div>
             </Field>
             <Field label="Densidad de texto">
-              <div className="flex gap-2">
-                {DENSITY_OPTIONS.map((d) => (
-                  <button
-                    key={d.id}
-                    onClick={() => update({ densidad: d.id })}
-                    className="flex-1 text-[11px] px-2 py-2 rounded-md border transition"
-                    style={{
-                      borderColor: data.densidad === d.id ? accent : "#44403c",
-                      background: data.densidad === d.id ? `${accent}22` : "transparent",
-                      color: data.densidad === d.id ? accent : "#a8a29e",
-                    }}
-                  >
-                    {d.name}
-                  </button>
-                ))}
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min={70}
+                  max={130}
+                  step={1}
+                  value={getDensityValue(data.densidad)}
+                  onChange={(e) => update({ densidad: Number(e.target.value) })}
+                  className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, ${accent} 0%, ${accent} ${((getDensityValue(data.densidad) - 70) / 60) * 100}%, #44403c ${((getDensityValue(data.densidad) - 70) / 60) * 100}%, #44403c 100%)`,
+                  }}
+                  aria-label="Densidad de texto"
+                  aria-valuetext={`${getDensityValue(data.densidad)}%`}
+                />
+                <span className="text-[11px] font-mono text-white w-9 text-right shrink-0">
+                  {getDensityValue(data.densidad)}%
+                </span>
+              </div>
+              <div className="flex justify-between mt-1">
+                <button
+                  onClick={() => update({ densidad: 100 })}
+                  className="text-[10px] text-white hover:text-white transition"
+                >
+                  ↺ Restablecer a 100%
+                </button>
               </div>
             </Field>
             <Field label="Orden de las secciones">
@@ -7418,14 +7430,14 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
           <div
             ref={previewRef}
             className="w-full flex justify-center"
-            style={{ zoom: DENSITY_SCALE[data.densidad] }}
+            style={{ zoom: (getDensityValue(data.densidad) / 100) }}
           >
             <div className="relative w-full max-w-[600px]">
               <PreviewComponent data={data} accent={accent} />
               {pageCount > 1 && (
                 <div
                   className="absolute left-0 right-0 pointer-events-none no-print"
-                  style={{ top: PAGE_HEIGHT_PX / PRINT_WIDTH_CORRECTION / DENSITY_SCALE[data.densidad] }}
+                  style={{ top: PAGE_HEIGHT_PX / PRINT_WIDTH_CORRECTION / (getDensityValue(data.densidad) / 100) }}
                   aria-hidden="true"
                 >
                   <div className="border-t-2 border-dashed" style={{ borderColor: "#f59e0b" }} />

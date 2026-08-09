@@ -520,3 +520,9 @@ Revisé lo agregado desde la pasada anterior (Idiomas con barra de nivel) y corr
 En "Apariencia" → "Densidad de texto" hay una cuarta opción nueva, más chica que "Compacta". Como el mecanismo de densidad ya se aplica a las 37 plantillas de una sola vez (no es algo que haya que agregar plantilla por plantilla), esta opción funciona en todas de entrada.
 
 Usala cuando veas en la vista previa que algún texto se desborda o se ve apretado — probá tocar "Muy compacta" y revisá si eso resuelve el problema puntual que estés viendo. Es una solución manual (la elegís vos cuando hace falta), no automática.
+
+## Densidad de texto: ahora con control deslizante exacto
+
+Reemplacé los 4 botones fijos (Muy compacta/Compacta/Normal/Amplia) por un **control deslizante** en "Apariencia" — elegís cualquier porcentaje entre 70% y 130%, no solo esos 4 valores. Un botón "↺ Restablecer a 100%" vuelve al tamaño normal en un toque.
+
+Si tenías un perfil guardado con una de las 4 opciones viejas, se sigue viendo exactamente igual — la app las convierte automáticamente al porcentaje equivalente (Muy compacta=80%, Compacta=90%, Normal=100%, Amplia=110%) la primera vez que abrís ese perfil.
