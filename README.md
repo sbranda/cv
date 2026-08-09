@@ -526,3 +526,9 @@ Usala cuando veas en la vista previa que algún texto se desborda o se ve apreta
 Reemplacé los 4 botones fijos (Muy compacta/Compacta/Normal/Amplia) por un **control deslizante** en "Apariencia" — elegís cualquier porcentaje entre 70% y 130%, no solo esos 4 valores. Un botón "↺ Restablecer a 100%" vuelve al tamaño normal en un toque.
 
 Si tenías un perfil guardado con una de las 4 opciones viejas, se sigue viendo exactamente igual — la app las convierte automáticamente al porcentaje equivalente (Muy compacta=80%, Compacta=90%, Normal=100%, Amplia=110%) la primera vez que abrís ese perfil.
+
+## Habilidades: texto completo en un solo recuadro, sin separar en tarjetitas
+
+Cambié el componente compartido que usan varias plantillas para mostrar "Habilidades" — antes separaba el texto por comas/saltos de línea en tarjetitas individuales, ahora muestra el texto completo tal cual lo escribiste, dentro de un único recuadro con el fondo de color de acento (igual que antes, pero sin cortar el texto en piezas sueltas).
+
+Afecta a las plantillas que usan el componente `SkillChips` (varias, ya que es compartido) — no toqué las plantillas que ya mostraban las habilidades como lista con viñetas o como texto simple, esas seguían funcionando bien.

@@ -1996,20 +1996,12 @@ function ContactLine({ data, className, iconSize = 11 }) {
 
 function SkillChips({ data, accent }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {data.habilidades.split(/[,\n]/).map(
-        (h, i) =>
-          h.trim() && (
-            <span
-              key={i}
-              className="text-[11px] px-2 py-1 rounded-sm break-words max-w-full"
-              style={{ background: `${accent}18`, color: accent }}
-            >
-              {h.trim()}
-            </span>
-          )
-      )}
-    </div>
+    <p
+      className="text-[11.5px] leading-relaxed px-2.5 py-1.5 rounded-sm break-words whitespace-pre-line"
+      style={{ background: `${accent}18`, color: accent }}
+    >
+      {data.habilidades}
+    </p>
   );
 }
 
