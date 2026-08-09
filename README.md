@@ -514,3 +514,9 @@ Revisé lo agregado desde la pasada anterior (Idiomas con barra de nivel) y corr
 
 - Las **barras de nivel de idiomas** ahora están marcadas como decorativas para lectores de pantalla — a diferencia del medidor de completitud (donde el número solo existía en la barra), acá el nombre del idioma y el nivel ya se leen como texto normal al lado, así que la barra sería una repetición innecesaria si un lector de pantalla también la anunciara.
 - Los **chips que activan/desactivan las secciones opcionales** (Proyectos, Becas, Idiomas, etc.) ahora comunican su estado (activado/desactivado) a un lector de pantalla, no solo con el color — antes solo se distinguía visualmente.
+
+## Nuevo nivel de densidad: "Muy compacta"
+
+En "Apariencia" → "Densidad de texto" hay una cuarta opción nueva, más chica que "Compacta". Como el mecanismo de densidad ya se aplica a las 37 plantillas de una sola vez (no es algo que haya que agregar plantilla por plantilla), esta opción funciona en todas de entrada.
+
+Usala cuando veas en la vista previa que algún texto se desborda o se ve apretado — probá tocar "Muy compacta" y revisá si eso resuelve el problema puntual que estés viendo. Es una solución manual (la elegís vos cuando hace falta), no automática.

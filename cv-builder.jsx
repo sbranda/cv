@@ -58,8 +58,9 @@ const TYPO_PRESETS = {
   elegante: { name: "Elegante", display: "'Playfair Display', serif", body: "'Lato', sans-serif" },
 };
 
-const DENSITY_SCALE = { compacta: 0.9, normal: 1, amplia: 1.1 };
+const DENSITY_SCALE = { textoCompacto: 0.8, compacta: 0.9, normal: 1, amplia: 1.1 };
 const DENSITY_OPTIONS = [
+  { id: "textoCompacto", name: "Muy compacta" },
   { id: "compacta", name: "Compacta" },
   { id: "normal", name: "Normal" },
   { id: "amplia", name: "Amplia" },
