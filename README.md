@@ -463,3 +463,9 @@ Revisé lo agregado desde la pasada anterior (paleta de colores personalizada, m
 - La **barra de completitud** ahora tiene los atributos correctos de "barra de progreso" (`role="progressbar"` con su valor actual) — antes era solo un div visual sin significado para un lector de pantalla.
 - Los **puntos de color** (los 4 predefinidos, el selector libre, y los que guardás en tu paleta personal) ahora tienen `aria-label` describiendo cada uno — antes solo tenían el tooltip visual (`title`), insuficiente para un lector de pantalla.
 - Búsqueda automatizada completa: no queda ningún botón de solo ícono sin etiqueta, ni ícono decorativo sin marcar como tal.
+
+## Corrección: tarjetitas de habilidades desordenadas
+
+Encontramos la causa de un problema real: el campo "Habilidades" solo separaba cada tarjetita por comas, pero si escribías (o pegabas) tus habilidades una por línea en vez de separadas por comas, todo el texto entre comas quedaba agrupado en una sola tarjeta gigante de varias líneas, en vez de una tarjetita corta por habilidad — se veía desordenado, especialmente con listas largas.
+
+Corregido en los 12 lugares del código que arman esas tarjetitas: ahora reconocen tanto comas como saltos de línea como separadores, así que podés escribir tus habilidades separadas por lo que te resulte más cómodo (una por renglón, o todas separadas por comas) y en ambos casos se van a ver bien.

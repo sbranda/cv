@@ -1697,7 +1697,7 @@ function ContactLine({ data, className, iconSize = 11 }) {
 function SkillChips({ data, accent }) {
   return (
     <div className="flex flex-wrap gap-1.5">
-      {data.habilidades.split(",").map(
+      {data.habilidades.split(/[,\n]/).map(
         (h, i) =>
           h.trim() && (
             <span
@@ -1876,7 +1876,7 @@ function PreviewModerno({ data, accent }) {
           <div>
             <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
             <div className="flex flex-wrap gap-1">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span key={i} className="text-[10px] px-2 py-0.5 rounded-sm bg-stone-800 text-stone-300">
@@ -2024,7 +2024,7 @@ function PreviewEjecutivo({ data, accent }) {
             <div>
               <SectionLabel accent={accent}>Habilidades</SectionLabel>
               <div className="flex flex-col gap-1">
-                {data.habilidades.split(",").map(
+                {data.habilidades.split(/[,\n]/).map(
                   (h, i) =>
                     h.trim() && (
                       <span key={i} className="text-[12px] text-stone-600">
@@ -2285,7 +2285,7 @@ function PreviewCreativo({ data, accent }) {
           <div>
             <SectionLabel accent={accent}>Habilidades</SectionLabel>
             <div className="flex flex-wrap gap-1.5">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span
@@ -2334,7 +2334,7 @@ function PreviewDesarrollador({ data, accent }) {
         <div className="mb-6">
           <p className="text-[11px] mb-2" style={{ color: accent }}>// stack</p>
           <div className="flex flex-wrap gap-1.5">
-            {data.habilidades.split(",").map(
+            {data.habilidades.split(/[,\n]/).map(
               (h, i) =>
                 h.trim() && (
                   <span key={i} className="text-[10.5px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>
@@ -2761,7 +2761,7 @@ function PreviewBlueprint({ data, accent }) {
         <div>
           <p className="text-[10.5px] uppercase tracking-widest mb-2" style={{ color: accent }}>// habilidades</p>
           <div className="flex flex-wrap gap-1.5">
-            {data.habilidades.split(",").map(
+            {data.habilidades.split(/[,\n]/).map(
               (h, i) =>
                 h.trim() && (
                   <span key={i} className="text-[10.5px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>
@@ -2908,7 +2908,7 @@ function PreviewNocturno({ data, accent }) {
         <div>
           <SectionLabel accent={accent}>Habilidades</SectionLabel>
           <div className="flex flex-wrap gap-1.5">
-            {data.habilidades.split(",").map(
+            {data.habilidades.split(/[,\n]/).map(
               (h, i) =>
                 h.trim() && (
                   <span key={i} className="text-[11px] px-2 py-1 rounded-sm border" style={{ borderColor: `${accent}55`, color: accent }}>
@@ -3330,7 +3330,7 @@ function PreviewPanel({ data, accent }) {
           <div>
             <p className="text-[10px] uppercase tracking-widest text-white/70 mb-2">Habilidades</p>
             <div className="flex flex-wrap gap-1">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span key={i} className="text-[10px] px-2 py-0.5 rounded-sm bg-white/15 text-white">
@@ -3378,7 +3378,7 @@ function PreviewColumna({ data, accent }) {
           <div>
             <p className="text-[9.5px] uppercase tracking-widest text-stone-500 mb-2">Habilidades</p>
             <div className="flex flex-wrap gap-1">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span key={i} className="text-[9.5px] px-1.5 py-0.5 rounded-sm" style={{ background: `${accent}18`, color: accent }}>
@@ -3440,7 +3440,7 @@ function PreviewFranja({ data, accent }) {
           <div>
             <p className="text-[9.5px] uppercase tracking-widest text-white/70 mb-2">Habilidades</p>
             <div className="flex flex-wrap gap-1">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span key={i} className="text-[9.5px] px-1.5 py-0.5 rounded-sm bg-white/15 text-white">
@@ -3490,7 +3490,7 @@ function PreviewRetrato({ data, accent }) {
           <div className="w-full mt-2">
             <p className="text-[9px] uppercase tracking-widest text-stone-400 mb-1.5 text-center">Habilidades</p>
             <div className="flex flex-wrap justify-center gap-1">
-              {data.habilidades.split(",").map(
+              {data.habilidades.split(/[,\n]/).map(
                 (h, i) =>
                   h.trim() && (
                     <span key={i} className="text-[9px] px-1.5 py-0.5 rounded-full border" style={{ borderColor: `${accent}55`, color: accent }}>
@@ -4121,7 +4121,7 @@ JSON original:
         );
       }
     });
-    const habilidadesCount = data.habilidades ? data.habilidades.split(",").filter((h) => h.trim()).length : 0;
+    const habilidadesCount = data.habilidades ? data.habilidades.split(/[,\n]/).filter((h) => h.trim()).length : 0;
     if (habilidadesCount > 14) {
       tips.push(`Tenés ${habilidadesCount} habilidades listadas — priorizá 8 a 10, las más relacionadas con el puesto.`);
     }
