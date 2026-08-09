@@ -469,3 +469,11 @@ Revisé lo agregado desde la pasada anterior (paleta de colores personalizada, m
 Encontramos la causa de un problema real: el campo "Habilidades" solo separaba cada tarjetita por comas, pero si escribías (o pegabas) tus habilidades una por línea en vez de separadas por comas, todo el texto entre comas quedaba agrupado en una sola tarjeta gigante de varias líneas, en vez de una tarjetita corta por habilidad — se veía desordenado, especialmente con listas largas.
 
 Corregido en los 12 lugares del código que arman esas tarjetitas: ahora reconocen tanto comas como saltos de línea como separadores, así que podés escribir tus habilidades separadas por lo que te resulte más cómodo (una por renglón, o todas separadas por comas) y en ambos casos se van a ver bien.
+
+## Nueva plantilla: Barra Lateral
+
+Inspirada en un CV de referencia que compartiste: barra oscura fija a la izquierda (foto, contacto, sitios web/LinkedIn, formación académica) y una franja de color arriba de la columna principal con el nombre en grande. En la columna derecha: perfil profesional, experiencia laboral, y aptitudes mostradas como lista de dos columnas con viñetas (en vez de las tarjetitas de otras plantillas, para acercarse más al estilo de la referencia).
+
+Como decidiste, no agregamos campos nuevos de "Idiomas" ni "Afiliaciones" — esta plantilla usa "Información adicional" para ese tipo de contenido, mostrada al final de la columna derecha.
+
+Ya son 29 plantillas en total.
