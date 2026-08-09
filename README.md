@@ -503,3 +503,7 @@ Ya son **37 plantillas** en total. Mismo criterio que la vez pasada: sin puntos 
 Nueva sección opcional, junto a las demás (Proyectos, Becas, etc.): "Idiomas (con barra de nivel)". Al activarla, aparece una lista donde agregás cada idioma con su nombre y elegís el nivel de un menú desplegable (Básico, Intermedio, Avanzado, Nativo) — sin tener que escribir el nivel a mano, evitando inconsistencias.
 
 Se muestra como una barra de progreso visual (25%/50%/75%/100% según el nivel elegido) en **4 plantillas**: Sidebar Diagonal, Sidebar Perfil, Banner Ancho, y Sidebar Referencias. También incluida en las exportaciones a Word y texto plano (ahí como texto simple "Idioma: Nivel", sin la barra visual, ya que esos formatos no la soportan).
+
+## Tutorial actualizado (sexta vez)
+
+Sigue en 7 pasos. Actualicé el número de plantillas (28 → 37) y agregué la mención de Idiomas con barra de nivel al paso de herramientas extra. Andá a ⋯ → Ver tutorial para verlo actualizado.

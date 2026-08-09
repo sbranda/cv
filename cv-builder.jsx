@@ -554,7 +554,7 @@ const TOUR_STEPS = [
     body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha. Arriba de todo hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar.",
   },
   {
-    title: "28 plantillas para elegir",
+    title: "37 plantillas para elegir",
     body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Dentro de la galería podés \"Comparar\" dos plantillas lado a lado, o contarle a la IA a qué puesto te postulás para que te sugiera cuál conviene más.",
   },
   {
@@ -571,7 +571,7 @@ const TOUR_STEPS = [
   },
   {
     title: "Herramientas extra",
-    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, importación de un CV existente, puntos de control con nombre propio para guardar versiones dentro del mismo perfil, y la opción de vaciar el formulario si querés empezar de cero.",
+    body: "En el menú ⋯ encontrás carta de presentación, comparación contra una oferta de trabajo, traducción, importación de un CV existente, puntos de control con nombre propio para guardar versiones dentro del mismo perfil, y la opción de vaciar el formulario si querés empezar de cero. También hay secciones opcionales como Proyectos, Becas, Logros e Idiomas (con barra de nivel visual) para activar según tu plantilla.",
   },
   {
     title: "Descargá cuando quieras",
