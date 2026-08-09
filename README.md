@@ -486,3 +486,14 @@ Ya son 29 plantillas en total.
 - **Banner Ancho** (imagen "Nombre Apellido" en tonos dorados): encabezado ancho con foto a la derecha, todo el contenido en una sola columna (perfil, contacto en fila, habilidades como tarjetitas, experiencia, formación, información adicional).
 
 Ya son **33 plantillas** en total. Como acordamos, ninguna tiene barras de nivel numéricas (idiomas/habilidades) — replican el diseño y la disposición del contenido de las referencias, pero usan "Información adicional" en vez de secciones nuevas como "Intereses" o "Softwares".
+
+## 4 plantillas más, de tu segunda tanda de referencias
+
+De las 10 imágenes que mandaste, 6 ya eran plantillas que hicimos antes (Carmen Pérez, Alexander Herrera, Alejandro López, Lucía Ramírez, la dorada) — no las repetí. Las 4 nuevas de verdad:
+
+- **Geométrica** (Laura Santos Toledo): forma triangular de color enmarcando la foto arriba, nombre centrado debajo, dos columnas (Experiencia / Acerca de + Habilidades + Educación).
+- **Serif Divisor** (Miranda Naser): tipografía elegante para el nombre, línea vertical fina dividiendo la columna de contacto del contenido principal.
+- **Banda Celeste** (Carla Rodríguez): franja de color suave arriba con foto y nombre, columna izquierda con tinte de fondo sutil.
+- **Sidebar Referencias** (Santiago García): barra lateral de color angosta con foto, contacto y habilidades; contenido principal a la derecha.
+
+Ya son **37 plantillas** en total. Mismo criterio que la vez pasada: sin puntos ni barras de nivel, y usando "Información adicional" en vez de secciones nuevas (edad, cursos, referencias, etc.).
