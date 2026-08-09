@@ -497,3 +497,9 @@ De las 10 imágenes que mandaste, 6 ya eran plantillas que hicimos antes (Carmen
 - **Sidebar Referencias** (Santiago García): barra lateral de color angosta con foto, contacto y habilidades; contenido principal a la derecha.
 
 Ya son **37 plantillas** en total. Mismo criterio que la vez pasada: sin puntos ni barras de nivel, y usando "Información adicional" en vez de secciones nuevas (edad, cursos, referencias, etc.).
+
+## Idiomas con barra de nivel
+
+Nueva sección opcional, junto a las demás (Proyectos, Becas, etc.): "Idiomas (con barra de nivel)". Al activarla, aparece una lista donde agregás cada idioma con su nombre y elegís el nivel de un menú desplegable (Básico, Intermedio, Avanzado, Nativo) — sin tener que escribir el nivel a mano, evitando inconsistencias.
+
+Se muestra como una barra de progreso visual (25%/50%/75%/100% según el nivel elegido) en **4 plantillas**: Sidebar Diagonal, Sidebar Perfil, Banner Ancho, y Sidebar Referencias. También incluida en las exportaciones a Word y texto plano (ahí como texto simple "Idioma: Nivel", sin la barra visual, ya que esos formatos no la soportan).

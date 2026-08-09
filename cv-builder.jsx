@@ -340,6 +340,14 @@ const emptyLogro = () => ({
   descripcion: "",
 });
 
+const NIVELES_IDIOMA = { Básico: 25, Intermedio: 50, Avanzado: 75, Nativo: 100 };
+
+const emptyIdioma = () => ({
+  id: crypto.randomUUID(),
+  nombre: "",
+  nivel: "Intermedio",
+});
+
 const initialState = {
   nombre: "",
   puesto: "",
@@ -360,8 +368,9 @@ const initialState = {
   publicaciones: [emptyPublication()],
   becas: [emptyBeca()],
   logros: [emptyLogro()],
+  idiomas: [emptyIdioma()],
   informacionAdicional: "",
-  seccionesOpcionales: { proyectos: false, publicaciones: false, becas: false, logros: false, informacionAdicional: false },
+  seccionesOpcionales: { proyectos: false, publicaciones: false, becas: false, logros: false, idiomas: false, informacionAdicional: false },
   accent: ACCENTS[0].value,
   template: "clasico",
   carta: { empresa: "", puestoAplicado: "", tono: "formal", detalles: "", texto: "" },
@@ -388,6 +397,7 @@ const OPTIONAL_SECTIONS = [
   { id: "publicaciones", name: "Publicaciones", template: "Académico" },
   { id: "becas", name: "Becas y reconocimientos", template: "Académico" },
   { id: "logros", name: "Logros destacados", template: "Ventas/Marketing" },
+  { id: "idiomas", name: "Idiomas (con barra de nivel)", template: "4 plantillas" },
   { id: "informacionAdicional", name: "Información adicional", template: "13 plantillas" },
 ];
 
@@ -1763,6 +1773,29 @@ function SkillChips({ data, accent }) {
             </span>
           )
       )}
+    </div>
+  );
+}
+
+function IdiomaBars({ data, accent, barColor, trackColor, textColor }) {
+  const items = data.idiomas.filter((i) => i.nombre?.trim());
+  if (items.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((idm) => (
+        <div key={idm.id}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px]" style={{ color: textColor || "inherit" }}>{idm.nombre}</span>
+            <span className="text-[9.5px] opacity-70" style={{ color: textColor || "inherit" }}>{idm.nivel}</span>
+          </div>
+          <div className="w-full h-[5px] rounded-full overflow-hidden" style={{ background: trackColor || "#e7e5e4" }}>
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${NIVELES_IDIOMA[idm.nivel] || 50}%`, background: barColor || accent }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -3949,6 +3982,12 @@ function PreviewSidebarDiagonal({ data, accent }) {
               <p className="text-[10.5px] text-stone-600 break-words">{data.linkedin}</p>
             </div>
           )}
+          {data.seccionesOpcionales?.idiomas && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Idiomas</SectionLabel>
+              <IdiomaBars data={data} accent={accent} />
+            </div>
+          )}
           {data.habilidades && (
             <div>
               <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
@@ -4024,6 +4063,12 @@ function PreviewSidebarPerfil({ data, accent }) {
           <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-2">Contacto</p>
           <ContactLine data={data} className="flex flex-col gap-1.5 text-[10.5px] text-white/90" iconSize={10} />
         </div>
+        {data.seccionesOpcionales?.idiomas && (
+          <div>
+            <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-2">Idiomas</p>
+            <IdiomaBars data={data} accent={accent} barColor="#ffffff" trackColor="rgba(255,255,255,0.25)" textColor="#ffffff" />
+          </div>
+        )}
         {data.habilidades && (
           <div>
             <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-2">Habilidades</p>
@@ -4092,6 +4137,12 @@ function PreviewBannerAncho({ data, accent }) {
           className="flex flex-wrap gap-x-5 gap-y-1 mb-5 text-[11px] text-stone-600 pb-4 border-b border-stone-200"
           iconSize={11}
         />
+        {data.seccionesOpcionales?.idiomas && (
+          <div className="mb-5 max-w-[280px]">
+            <SectionLabel accent={accent} className="mb-2">Idiomas</SectionLabel>
+            <IdiomaBars data={data} accent={accent} />
+          </div>
+        )}
         {data.habilidades && (
           <div className="mb-5">
             <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
@@ -4389,6 +4440,12 @@ function PreviewSidebarReferencias({ data, accent }) {
           <p className="text-[10px] uppercase tracking-widest text-white/80 font-bold mb-2">Contacto</p>
           <ContactLine data={data} className="flex flex-col gap-1.5 text-[10.5px] text-white/90" iconSize={10} />
         </div>
+        {data.seccionesOpcionales?.idiomas && (
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-white/80 font-bold mb-2">Idiomas</p>
+            <IdiomaBars data={data} accent={accent} barColor="#ffffff" trackColor="rgba(255,255,255,0.25)" textColor="#ffffff" />
+          </div>
+        )}
         {data.habilidades && (
           <div>
             <p className="text-[10px] uppercase tracking-widest text-white/80 font-bold mb-2">Habilidades</p>
@@ -5194,6 +5251,7 @@ Texto del currículum:
   const publicacionesH = makeListHandlers("publicaciones", emptyPublication);
   const becasH = makeListHandlers("becas", emptyBeca);
   const logrosH = makeListHandlers("logros", emptyLogro);
+  const idiomasH = makeListHandlers("idiomas", emptyIdioma);
 
   const improveSummary = async () => {
     if (!data.resumen.trim()) return;
@@ -5472,6 +5530,15 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
       }
     }
 
+    if (data.seccionesOpcionales?.idiomas) {
+      const items = data.idiomas.filter((i) => i.nombre?.trim());
+      if (items.length) {
+        lines.push("IDIOMAS");
+        items.forEach((i) => lines.push(`${i.nombre}: ${i.nivel}`));
+        lines.push("");
+      }
+    }
+
     if (data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional) {
       lines.push("INFORMACIÓN ADICIONAL");
       lines.push(data.informacionAdicional);
@@ -5681,6 +5748,16 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
           items.forEach((l) => {
             const parts = [l.metrica, l.descripcion].filter(Boolean).join("  —  ");
             children.push(new Paragraph({ children: [new TextRun({ text: parts, size: 22 })], spacing: { before: 60 } }));
+          });
+        }
+      }
+
+      if (data.seccionesOpcionales?.idiomas) {
+        const items = data.idiomas.filter((i) => i.nombre?.trim());
+        if (items.length) {
+          children.push(heading("Idiomas"));
+          items.forEach((i) => {
+            children.push(new Paragraph({ children: [new TextRun({ text: `${i.nombre}: ${i.nivel}`, size: 22 })], spacing: { before: 60 } }));
           });
         }
       }
@@ -6863,6 +6940,65 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                   </div>
                   {data.logros.length > 1 && (
                     <button onClick={() => logrosH.remove(l.id)} className="text-white hover:text-red-400 transition mt-6">
+                      <Trash2 size={14} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {data.seccionesOpcionales?.idiomas && (
+            <section className="mt-6 mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-mono text-[11px] uppercase tracking-widest text-white flex items-center gap-2">
+                  <span className="w-4 h-px bg-stone-700" /> Idiomas <span className="text-white normal-case">· 4 plantillas</span>
+                </h2>
+                <div className="flex items-center gap-3">
+                  <button onClick={idiomasH.add} className="text-white hover:text-white transition" title="Agregar idioma" aria-label="Agregar idioma">
+                    <Plus size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => update({ seccionesOpcionales: { ...data.seccionesOpcionales, idiomas: false } })}
+                    className="text-white hover:text-red-400 transition"
+                    title="Ocultar sección"
+                    aria-label="Ocultar sección"
+                  >
+                    <X size={15} aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+              {data.idiomas.map((idm) => (
+                <div key={idm.id} className="mb-3 flex items-start gap-2">
+                  <div className="flex-1 grid grid-cols-2 gap-x-3">
+                    <Field label="Idioma">
+                      <input
+                        spellCheck="true"
+                        className={inputClass}
+                        value={idm.nombre}
+                        onChange={(e) => idiomasH.update(idm.id, { nombre: e.target.value })}
+                        placeholder="Inglés"
+                      />
+                    </Field>
+                    <Field label="Nivel">
+                      <select
+                        className={inputClass}
+                        value={idm.nivel}
+                        onChange={(e) => idiomasH.update(idm.id, { nivel: e.target.value })}
+                      >
+                        {Object.keys(NIVELES_IDIOMA).map((n) => (
+                          <option key={n} value={n}>{n}</option>
+                        ))}
+                      </select>
+                    </Field>
+                  </div>
+                  {data.idiomas.length > 1 && (
+                    <button
+                      onClick={() => idiomasH.remove(idm.id)}
+                      className="text-white hover:text-red-400 transition mt-6"
+                      title="Eliminar idioma"
+                      aria-label="Eliminar idioma"
+                    >
                       <Trash2 size={14} aria-hidden="true" />
                     </button>
                   )}
