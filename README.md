@@ -507,3 +507,10 @@ Se muestra como una barra de progreso visual (25%/50%/75%/100% según el nivel e
 ## Tutorial actualizado (sexta vez)
 
 Sigue en 7 pasos. Actualicé el número de plantillas (28 → 37) y agregué la mención de Idiomas con barra de nivel al paso de herramientas extra. Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+## Sexta pasada de accesibilidad
+
+Revisé lo agregado desde la pasada anterior (Idiomas con barra de nivel) y corregí:
+
+- Las **barras de nivel de idiomas** ahora están marcadas como decorativas para lectores de pantalla — a diferencia del medidor de completitud (donde el número solo existía en la barra), acá el nombre del idioma y el nivel ya se leen como texto normal al lado, así que la barra sería una repetición innecesaria si un lector de pantalla también la anunciara.
+- Los **chips que activan/desactivan las secciones opcionales** (Proyectos, Becas, Idiomas, etc.) ahora comunican su estado (activado/desactivado) a un lector de pantalla, no solo con el color — antes solo se distinguía visualmente.

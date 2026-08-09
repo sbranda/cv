@@ -2022,7 +2022,11 @@ function IdiomaBars({ data, accent, barColor, trackColor, textColor }) {
             <span className="text-[11px]" style={{ color: textColor || "inherit" }}>{idm.nombre}</span>
             <span className="text-[9.5px] opacity-70" style={{ color: textColor || "inherit" }}>{idm.nivel}</span>
           </div>
-          <div className="w-full h-[5px] rounded-full overflow-hidden" style={{ background: trackColor || "#e7e5e4" }}>
+          <div
+            className="w-full h-[5px] rounded-full overflow-hidden"
+            style={{ background: trackColor || "#e7e5e4" }}
+            aria-hidden="true"
+          >
             <div
               className="h-full rounded-full"
               style={{ width: `${NIVELES_IDIOMA[idm.nivel] || 50}%`, background: barColor || accent }}
@@ -7122,6 +7126,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                     onClick={() =>
                       update({ seccionesOpcionales: { ...data.seccionesOpcionales, [s.id]: !activa } })
                     }
+                    aria-pressed={activa}
                     className="text-[11px] px-3 py-1.5 rounded-full border transition inline-flex items-center gap-1.5"
                     style={{
                       borderColor: activa ? accent : "#44403c",
