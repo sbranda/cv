@@ -477,3 +477,12 @@ Inspirada en un CV de referencia que compartiste: barra oscura fija a la izquier
 Como decidiste, no agregamos campos nuevos de "Idiomas" ni "Afiliaciones" — esta plantilla usa "Información adicional" para ese tipo de contenido, mostrada al final de la columna derecha.
 
 Ya son 29 plantillas en total.
+
+## 4 plantillas nuevas, inspiradas en tus referencias
+
+- **Perfil Banda** (imágenes de Carmen Pérez / Alexander Herrera): franja de color arriba con foto, nombre y perfil profesional; debajo, dos columnas (Contacto+Habilidades+Información adicional / Experiencia+Formación).
+- **Sidebar Diagonal** (imagen de Alejandro López): encabezado oscuro con corte diagonal y foto+nombre superpuestos; columna angosta con Contacto, Sitios web, Habilidades e Información adicional; columna principal con Perfil, Experiencia y Formación.
+- **Sidebar Perfil** (imagen de Lucía Ramírez): barra lateral de color con foto, perfil profesional, contacto, habilidades e información adicional, todo centrado; columna principal con Experiencia y Formación.
+- **Banner Ancho** (imagen "Nombre Apellido" en tonos dorados): encabezado ancho con foto a la derecha, todo el contenido en una sola columna (perfil, contacto en fila, habilidades como tarjetitas, experiencia, formación, información adicional).
+
+Ya son **33 plantillas** en total. Como acordamos, ninguna tiene barras de nivel numéricas (idiomas/habilidades) — replican el diseño y la disposición del contenido de las referencias, pero usan "Información adicional" en vez de secciones nuevas como "Intereses" o "Softwares".

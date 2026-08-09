@@ -247,6 +247,30 @@ const TEMPLATES = [
     desc: "Barra oscura fija con foto y formación, franja de color arriba del nombre",
     category: "fondos",
   },
+  {
+    id: "perfilBanda",
+    name: "Perfil Banda",
+    desc: "Franja de color arriba con foto y perfil, dos columnas debajo",
+    category: "formal",
+  },
+  {
+    id: "sidebarDiagonal",
+    name: "Sidebar Diagonal",
+    desc: "Encabezado oscuro con corte diagonal, contacto en columna angosta",
+    category: "creativo",
+  },
+  {
+    id: "sidebarPerfil",
+    name: "Sidebar Perfil",
+    desc: "Barra lateral de color con foto, perfil y contacto centrados",
+    category: "fondos",
+  },
+  {
+    id: "bannerAncho",
+    name: "Banner Ancho",
+    desc: "Encabezado ancho con foto a la derecha, todo el contenido en una columna",
+    category: "formal",
+  },
 ];
 
 const emptyExperience = () => ({
@@ -340,7 +364,7 @@ const OPTIONAL_SECTIONS = [
   { id: "publicaciones", name: "Publicaciones", template: "Académico" },
   { id: "becas", name: "Becas y reconocimientos", template: "Académico" },
   { id: "logros", name: "Logros destacados", template: "Ventas/Marketing" },
-  { id: "informacionAdicional", name: "Información adicional", template: "5 plantillas" },
+  { id: "informacionAdicional", name: "Información adicional", template: "9 plantillas" },
 ];
 
 const DEFAULT_SECTION_ORDER = ["resumen", "experiencia", "educacion", "habilidades"];
@@ -3797,6 +3821,297 @@ function PreviewBarraLateral({ data, accent }) {
   );
 }
 
+function PreviewPerfilBanda({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
+      <div style={{ background: accent }} className="px-8 pt-8 pb-6">
+        <div className="flex items-start gap-5">
+          <Avatar data={data} accent="white" size={90} ring />
+          <div className="flex-1 pt-2 min-w-0">
+            <h1 className="font-display text-[24px] leading-tight text-white uppercase font-bold break-words">
+              {data.nombre || "Tu nombre"}
+            </h1>
+            {data.puesto && (
+              <p className="text-white/90 text-[11.5px] font-bold uppercase tracking-wide mt-1">{data.puesto}</p>
+            )}
+          </div>
+        </div>
+        {data.resumen && (
+          <div className="mt-5">
+            <p className="text-white/90 text-[10px] uppercase tracking-[0.2em] font-bold mb-1.5">Perfil profesional</p>
+            <p className="text-white/85 text-[11.5px] leading-relaxed">{data.resumen}</p>
+          </div>
+        )}
+      </div>
+      <div className="grid grid-cols-[38%_62%] gap-6 px-8 py-7">
+        <div className="flex flex-col gap-6">
+          <div>
+            <SectionLabel accent={accent} className="mb-2">Contacto</SectionLabel>
+            <ContactLine data={data} className="flex flex-col gap-1.5 text-[11px] text-stone-600" iconSize={10} />
+          </div>
+          {data.habilidades && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
+              <ul className="flex flex-col gap-1">
+                {data.habilidades.split(/[,\n]/).map(
+                  (h, i) =>
+                    h.trim() && (
+                      <li key={i} className="text-[11px] text-stone-700 flex items-start gap-1.5">
+                        <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ background: accent }} />
+                        {h.trim()}
+                      </li>
+                    )
+                )}
+              </ul>
+            </div>
+          )}
+          {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Información adicional</SectionLabel>
+              <p className="text-[11px] text-stone-700 leading-relaxed whitespace-pre-line">
+                {data.informacionAdicional}
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-6 min-w-0">
+          {hasExp && (
+            <div>
+              <SectionLabel accent={accent} className="mb-3">Experiencia profesional</SectionLabel>
+              <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[13px] font-medium text-stone-900" />
+            </div>
+          )}
+          {hasEdu && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Formación</SectionLabel>
+              <EducacionBlock data={data} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PreviewSidebarDiagonal({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden relative">
+      <div
+        className="absolute top-0 left-0 right-0 h-[110px]"
+        style={{ background: "#1c2b4a", clipPath: "polygon(0 0, 100% 0, 100% 65%, 0 100%)" }}
+      />
+      <div className="relative px-8 pt-7 flex items-center gap-4">
+        <Avatar data={data} accent="white" size={64} ring />
+        <div className="min-w-0">
+          <h1 className="font-display text-[20px] leading-tight text-white break-words">
+            {data.nombre || "Tu nombre"}
+          </h1>
+          {data.puesto && <p className="text-[11px] mt-1 text-white/80 font-mono uppercase tracking-wide">{data.puesto}</p>}
+        </div>
+      </div>
+      <div className="grid grid-cols-[36%_64%] gap-6 px-8 pt-10 pb-8">
+        <div className="flex flex-col gap-6">
+          <div>
+            <SectionLabel accent={accent} className="mb-2">Contacto</SectionLabel>
+            <ContactLine data={data} className="flex flex-col gap-1.5 text-[10.5px] text-stone-600" iconSize={10} />
+          </div>
+          {data.linkedin && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Sitios web</SectionLabel>
+              <p className="text-[10.5px] text-stone-600 break-words">{data.linkedin}</p>
+            </div>
+          )}
+          {data.habilidades && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
+              <ul className="flex flex-col gap-1">
+                {data.habilidades.split(/[,\n]/).map(
+                  (h, i) =>
+                    h.trim() && (
+                      <li key={i} className="text-[10.5px] text-stone-700 flex items-start gap-1.5">
+                        <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ background: accent }} />
+                        {h.trim()}
+                      </li>
+                    )
+                )}
+              </ul>
+            </div>
+          )}
+          {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Información adicional</SectionLabel>
+              <p className="text-[10.5px] text-stone-700 leading-relaxed whitespace-pre-line">
+                {data.informacionAdicional}
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-6 min-w-0">
+          {data.resumen && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Perfil</SectionLabel>
+              <p className="text-[11.5px] leading-relaxed text-stone-700">{data.resumen}</p>
+            </div>
+          )}
+          {hasExp && (
+            <div>
+              <SectionLabel accent={accent} className="mb-3">Experiencia profesional</SectionLabel>
+              <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[13px] font-medium text-stone-900" />
+            </div>
+          )}
+          {hasEdu && (
+            <div>
+              <SectionLabel accent={accent} className="mb-2">Formación</SectionLabel>
+              <EducacionBlock data={data} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PreviewSidebarPerfil({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] flex overflow-hidden">
+      <div className="w-[36%] px-6 py-8 flex flex-col gap-6 shrink-0" style={{ background: accent }}>
+        <div className="flex justify-center">
+          <Avatar data={data} accent="white" size={84} ring />
+        </div>
+        <div className="text-center">
+          <h1 className="font-display text-[16px] leading-tight text-white break-words">
+            {data.nombre || "Tu nombre"}
+          </h1>
+          {data.puesto && <p className="text-[10px] mt-1 text-white/80 font-mono uppercase">{data.puesto}</p>}
+        </div>
+        {data.resumen && (
+          <div>
+            <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-1.5">Perfil profesional</p>
+            <p className="text-[10.5px] text-white/90 leading-relaxed">{data.resumen}</p>
+          </div>
+        )}
+        <div>
+          <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-2">Contacto</p>
+          <ContactLine data={data} className="flex flex-col gap-1.5 text-[10.5px] text-white/90" iconSize={10} />
+        </div>
+        {data.habilidades && (
+          <div>
+            <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-2">Habilidades</p>
+            <ul className="flex flex-col gap-1">
+              {data.habilidades.split(/[,\n]/).map(
+                (h, i) =>
+                  h.trim() && (
+                    <li key={i} className="text-[10.5px] text-white/90">
+                      {h.trim()}
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+        )}
+        {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+          <div>
+            <p className="text-[9.5px] uppercase tracking-widest text-white/80 font-bold mb-1.5">Información adicional</p>
+            <p className="text-[10.5px] text-white/90 leading-relaxed whitespace-pre-line">
+              {data.informacionAdicional}
+            </p>
+          </div>
+        )}
+      </div>
+      <div className="flex-1 px-8 py-8 flex flex-col gap-6 min-w-0">
+        {hasExp && (
+          <div>
+            <SectionLabel accent={accent} className="mb-3">Experiencia laboral</SectionLabel>
+            <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[13px] font-medium text-stone-900" />
+          </div>
+        )}
+        {hasEdu && (
+          <div>
+            <SectionLabel accent={accent} className="mb-2">Formación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PreviewBannerAncho({ data, accent }) {
+  const hasExp = data.experiencia.some((e) => e.puesto || e.empresa);
+  const hasEdu = data.educacion.some((e) => e.titulo || e.institucion);
+  return (
+    <div className="print-page bg-white text-[#232323] w-full max-w-[600px] shadow-2xl min-h-[849px] overflow-hidden">
+      <div style={{ background: `${accent}22` }} className="px-8 py-6 flex items-center gap-5">
+        <div className="flex-1 min-w-0">
+          <h1 className="font-display text-[22px] leading-tight text-stone-900 break-words">
+            {data.nombre || "Tu nombre"}
+          </h1>
+          {data.puesto && <p className="text-[12px] mt-1 font-semibold" style={{ color: accent }}>{data.puesto}</p>}
+        </div>
+        <Avatar data={data} accent={accent} size={76} ring shape="rounded" className="rounded-md" />
+      </div>
+      <div className="px-8 py-6">
+        {data.resumen && (
+          <div className="mb-5">
+            <SectionLabel accent={accent} className="mb-1.5">Perfil</SectionLabel>
+            <p className="text-[11.5px] leading-relaxed text-stone-700">{data.resumen}</p>
+          </div>
+        )}
+        <ContactLine
+          data={data}
+          className="flex flex-wrap gap-x-5 gap-y-1 mb-5 text-[11px] text-stone-600 pb-4 border-b border-stone-200"
+          iconSize={11}
+        />
+        {data.habilidades && (
+          <div className="mb-5">
+            <SectionLabel accent={accent} className="mb-2">Habilidades</SectionLabel>
+            <div className="flex flex-wrap gap-1.5">
+              {data.habilidades.split(/[,\n]/).map(
+                (h, i) =>
+                  h.trim() && (
+                    <span
+                      key={i}
+                      className="text-[10.5px] px-2.5 py-1 rounded-full"
+                      style={{ background: `${accent}18`, color: accent }}
+                    >
+                      {h.trim()}
+                    </span>
+                  )
+              )}
+            </div>
+          </div>
+        )}
+        {hasExp && (
+          <div className="mb-5">
+            <SectionLabel accent={accent} className="mb-3">Experiencia</SectionLabel>
+            <ExperienciaBlock data={data} accent={accent} titleClass="font-display text-[13px] font-medium text-stone-900" />
+          </div>
+        )}
+        {hasEdu && (
+          <div className="mb-5">
+            <SectionLabel accent={accent} className="mb-2">Formación</SectionLabel>
+            <EducacionBlock data={data} />
+          </div>
+        )}
+        {data.seccionesOpcionales?.informacionAdicional && data.informacionAdicional && (
+          <div>
+            <SectionLabel accent={accent} className="mb-1.5">Información adicional</SectionLabel>
+            <p className="text-[11.5px] leading-relaxed text-stone-700 whitespace-pre-line">
+              {data.informacionAdicional}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const TEMPLATE_COMPONENTS = {
   clasico: PreviewClasico,
   moderno: PreviewModerno,
@@ -3827,6 +4142,10 @@ const TEMPLATE_COMPONENTS = {
   banderaCentral: PreviewBanderaCentral,
   banderaLinea: PreviewBanderaLinea,
   barraLateral: PreviewBarraLateral,
+  perfilBanda: PreviewPerfilBanda,
+  sidebarDiagonal: PreviewSidebarDiagonal,
+  sidebarPerfil: PreviewSidebarPerfil,
+  bannerAncho: PreviewBannerAncho,
 };
 
 export default function CVBuilder() {
