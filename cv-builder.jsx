@@ -596,7 +596,7 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 const TOUR_STEPS = [
   {
     title: "¡Bienvenido a HazTuCV!",
-    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha. Arriba de todo hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar. En Datos personales podés activar un código QR con tu LinkedIn o portafolio, útil para CV impresos.",
+    body: "Armá tu currículum en el formulario y mirá cómo va quedando en tiempo real en la vista previa — en pantallas anchas los ves lado a lado, y en el celular alternás entre las pestañas \"Editar\" y \"Vista previa\" arriba. Encima del formulario hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar. En Datos personales podés activar un código QR con tu LinkedIn o portafolio, útil para CV impresos.",
   },
   {
     title: "37 plantillas para elegir",

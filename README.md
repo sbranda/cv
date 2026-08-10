@@ -576,3 +576,7 @@ Encontré y corregí tres cosas:
 
 - El control deslizante de **"Tamaño de la foto"** (ya existía desde hace tiempo, no era nuevo) nunca había tenido etiqueta ni valor accesible para un lector de pantalla — corregido, igual que ya tenía el de densidad.
 - Las **tarjetas de plantillas** en la galería tienen una etiqueta que resume todo el contenido para un lector de pantalla — pero esa etiqueta nunca se actualizó cuando agregamos las etiquetas de funciones (Reordenar, QR, etc.), así que un lector de pantalla no las anunciaba aunque se vieran en pantalla. Ahora la etiqueta incluye esa información.
+
+## Corrección: primer paso del tutorial asumía tablet/escritorio
+
+Buena observación: el primer paso del tutorial decía "formulario de la izquierda... vista previa a la derecha", que solo es cierto en pantallas anchas (tablet en horizontal, escritorio). En el celular la app funciona distinto — una sola columna, con pestañas "Editar"/"Vista previa" arriba para alternar. Corregido el texto para que describa ambos casos correctamente, sin asumir un diseño específico.
