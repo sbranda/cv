@@ -596,15 +596,15 @@ function AIButton({ onClick, loading, label = "Mejorar con IA" }) {
 const TOUR_STEPS = [
   {
     title: "¡Bienvenido a HazTuCV!",
-    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha. Arriba de todo hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar.",
+    body: "Armá tu currículum en el formulario de la izquierda y mirá cómo va quedando en tiempo real, a la derecha. Arriba de todo hay una barra que te muestra qué tan completo está tu CV, con sugerencias de qué reforzar. En Datos personales podés activar un código QR con tu LinkedIn o portafolio, útil para CV impresos.",
   },
   {
     title: "37 plantillas para elegir",
-    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Dentro de la galería podés \"Comparar\" dos plantillas lado a lado, o contarle a la IA a qué puesto te postulás para que te sugiera cuál conviene más.",
+    body: "Tocá \"Plantillas\" en el encabezado para probar distintos diseños — tu contenido y color de acento se mantienen al cambiar. Cada tarjeta muestra etiquetas con lo que soporta (reordenar, QR, idiomas, etc.). Dentro de la galería podés \"Comparar\" dos plantillas lado a lado, o contarle a la IA a qué puesto te postulás para que te sugiera cuál conviene más.",
   },
   {
     title: "Personalizá el estilo",
-    body: "Elegí un color de acento (o uno libre con la rueda de colores — el \"+\" guarda tus favoritos para reutilizar), tipografía y densidad de texto en \"Apariencia\" — ahí también reordenás las secciones y podés pedirle a la IA que estime cuánto tarda un reclutador en leer tu CV. Los botones ☀️/🌙 y \"A\" del encabezado ajustan el editor a tu gusto.",
+    body: "Elegí un color de acento (o uno libre con la rueda de colores — el \"+\" guarda tus favoritos para reutilizar), tipografía y un control deslizante de densidad de texto (70% a 130%, el que necesites) en \"Apariencia\" — ahí también reordenás las secciones y podés pedirle a la IA que estime cuánto tarda un reclutador en leer tu CV. Los botones ☀️/🌙 y \"A\" del encabezado ajustan el editor a tu gusto.",
   },
   {
     title: "Mejorá tu texto con IA",
