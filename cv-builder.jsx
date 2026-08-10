@@ -394,6 +394,47 @@ const RESUMEN_LENGTHS = [
   { id: "largo", label: "5 frases", instruccion: "4 a 5 frases (entre 80 y 110 palabras en total)" },
 ];
 
+// Qué funciones extra soporta cada plantilla, para mostrarlo en la galería.
+const TEMPLATE_FEATURES = {
+  clasico: ["Reordenar", "Contacto al pie", "Info. adicional"],
+  moderno: [],
+  minimalista: ["Reordenar", "Contacto al pie", "QR", "Info. adicional"],
+  ejecutivo: ["Contacto al pie", "QR"],
+  corporativo: ["Reordenar", "Contacto al pie", "QR", "Info. adicional"],
+  compacto: ["Reordenar", "Info. adicional"],
+  creativo: ["Reordenar"],
+  desarrollador: ["Reordenar", "Proyectos"],
+  academico: ["Publicaciones", "Becas"],
+  comercial: ["Logros"],
+  impacto: ["Reordenar"],
+  aurora: ["Reordenar"],
+  blueprint: ["Reordenar"],
+  bloques: ["Reordenar"],
+  nocturno: ["Reordenar"],
+  revista: ["Reordenar", "Contacto al pie", "QR"],
+  contorno: ["Reordenar", "Contacto al pie", "QR"],
+  dinamico: ["Reordenar"],
+  tarjetas: ["Reordenar"],
+  simetria: [],
+  prensa: [],
+  panel: [],
+  columna: [],
+  franja: [],
+  retrato: [],
+  bandera: [],
+  banderaCentral: [],
+  banderaLinea: [],
+  barraLateral: ["Info. adicional"],
+  perfilBanda: ["Info. adicional"],
+  sidebarDiagonal: ["Info. adicional", "Idiomas"],
+  sidebarPerfil: ["Info. adicional", "Idiomas"],
+  bannerAncho: ["Info. adicional", "Idiomas"],
+  geometrica: ["Info. adicional"],
+  serifDivisor: ["Info. adicional"],
+  bandaCeleste: ["Info. adicional"],
+  sidebarReferencias: ["Info. adicional", "Idiomas"],
+};
+
 const OPTIONAL_SECTIONS = [
   { id: "proyectos", name: "Proyectos", template: "Desarrollador" },
   { id: "publicaciones", name: "Publicaciones", template: "Académico" },
@@ -891,18 +932,32 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
             </div>
           </div>
         </div>
-        <div className="px-3 py-2.5 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium">{t.name}</p>
-            <p className="text-[11px] text-stone-500">{t.desc}</p>
+        <div className="px-3 py-2.5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">{t.name}</p>
+              <p className="text-[11px] text-stone-500">{t.desc}</p>
+            </div>
+            {current === t.id && (
+              <span
+                className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: accent }}
+              >
+                <Check size={12} className="text-stone-950" aria-hidden="true" />
+              </span>
+            )}
           </div>
-          {current === t.id && (
-            <span
-              className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: accent }}
-            >
-              <Check size={12} className="text-stone-950" aria-hidden="true" />
-            </span>
+          {(TEMPLATE_FEATURES[t.id] || []).length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {TEMPLATE_FEATURES[t.id].map((f) => (
+                <span
+                  key={f}
+                  className="text-[9px] px-1.5 py-0.5 rounded-sm bg-stone-800 text-stone-400"
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>

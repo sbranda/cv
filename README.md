@@ -532,3 +532,7 @@ Si tenías un perfil guardado con una de las 4 opciones viejas, se sigue viendo 
 Cambié el componente compartido que usan varias plantillas para mostrar "Habilidades" — antes separaba el texto por comas/saltos de línea en tarjetitas individuales, ahora muestra el texto completo tal cual lo escribiste, dentro de un único recuadro con el fondo de color de acento (igual que antes, pero sin cortar el texto en piezas sueltas).
 
 Afecta a las plantillas que usan el componente `SkillChips` (varias, ya que es compartido) — no toqué las plantillas que ya mostraban las habilidades como lista con viñetas o como texto simple, esas seguían funcionando bien.
+
+## Etiquetas de funciones en la galería de plantillas
+
+Cada tarjeta de la galería ahora muestra, debajo del nombre y la descripción, pequeñas etiquetas grises con las funciones extra que esa plantilla en particular soporta — por ejemplo "Reordenar", "Contacto al pie", "QR", "Info. adicional", "Idiomas", o secciones especiales como "Proyectos"/"Publicaciones"/"Becas"/"Logros". Las plantillas sin ninguna función extra (diseño fijo) no muestran etiquetas. Así podés ver de un vistazo, antes de elegir, qué te vas a encontrar en cada una.
