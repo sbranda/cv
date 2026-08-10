@@ -565,3 +565,7 @@ Como seguía sin aparecer el QR para vos incluso con todo bien configurado, agre
 ## Tutorial actualizado (séptima vez)
 
 Sigue en 7 pasos. Ahora menciona: el código QR (paso de bienvenida), las etiquetas de funciones en la galería, y el control deslizante de densidad reemplazando a los 4 botones fijos. Andá a ⋯ → Ver tutorial para verlo actualizado.
+
+## Menú "⋯" más ancho, sin texto cortado
+
+El menú de "Más herramientas" (los tres puntos) era de 192px de ancho — suficiente para la mayoría de las opciones, pero "Descargar imagen (PNG)" se cortaba a dos líneas. Lo ensanché a 240px, y además agregué una regla que impide que el texto de cualquier opción se parta en dos líneas, para que quede prolijo pase lo que pase.

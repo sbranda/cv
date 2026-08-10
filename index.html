@@ -1806,57 +1806,57 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, o
       {open && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-2 w-48 bg-stone-900 border border-stone-800 rounded-md shadow-xl z-40 py-1 no-print">
+          <div className="absolute right-0 mt-2 w-60 bg-stone-900 border border-stone-800 rounded-md shadow-xl z-40 py-1 no-print">
             <button
               onClick={() => { onCarta(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <FileText size={14} aria-hidden="true" /> Carta de presentación
             </button>
             <button
               onClick={() => { onCompare(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <Target size={14} aria-hidden="true" /> Comparar con puesto
             </button>
             <button
               onClick={() => { onTexto(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <AlignLeft size={14} aria-hidden="true" /> Texto plano (ATS)
             </button>
             <button
               onClick={() => { onWord(); setOpen(false); }}
               disabled={exportingDocx}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap disabled:opacity-50"
             >
               {exportingDocx ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <FileDown size={14} aria-hidden="true" />} Exportar Word
             </button>
             <button
               onClick={() => { onPng(); setOpen(false); }}
               disabled={exportingPng}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition disabled:opacity-50"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap disabled:opacity-50"
             >
               {exportingPng ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Image size={14} aria-hidden="true" />} Descargar imagen (PNG)
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
               onClick={() => { onCheckpoints(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <Save size={14} aria-hidden="true" /> Puntos de control
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
               onClick={() => { onTour(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <HelpCircle size={14} aria-hidden="true" /> Ver tutorial
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
               onClick={() => { onClear(); setOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-stone-800 transition"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <Trash2 size={14} aria-hidden="true" /> Vaciar formulario
             </button>
