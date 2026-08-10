@@ -10,6 +10,8 @@ import {
   Phone,
   MapPin,
   Linkedin,
+  Github,
+  Globe,
   GripVertical,
   LayoutTemplate,
   X,
@@ -1788,6 +1790,13 @@ function QRCodeImage({ data, size = 56, className = "" }) {
   );
 }
 
+function LinkIcon({ url, size, className }) {
+  const lower = (url || "").toLowerCase();
+  if (lower.includes("linkedin.com")) return <Linkedin size={size} className={className} aria-hidden="true" />;
+  if (lower.includes("github.com")) return <Github size={size} className={className} aria-hidden="true" />;
+  return <Globe size={size} className={className} aria-hidden="true" />;
+}
+
 function ContactLine({ data, className, iconSize = 11 }) {
   return (
     <div className={className}>
@@ -1808,7 +1817,7 @@ function ContactLine({ data, className, iconSize = 11 }) {
       )}
       {data.linkedin && (
         <span className="flex items-center gap-1 min-w-0 break-all">
-          <Linkedin size={iconSize} className="shrink-0" aria-hidden="true" /> {data.linkedin}
+          <LinkIcon url={data.linkedin} size={iconSize} className="shrink-0" /> {data.linkedin}
         </span>
       )}
     </div>

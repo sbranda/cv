@@ -546,3 +546,12 @@ Cambié los 11 textos grises dentro de la galería de plantillas (descripciones,
 Encontré la causa real de por qué "Restablecer orden" (y otros 4 botones similares: Restablecer densidad, Estimar tiempo de lectura, Ajustar largo del resumen) se veían grises — ya tenían `text-white`, pero al estar deshabilitados bajaban al 30-40% de opacidad, y eso hace que el blanco se vea apagado/gris. Subí esa opacidad al 55% en los 5 casos, más legible mientras se sigue notando que están deshabilitados.
 
 De paso encontré uno que se me había pasado del todo: el botón "Estimar tiempo de lectura" seguía en gris (`text-stone-400`) desde que lo agregué, sin haber pasado por la conversión a blanco de antes — ya corregido.
+
+## Corrección: siempre aparecía el ícono de LinkedIn, aunque cargaras otro link
+
+Encontré la causa: el campo "LinkedIn / Portafolio" mostraba siempre el ícono de LinkedIn en el contacto, sin importar qué URL hubieras puesto ahí. Corregido — ahora el ícono se elige según el contenido real del link:
+- Si contiene "linkedin.com" → ícono de LinkedIn
+- Si contiene "github.com" → ícono de GitHub
+- Cualquier otro caso (portafolio personal, u otra red) → ícono genérico de globo/enlace
+
+Se aplica en todas las plantillas que usan el componente compartido de contacto, ya que arreglé el problema en un solo lugar.
