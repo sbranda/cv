@@ -569,3 +569,10 @@ Sigue en 7 pasos. Ahora menciona: el código QR (paso de bienvenida), las etique
 ## Menú "⋯" más ancho, sin texto cortado
 
 El menú de "Más herramientas" (los tres puntos) era de 192px de ancho — suficiente para la mayoría de las opciones, pero "Descargar imagen (PNG)" se cortaba a dos líneas. Lo ensanché a 240px, y además agregué una regla que impide que el texto de cualquier opción se parta en dos líneas, para que quede prolijo pase lo que pase.
+
+## Séptima pasada de accesibilidad
+
+Encontré y corregí tres cosas:
+
+- El control deslizante de **"Tamaño de la foto"** (ya existía desde hace tiempo, no era nuevo) nunca había tenido etiqueta ni valor accesible para un lector de pantalla — corregido, igual que ya tenía el de densidad.
+- Las **tarjetas de plantillas** en la galería tienen una etiqueta que resume todo el contenido para un lector de pantalla — pero esa etiqueta nunca se actualizó cuando agregamos las etiquetas de funciones (Reordenar, QR, etc.), así que un lector de pantalla no las anunciaba aunque se vieran en pantalla. Ahora la etiqueta incluye esa información.

@@ -902,7 +902,11 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
             setPendingTemplate(t.id);
           }
         }}
-        aria-label={`Usar plantilla ${t.name}`}
+        aria-label={`Usar plantilla ${t.name}. ${t.desc}${
+          (TEMPLATE_FEATURES[t.id] || []).length > 0
+            ? `. Soporta: ${TEMPLATE_FEATURES[t.id].join(", ")}`
+            : ""
+        }`}
         className="relative text-left border rounded-md overflow-hidden transition hover:-translate-y-0.5 cursor-pointer"
         style={{
           borderColor: current === t.id ? accent : "#3f3a35",
@@ -6440,6 +6444,8 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                   onChange={(e) => update({ fotoEscala: parseFloat(e.target.value) })}
                   className="w-full accent-current"
                   style={{ color: accent }}
+                  aria-label="Tamaño de la foto"
+                  aria-valuetext={`${Math.round(data.fotoEscala * 100)}%`}
                 />
               </div>
             )}
