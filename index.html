@@ -6693,7 +6693,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
               <button
                 onClick={() => update({ ordenSecciones: [...DEFAULT_SECTION_ORDER] })}
                 disabled={JSON.stringify(data.ordenSecciones) === JSON.stringify(DEFAULT_SECTION_ORDER)}
-                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition mt-2 disabled:opacity-30 disabled:cursor-default disabled:hover:text-white"
+                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition mt-2 disabled:opacity-55 disabled:cursor-default disabled:hover:text-white"
               >
                 ↺ Restablecer orden
               </button>
@@ -6705,7 +6705,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
               <button
                 onClick={estimateReadingTime}
                 disabled={readingTimeLoading || !hasMeaningfulContent}
-                className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1 mt-3"
+                className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-55 inline-flex items-center gap-1 mt-3"
               >
                 {readingTimeLoading ? (
                   <Loader2 size={11} className="animate-spin" aria-hidden="true" />
@@ -6906,7 +6906,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                     key={opt.id}
                     onClick={() => adjustResumenLength(opt)}
                     disabled={!data.resumen.trim() || loading}
-                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-white hover:border-stone-500 transition disabled:opacity-40 inline-flex items-center gap-1"
+                    className="text-[10.5px] px-2.5 py-1 rounded-full border border-stone-700 text-white hover:text-white hover:border-stone-500 transition disabled:opacity-55 inline-flex items-center gap-1"
                   >
                     {loading && <Loader2 size={10} className="animate-spin" aria-hidden="true" />}
                     {opt.label}
@@ -6928,7 +6928,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                     disabled={gapCheckLoading}
                     title="Revisar brechas laborales"
                     aria-label="Revisar brechas laborales"
-                    className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                    className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-55 inline-flex items-center gap-1"
                   >
                     {gapCheckLoading ? (
                       <Loader2 size={11} className="animate-spin" aria-hidden="true" />
@@ -7043,7 +7043,7 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
                           <button
                             onClick={() => checkWeakVerbs(exp)}
                             disabled={weakVerbsId === exp.id || !exp.descripcion.trim()}
-                            className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-40 inline-flex items-center gap-1"
+                            className="text-[10.5px] font-mono uppercase tracking-wider text-white hover:text-white transition disabled:opacity-55 inline-flex items-center gap-1"
                           >
                             {weakVerbsId === exp.id ? (
                               <Loader2 size={11} className="animate-spin" aria-hidden="true" />

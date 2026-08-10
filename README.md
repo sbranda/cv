@@ -540,3 +540,9 @@ Cada tarjeta de la galería ahora muestra, debajo del nombre y la descripción, 
 ## Galería de plantillas: texto gris a blanco
 
 Cambié los 11 textos grises dentro de la galería de plantillas (descripciones, encabezados de categoría, el aviso de sugerencia de la IA, y las nuevas etiquetas de funciones) a blanco — mismo criterio que ya aplicamos en el editor. Dejé sin cambiar los 2 textos oscuros que van sobre fondos claros (el tilde de la plantilla seleccionada y el texto del botón "Sugerir"), ya que esos necesitan quedar oscuros para poder leerse ahí.
+
+## Corrección: botones "deshabilitados" difíciles de leer
+
+Encontré la causa real de por qué "Restablecer orden" (y otros 4 botones similares: Restablecer densidad, Estimar tiempo de lectura, Ajustar largo del resumen) se veían grises — ya tenían `text-white`, pero al estar deshabilitados bajaban al 30-40% de opacidad, y eso hace que el blanco se vea apagado/gris. Subí esa opacidad al 55% en los 5 casos, más legible mientras se sigue notando que están deshabilitados.
+
+De paso encontré uno que se me había pasado del todo: el botón "Estimar tiempo de lectura" seguía en gris (`text-stone-400`) desde que lo agregué, sin haber pasado por la conversión a blanco de antes — ya corregido.
