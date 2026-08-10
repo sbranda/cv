@@ -555,3 +555,9 @@ Encontré la causa: el campo "LinkedIn / Portafolio" mostraba siempre el ícono 
 - Cualquier otro caso (portafolio personal, u otra red) → ícono genérico de globo/enlace
 
 Se aplica en todas las plantillas que usan el componente compartido de contacto, ya que arreglé el problema en un solo lugar.
+
+## Respaldo automático para el código QR
+
+Como seguía sin aparecer el QR para vos incluso con todo bien configurado, agregué un **respaldo automático**: si la librería que genera el QR en tu propio navegador falla por cualquier motivo (bloqueo de red, operador, etc.), la app ahora recurre automáticamente a un servicio público de generación de QR para que el código igual aparezca, en vez de quedar en blanco sin ninguna explicación.
+
+**Diferencia a tener en cuenta**: en el método normal (que sigue siendo el primero que intenta), tu link nunca sale de tu navegador. Si se activa el respaldo, ese link específico (el que vos ya elegiste mostrar públicamente en el QR) se envía a ese servicio externo para generar la imagen — dado que es la misma información que ibas a compartir públicamente de todos modos, el riesgo es mínimo, pero quería que lo supieras.

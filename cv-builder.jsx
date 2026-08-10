@@ -1764,14 +1764,18 @@ function QRCodeImage({ data, size = 56, className = "" }) {
       return;
     }
     const target = /^https?:\/\//i.test(data.linkedin) ? data.linkedin : `https://${data.linkedin}`;
+    // Si la librería local falla por cualquier motivo (bloqueo de red, etc.),
+    // recurrimos a un servicio público de generación de QR como respaldo, para
+    // que el código igual aparezca en vez de quedar en blanco sin explicación.
+    const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(target)}`;
     ensureQRCodeLib()
       .then(() => window.QRCode.toDataURL(target, { margin: 1, width: 256 }))
       .then((dataUrl) => {
         if (!cancelled) setUrl(dataUrl);
       })
       .catch((err) => {
-        console.error("No se pudo generar el código QR:", err);
-        if (!cancelled) setUrl(null);
+        console.error("No se pudo generar el código QR con la librería local, se usa respaldo:", err);
+        if (!cancelled) setUrl(fallbackUrl);
       });
     return () => {
       cancelled = true;
@@ -1786,6 +1790,9 @@ function QRCodeImage({ data, size = 56, className = "" }) {
       width={size}
       height={size}
       className={"shrink-0 " + className}
+      onError={(e) => {
+        e.target.style.display = "none";
+      }}
     />
   );
 }
