@@ -1169,7 +1169,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">{t.name}</p>
-              <p className="text-[11px] text-stone-500">{t.desc}</p>
+              <p className="text-[11px] text-white">{t.desc}</p>
             </div>
             {current === t.id && (
               <span
@@ -1185,7 +1185,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
               {TEMPLATE_FEATURES[t.id].map((f) => (
                 <span
                   key={f}
-                  className="text-[9px] px-1.5 py-0.5 rounded-sm bg-stone-800 text-stone-400"
+                  className="text-[9px] px-1.5 py-0.5 rounded-sm bg-stone-800 text-white"
                 >
                   {f}
                 </span>
@@ -1204,24 +1204,24 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="font-display text-xl">Galería de plantillas</h2>
-            <p className="text-[12px] text-stone-500 mt-0.5">
+            <p className="text-[12px] text-white mt-0.5">
               Elige un diseño. Tu contenido y color de acento se mantienen.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={onCompare}
-              className="text-[11px] font-mono uppercase tracking-wider text-stone-400 hover:text-white transition whitespace-nowrap"
+              className="text-[11px] font-mono uppercase tracking-wider text-white hover:text-white transition whitespace-nowrap"
             >
               Comparar
             </button>
-            <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <button onClick={onClose} aria-label="Cerrar" className="text-white hover:text-white transition">
               <X size={20} aria-hidden="true" />
             </button>
           </div>
         </div>
         <div className="mb-5 p-3 rounded-md bg-stone-800/40 border border-stone-700">
-          <p className="text-[10.5px] font-mono uppercase tracking-wider text-stone-400 mb-2">
+          <p className="text-[10.5px] font-mono uppercase tracking-wider text-white mb-2">
             ¿No sabés cuál elegir? Contanos a qué te postulás
           </p>
           <div className="flex gap-2">
@@ -1232,7 +1232,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
               onKeyDown={(e) => e.key === "Enter" && suggestTemplate()}
               placeholder="Ej: analista contable en un banco, diseñadora gráfica freelance..."
               aria-label="A qué puesto te postulás"
-              className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
+              className="flex-1 bg-stone-800/60 border border-stone-700 rounded-md px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:border-transparent transition"
             />
             <button
               onClick={suggestTemplate}
@@ -1246,12 +1246,12 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
           </div>
           {suggestion && (
             <div className="mt-3 p-2.5 rounded-md bg-stone-950/60 border border-stone-700">
-              <p className="text-[12.5px] text-stone-200">
+              <p className="text-[12.5px] text-white">
                 <span className="font-semibold" style={{ color: accent }}>
                   {TEMPLATES.find((t) => t.id === suggestion.template)?.name}
                 </span>
                 {" — "}
-                <span className="text-stone-400">{suggestion.razon}</span>
+                <span className="text-white">{suggestion.razon}</span>
               </p>
               <button
                 onClick={() => setPendingTemplate(suggestion.template)}
@@ -1265,7 +1265,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
         </div>
         {favorites.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-[11px] font-mono uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+            <h3 className="text-[11px] font-mono uppercase tracking-widest text-white mb-3 flex items-center gap-2">
               <span className="w-4 h-px bg-stone-700" /> Favoritas
             </h3>
             <div className="grid grid-cols-2 gap-4">
@@ -1278,7 +1278,7 @@ Recomendá UNA sola plantilla de la lista de arriba que mejor se adapte a ese pu
           if (items.length === 0) return null;
           return (
             <div key={cat.id} className="mb-6 last:mb-0">
-              <h3 className="text-[11px] font-mono uppercase tracking-widest text-stone-500 mb-3 flex items-center gap-2">
+              <h3 className="text-[11px] font-mono uppercase tracking-widest text-white mb-3 flex items-center gap-2">
                 <span className="w-4 h-px bg-stone-700" /> {cat.name}
               </h3>
               <div className="grid grid-cols-2 gap-4">

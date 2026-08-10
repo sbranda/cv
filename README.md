@@ -536,3 +536,7 @@ Afecta a las plantillas que usan el componente `SkillChips` (varias, ya que es c
 ## Etiquetas de funciones en la galería de plantillas
 
 Cada tarjeta de la galería ahora muestra, debajo del nombre y la descripción, pequeñas etiquetas grises con las funciones extra que esa plantilla en particular soporta — por ejemplo "Reordenar", "Contacto al pie", "QR", "Info. adicional", "Idiomas", o secciones especiales como "Proyectos"/"Publicaciones"/"Becas"/"Logros". Las plantillas sin ninguna función extra (diseño fijo) no muestran etiquetas. Así podés ver de un vistazo, antes de elegir, qué te vas a encontrar en cada una.
+
+## Galería de plantillas: texto gris a blanco
+
+Cambié los 11 textos grises dentro de la galería de plantillas (descripciones, encabezados de categoría, el aviso de sugerencia de la IA, y las nuevas etiquetas de funciones) a blanco — mismo criterio que ya aplicamos en el editor. Dejé sin cambiar los 2 textos oscuros que van sobre fondos claros (el tilde de la plantilla seleccionada y el texto del botón "Sugerir"), ya que esos necesitan quedar oscuros para poder leerse ahí.
