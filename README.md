@@ -592,3 +592,19 @@ En el menú ⋯ hay una nueva opción: **"Analizar CV"**. Subís un PDF o Word d
 - Descripciones vagas sin logros medibles
 
 Cada problema aparece con su categoría y una descripción específica (no consejos genéricos). A diferencia de "Importar CV" (que arma un perfil nuevo con los datos), esta función es solo diagnóstica — no toca tus perfiles ni tus datos actuales, solo te muestra la lista de problemas encontrados. Reutiliza el mismo lector de PDF/Word que ya usa la importación, así que no agrega peso extra a la app.
+
+## Analizar CV: ahora acepta fotos/capturas (JPG, PNG)
+
+Además de PDF y Word, "Analizar CV" ahora acepta imágenes — útil si solo tenés una foto de tu CV impreso, o una captura de pantalla. La IA lee la imagen directamente, sin pasar por extracción de texto.
+
+**Importante — este cambio requiere una acción extra si usás el proxy de Cloudflare**: actualicé también `haztucv-gemini-proxy-worker.js` (el script del Worker) para que pueda reenviar imágenes a Gemini. Si tenés el proxy configurado, necesitás volver a pegar el contenido actualizado de ese archivo en tu Worker de Cloudflare (Dashboard → tu Worker → Editar código → pegar → Deploy). Sin ese paso, analizar con foto/captura fallaría aunque el resto de la app funcione bien — la importación y el resto de las funciones de IA no se ven afectadas, siguen andando igual con el proxy viejo.
+
+## Revertido: soporte de imágenes en "Analizar CV"
+
+A pedido, deshice por completo el cambio anterior (que agregaba JPG/PNG a "Analizar CV"). Volvió todo a como estaba: "Analizar CV" solo acepta PDF y Word otra vez, en los tres archivos (chat, PWA, y el script del proxy de Cloudflare). Si tenías el Worker de Cloudflare actualizado con el cambio anterior, no hace falta que hagas nada — el Worker revertido sigue funcionando igual de bien con el código viejo (el campo `image` simplemente se ignoraría si llegara, pero ya no se envía).
+
+## Analizar CV: JPG/PNG de vuelta (reimplementado)
+
+Volví a agregar el soporte de fotos/capturas (JPG, PNG) a "Analizar CV" — la IA lee la imagen directamente, sin extraer texto primero.
+
+**Mismo paso extra que la vez anterior, si usás el proxy de Cloudflare**: `haztucv-gemini-proxy-worker.js` fue actualizado otra vez para poder reenviar imágenes a Gemini. Si tenés el proxy configurado, volvé a pegar el contenido de ese archivo en tu Worker de Cloudflare (Dashboard → tu Worker → Editar código → pegar → Deploy). Sin ese paso, analizar con foto/captura fallaría — el resto de las funciones de IA (importar, mejorar texto, etc.) no se ven afectadas.

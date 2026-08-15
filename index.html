@@ -589,12 +589,16 @@ const SECTION_LABELS = {
   habilidades: "Habilidades",
 };
 
-async function callClaude(prompt, apiKey) {
+async function callClaude(prompt, apiKey, imageData) {
+  const parts = imageData
+    ? [{ inline_data: { mime_type: imageData.mediaType, data: imageData.base64 } }, { text: prompt }]
+    : [{ text: prompt }];
+
   if (PROXY_URL) {
     const response = await fetch(PROXY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify(imageData ? { prompt, image: imageData } : { prompt }),
     });
     if (!response.ok) {
       const errText = await response.text().catch(() => "");
@@ -608,8 +612,8 @@ async function callClaude(prompt, apiKey) {
       throw new Error(`(${response.status}) ${detail}`);
     }
     const data = await response.json();
-    const parts = data?.candidates?.[0]?.content?.parts || [];
-    const text = parts.map((p) => p.text || "").join("").trim();
+    const resParts = data?.candidates?.[0]?.content?.parts || [];
+    const text = resParts.map((p) => p.text || "").join("").trim();
     if (!text) throw new Error("La API no devolvió texto. Revisá la configuración del Worker.");
     return text;
   }
@@ -624,7 +628,7 @@ async function callClaude(prompt, apiKey) {
         "x-goog-api-key": apiKey,
       },
       body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        contents: [{ role: "user", parts }],
       }),
     }
   );
@@ -639,8 +643,8 @@ async function callClaude(prompt, apiKey) {
     throw new Error(`(${response.status}) ${detail}`);
   }
   const data = await response.json();
-  const parts = data?.candidates?.[0]?.content?.parts || [];
-  const text = parts.map((p) => p.text || "").join("").trim();
+  const resParts = data?.candidates?.[0]?.content?.parts || [];
+  const text = resParts.map((p) => p.text || "").join("").trim();
   if (!text) throw new Error("La API no devolvió texto. Revisá tu clave o el modelo configurado.");
   return text;
 }
@@ -1561,19 +1565,25 @@ function AnalyzeModal({ open, onClose, onAnalyze, onReset, analyzing, error, res
         {!result ? (
           <>
             <p className="text-[12.5px] text-stone-400 leading-relaxed mb-4">
-              Subí un PDF o Word de cualquier currículum (el tuyo, o de otra persona) y la IA lo revisa como lo
-              haría un reclutador exigente, señalando errores concretos — sin crear ningún perfil nuevo ni
-              tocar tus datos actuales.
+              Subí un PDF, Word, o una foto/captura (JPG o PNG) de cualquier currículum (el tuyo, o de otra
+              persona) y la IA lo revisa como lo haría un reclutador exigente, señalando errores concretos —
+              sin crear ningún perfil nuevo ni tocar tus datos actuales.
             </p>
             <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-stone-700 rounded-lg py-8 cursor-pointer hover:border-stone-500 transition">
-              <input type="file" accept=".pdf,.docx" className="hidden" onChange={onAnalyze} disabled={analyzing} />
+              <input
+                type="file"
+                accept=".pdf,.docx,.jpg,.jpeg,.png"
+                className="hidden"
+                onChange={onAnalyze}
+                disabled={analyzing}
+              />
               {analyzing ? (
                 <Loader2 size={22} className="text-stone-400 animate-spin" aria-hidden="true" />
               ) : (
                 <Upload size={22} className="text-stone-500" aria-hidden="true" />
               )}
               <span className="text-[12px] text-stone-400">
-                {analyzing ? "Analizando el archivo…" : "Tocá para elegir un archivo (.pdf o .docx)"}
+                {analyzing ? "Analizando el archivo…" : "Tocá para elegir un archivo (PDF, Word, JPG o PNG)"}
               </span>
             </label>
             {error && <p className="text-[11px] text-red-400 mt-3 leading-relaxed">{error}</p>}
@@ -5482,6 +5492,14 @@ Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que n
   const [analyzeError, setAnalyzeError] = useState("");
   const [analyzeResult, setAnalyzeResult] = useState(null);
 
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
+      reader.readAsDataURL(file);
+    });
+
   const extractTextFromFile = async (file) => {
     const ext = file.name.split(".").pop().toLowerCase();
     const arrayBuffer = await file.arrayBuffer();
@@ -5592,25 +5610,37 @@ Texto del currículum:
     setAnalyzeError("");
     setAnalyzeResult(null);
     try {
-      const text = await extractTextFromFile(file);
-      if (!text.trim()) throw new Error("No se encontró texto en el archivo.");
-      const truncated = text.slice(0, 8000);
-      const prompt = `A continuación está el texto extraído de un currículum. Analizalo como lo haría un reclutador exigente y encontrá problemas reales: errores de ortografía o gramática, verbos débiles o pasivos, fechas inconsistentes o con huecos sin explicar, datos de contacto incompletos, descripciones vagas sin logros medibles, u otros problemas concretos que perjudiquen las chances de conseguir una entrevista. Sé específico y citá fragmentos del texto original cuando ayude — no des consejos genéricos.
+      const ext = file.name.split(".").pop().toLowerCase();
+      const isImage = ["jpg", "jpeg", "png"].includes(ext);
+      const analysisInstructions = `Analizalo como lo haría un reclutador exigente y encontrá problemas reales: errores de ortografía o gramática, verbos débiles o pasivos, fechas inconsistentes o con huecos sin explicar, datos de contacto incompletos, descripciones vagas sin logros medibles, u otros problemas concretos que perjudiquen las chances de conseguir una entrevista. Sé específico y citá fragmentos del texto original cuando ayude — no des consejos genéricos.
 
 Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
 {"errores": [{"categoria": "Ortografía y gramática | Verbos débiles | Fechas/huecos | Contacto incompleto | Descripciones vagas | Otro", "detalle": "descripción breve y específica del problema encontrado"}]}
 
-Si no encontrás problemas relevantes, devolvé {"errores": []}.
+Si no encontrás problemas relevantes, devolvé {"errores": []}.`;
+
+      let result;
+      if (isImage) {
+        const base64 = await fileToBase64(file);
+        const mediaType = ext === "png" ? "image/png" : "image/jpeg";
+        const prompt = `La imagen adjunta es una foto o captura de un currículum. ${analysisInstructions}`;
+        result = await callClaude(prompt, apiKey, { base64, mediaType });
+      } else {
+        const text = await extractTextFromFile(file);
+        if (!text.trim()) throw new Error("No se encontró texto en el archivo.");
+        const truncated = text.slice(0, 8000);
+        const prompt = `A continuación está el texto extraído de un currículum. ${analysisInstructions}
 
 Texto del currículum:
 """${truncated}"""`;
-      const result = await callClaude(prompt, apiKey);
+        result = await callClaude(prompt, apiKey);
+      }
       const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
       const parsed = JSON.parse(cleaned);
       setAnalyzeResult(Array.isArray(parsed.errores) ? parsed.errores : []);
     } catch (err) {
       console.error(err);
-      setAnalyzeError("No se pudo analizar el archivo. Probá con otro PDF/Word.");
+      setAnalyzeError("No se pudo analizar el archivo. Probá con otro PDF, Word o imagen.");
     } finally {
       setAnalyzing(false);
       e.target.value = "";
