@@ -580,3 +580,15 @@ Encontré y corregí tres cosas:
 ## Corrección: primer paso del tutorial asumía tablet/escritorio
 
 Buena observación: el primer paso del tutorial decía "formulario de la izquierda... vista previa a la derecha", que solo es cierto en pantallas anchas (tablet en horizontal, escritorio). En el celular la app funciona distinto — una sola columna, con pestañas "Editar"/"Vista previa" arriba para alternar. Corregido el texto para que describa ambos casos correctamente, sin asumir un diseño específico.
+
+## Nueva función: Analizar CV
+
+En el menú ⋯ hay una nueva opción: **"Analizar CV"**. Subís un PDF o Word de cualquier currículum (el tuyo, o el de otra persona) y la IA lo revisa como lo haría un reclutador exigente, señalando problemas concretos:
+
+- Errores de ortografía y gramática
+- Verbos débiles o pasivos
+- Fechas inconsistentes o huecos sin explicar
+- Datos de contacto incompletos
+- Descripciones vagas sin logros medibles
+
+Cada problema aparece con su categoría y una descripción específica (no consejos genéricos). A diferencia de "Importar CV" (que arma un perfil nuevo con los datos), esta función es solo diagnóstica — no toca tus perfiles ni tus datos actuales, solo te muestra la lista de problemas encontrados. Reutiliza el mismo lector de PDF/Word que ya usa la importación, así que no agrega peso extra a la app.

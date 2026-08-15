@@ -1312,6 +1312,75 @@ function ImportModal({ open, onClose, onImport, importing, error }) {
   );
 }
 
+function AnalyzeModal({ open, onClose, onAnalyze, onReset, analyzing, error, result }) {
+  const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 no-print">
+      <div {...dialogProps} style={cardStyle} className="bg-stone-900 border border-stone-800 rounded-t-2xl sm:rounded-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+        {handle}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl">Analizar CV</h2>
+          <button onClick={onClose} aria-label="Cerrar" className="text-stone-500 hover:text-white transition">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        {!result ? (
+          <>
+            <p className="text-[12.5px] text-stone-400 leading-relaxed mb-4">
+              Subí un PDF o Word de cualquier currículum (el tuyo, o de otra persona) y la IA lo revisa como lo
+              haría un reclutador exigente, señalando errores concretos — sin crear ningún perfil nuevo ni
+              tocar tus datos actuales.
+            </p>
+            <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-stone-700 rounded-lg py-8 cursor-pointer hover:border-stone-500 transition">
+              <input type="file" accept=".pdf,.docx" className="hidden" onChange={onAnalyze} disabled={analyzing} />
+              {analyzing ? (
+                <Loader2 size={22} className="text-stone-400 animate-spin" aria-hidden="true" />
+              ) : (
+                <Upload size={22} className="text-stone-500" aria-hidden="true" />
+              )}
+              <span className="text-[12px] text-stone-400">
+                {analyzing ? "Analizando el archivo…" : "Tocá para elegir un archivo (.pdf o .docx)"}
+              </span>
+            </label>
+            {error && <p className="text-[11px] text-red-400 mt-3 leading-relaxed">{error}</p>}
+          </>
+        ) : (
+          <>
+            {result.length === 0 ? (
+              <p className="text-[13px] text-emerald-400 leading-relaxed mb-4">
+                No encontramos problemas relevantes en este CV. ¡Buen trabajo!
+              </p>
+            ) : (
+              <>
+                <p className="text-[12px] text-stone-400 mb-3">
+                  Encontramos {result.length} {result.length === 1 ? "problema" : "problemas"}:
+                </p>
+                <ul className="flex flex-col gap-2 mb-4">
+                  {result.map((err, i) => (
+                    <li key={i} className="p-2.5 rounded-md bg-stone-800/50 border border-stone-700">
+                      <p className="text-[10.5px] font-mono uppercase tracking-wider text-amber-400 mb-1">
+                        {err.categoria}
+                      </p>
+                      <p className="text-[12px] text-stone-300 leading-relaxed">{err.detalle}</p>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <button
+              onClick={onReset}
+              className="text-[12px] font-medium text-stone-300 underline hover:text-white transition"
+            >
+              Analizar otro archivo
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function PlainTextModal({ open, onClose, text, accent, fileName }) {
   const { cardStyle, handle, dialogProps } = useSwipeToDismiss(onClose, open);
   if (!open) return null;
@@ -1560,7 +1629,7 @@ function PersonalDataTipsModal({ open, onClose, accent }) {
   );
 }
 
-function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, onTour, onClear, exportingDocx, exportingPng }) {
+function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, onAnalyze, onTour, onClear, exportingDocx, exportingPng }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -1616,6 +1685,13 @@ function MoreMenu({ onCarta, onCompare, onTexto, onWord, onPng, onCheckpoints, o
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
             >
               <Save size={14} aria-hidden="true" /> Puntos de control
+            </button>
+            <div className="my-1 border-t border-stone-800" />
+            <button
+              onClick={() => { onAnalyze(); setOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-200 hover:bg-stone-800 transition whitespace-nowrap"
+            >
+              <Search size={14} aria-hidden="true" /> Analizar CV
             </button>
             <div className="my-1 border-t border-stone-800" />
             <button
@@ -5105,6 +5181,11 @@ Requisitos: 3 a 4 párrafos, en primera persona, profesional pero natural (que n
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState("");
 
+  const [analyzeOpen, setAnalyzeOpen] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState("");
+  const [analyzeResult, setAnalyzeResult] = useState(null);
+
   const ensurePdfJs = () => {
     if (window.pdfjsLib) return Promise.resolve();
     return new Promise((resolve, reject) => {
@@ -5214,6 +5295,38 @@ Texto del currículum:
       setImportError("No se pudo importar el archivo. Probá con otro PDF/Word, o completá los datos a mano.");
     } finally {
       setImporting(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleAnalyzeFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAnalyzing(true);
+    setAnalyzeError("");
+    setAnalyzeResult(null);
+    try {
+      const text = await extractTextFromFile(file);
+      if (!text.trim()) throw new Error("No se encontró texto en el archivo.");
+      const truncated = text.slice(0, 8000);
+      const prompt = `A continuación está el texto extraído de un currículum. Analizalo como lo haría un reclutador exigente y encontrá problemas reales: errores de ortografía o gramática, verbos débiles o pasivos, fechas inconsistentes o con huecos sin explicar, datos de contacto incompletos, descripciones vagas sin logros medibles, u otros problemas concretos que perjudiquen las chances de conseguir una entrevista. Sé específico y citá fragmentos del texto original cuando ayude — no des consejos genéricos.
+
+Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con esta forma exacta:
+{"errores": [{"categoria": "Ortografía y gramática | Verbos débiles | Fechas/huecos | Contacto incompleto | Descripciones vagas | Otro", "detalle": "descripción breve y específica del problema encontrado"}]}
+
+Si no encontrás problemas relevantes, devolvé {"errores": []}.
+
+Texto del currículum:
+"""${truncated}"""`;
+      const result = await callClaude(prompt);
+      const cleaned = result.replace(/^```json\s*|^```\s*|```\s*$/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setAnalyzeResult(Array.isArray(parsed.errores) ? parsed.errores : []);
+    } catch (err) {
+      console.error(err);
+      setAnalyzeError("No se pudo analizar el archivo. Probá con otro PDF/Word.");
+    } finally {
+      setAnalyzing(false);
       e.target.value = "";
     }
   };
@@ -5993,6 +6106,19 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
         error={importError}
       />
 
+      <AnalyzeModal
+        open={analyzeOpen}
+        onClose={() => setAnalyzeOpen(false)}
+        onAnalyze={handleAnalyzeFile}
+        onReset={() => {
+          setAnalyzeResult(null);
+          setAnalyzeError("");
+        }}
+        analyzing={analyzing}
+        error={analyzeError}
+        result={analyzeResult}
+      />
+
       <PlainTextModal
         open={plainTextOpen}
         onClose={() => setPlainTextOpen(false)}
@@ -6169,6 +6295,11 @@ Devolvé SOLO un objeto JSON válido, sin texto extra ni bloques de código, con
             onWord={handleExportDocx}
             onPng={handleExportPng}
             onCheckpoints={() => setCheckpointsOpen(true)}
+            onAnalyze={() => {
+              setAnalyzeError("");
+              setAnalyzeResult(null);
+              setAnalyzeOpen(true);
+            }}
             onTour={() => setTourOpen(true)}
             onClear={clearForm}
             exportingDocx={exportingDocx}
